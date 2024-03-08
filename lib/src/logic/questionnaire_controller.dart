@@ -1,13 +1,13 @@
 import 'package:fhir/r4.dart';
-import 'package:fhir_questionnaire/src/enumerator/questionnaire_item_type.dart';
-import 'package:fhir_questionnaire/src/enumerator/questionnaire_response_status.dart';
-import 'package:fhir_questionnaire/src/item/questionnaire_decimal_item_view.dart';
-import 'package:fhir_questionnaire/src/item/questionnaire_integer_item_view.dart';
-import 'package:fhir_questionnaire/src/item/questionnaire_string_item_view.dart';
-import 'package:fhir_questionnaire/src/item/questionnaire_text_item_view.dart';
-import 'package:fhir_questionnaire/src/utils/questionnaire_item_bundle.dart';
-import 'package:fhir_questionnaire/src/utils/questionnaire_utils.dart';
-import 'package:fhir_questionnaire/src/utils/num_utils.dart';
+import 'package:fhir_questionnaire/src/logic/enumerator/questionnaire_item_type.dart';
+import 'package:fhir_questionnaire/src/logic/enumerator/questionnaire_response_status.dart';
+import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/questionnaire_decimal_item_view.dart';
+import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/questionnaire_integer_item_view.dart';
+import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/questionnaire_string_item_view.dart';
+import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/questionnaire_text_item_view.dart';
+import 'package:fhir_questionnaire/src/model/questionnaire_item_bundle.dart';
+import 'package:fhir_questionnaire/src/logic/utils/questionnaire_utils.dart';
+import 'package:fhir_questionnaire/src/logic/utils/num_utils.dart';
 import 'package:flutter/foundation.dart';
 
 class QuestionnaireController {

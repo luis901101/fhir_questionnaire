@@ -1,18 +1,18 @@
+import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_text_field_item_view.dart';
 import 'package:flutter/material.dart';
-import 'package:fhir_questionnaire/src/item/base/questionnaire_text_field_item_view.dart';
 import 'package:fhir_questionnaire/src/utils/validation_utils.dart';
 
 /// Created by luis901101 on 3/5/24.
-class QuestionnaireDecimalItemView extends QuestionnaireTextFieldItemView {
-  QuestionnaireDecimalItemView(
+class QuestionnaireIntegerItemView extends QuestionnaireTextFieldItemView {
+  QuestionnaireIntegerItemView(
       {super.key, super.controller, required super.item});
 
   @override
-  State createState() => QuestionnaireDecimalItemViewState();
+  State createState() => QuestionnaireIntegerItemViewState();
 }
 
-class QuestionnaireDecimalItemViewState
-    extends QuestionnaireTextFieldItemViewState<QuestionnaireDecimalItemView> {
+class QuestionnaireIntegerItemViewState
+    extends QuestionnaireTextFieldItemViewState<QuestionnaireIntegerItemView> {
   @override
   void initState() {
     super.initState();
@@ -22,7 +22,7 @@ class QuestionnaireDecimalItemViewState
 
   @override
   TextInputType? get keyboardType =>
-      const TextInputType.numberWithOptions(signed: false, decimal: true);
+      const TextInputType.numberWithOptions(signed: false, decimal: false);
   @override
   TextCapitalization? get textCapitalization => TextCapitalization.none;
 }

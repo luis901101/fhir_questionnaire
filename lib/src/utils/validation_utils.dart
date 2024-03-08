@@ -1,8 +1,8 @@
-import 'package:fhir_questionnaire/src/localization/questionnaire_localization.dart';
+import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/countries.dart';
-import 'package:fhir_questionnaire/src/utils/num_utils.dart';
-import 'package:fhir_questionnaire/src/utils/text_utils.dart';
+import 'package:fhir_questionnaire/src/logic/utils/num_utils.dart';
+import 'package:fhir_questionnaire/src/logic/utils/text_utils.dart';
 import 'package:adeptutils/adeptutils.dart' hide TextUtils;
 
 class ValidationUtils {

@@ -1,6 +1,6 @@
 import 'package:adeptutils/adeptutils.dart';
 import 'package:fhir/r4.dart';
-import 'package:fhir_questionnaire/src/item/base/questionnaire_item_view.dart';
+import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_item_view.dart';
 
 class QuestionnaireItemBundle {
   final QuestionnaireItem item;

@@ -1,5 +1,3 @@
-
-
 abstract class QuestionnaireBaseLocalization {
   final String locale;
 

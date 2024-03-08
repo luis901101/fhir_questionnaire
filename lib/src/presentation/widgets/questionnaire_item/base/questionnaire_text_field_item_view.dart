@@ -1,10 +1,10 @@
 import 'package:adeptutils/adeptutils.dart';
+import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_item_view.dart';
 import 'package:flutter/material.dart';
-import 'package:fhir_questionnaire/src/item/base/questionnaire_item_view.dart';
-import 'package:fhir_questionnaire/src/utils/custom_text_field.dart';
-import 'package:fhir_questionnaire/src/utils/questionnaire_item_utils.dart';
+import 'package:fhir_questionnaire/src/presentation/widgets/custom_text_field.dart';
+import 'package:fhir_questionnaire/src/logic/utils/questionnaire_item_utils.dart';
 import 'package:fhir_questionnaire/src/utils/validation_utils.dart';
-import 'package:fhir_questionnaire/src/utils/text_utils.dart';
+import 'package:fhir_questionnaire/src/logic/utils/text_utils.dart';
 import 'package:collection/collection.dart';
 
 /// Created by luis901101 on 3/5/24.
