@@ -1,4 +1,3 @@
-import 'package:adeptutils/adeptutils.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_item_view.dart';
 import 'package:flutter/material.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/custom_text_field.dart';
@@ -10,10 +9,10 @@ import 'package:collection/collection.dart';
 /// Created by luis901101 on 3/5/24.
 abstract class QuestionnaireTextFieldItemView extends QuestionnaireItemView {
   QuestionnaireTextFieldItemView(
-      {super.key, AdeptTextEditingController? controller, required super.item})
+      {super.key, CustomTextEditingController? controller, required super.item})
       : super(
             controller: controller ??
-                AdeptTextEditingController(
+                CustomTextEditingController(
                   focusNode: FocusNode(),
                 ));
 }
@@ -34,7 +33,7 @@ abstract class QuestionnaireTextFieldItemViewState<
         ?.toString();
 
     if (initialValue.isNotEmpty) {
-      (controller as AdeptTextEditingController).text = initialValue!;
+      (controller as CustomTextEditingController).text = initialValue!;
     }
     controller.validations.addAll([
       if (isRequired) ValidationUtils.requiredFieldValidation,
@@ -66,7 +65,7 @@ abstract class QuestionnaireTextFieldItemViewState<
             ),
           ),
         CustomTextField(
-          controller: controller as AdeptTextEditingController,
+          controller: controller as CustomTextEditingController,
           focusNode: controller.focusNode,
           enabled: !isReadOnly,
           maxLength: maxLength,

@@ -23,8 +23,7 @@ dependencies:
   duration: ^3.0.13
   html: ^0.15.4
   intl_phone_field: ^3.2.0
-  adeptviews: ^12.0.0+1
-  adeptutils: ^10.0.0+1
+  validators: ^3.0.0
 
 dependency_overrides:
   intl: ^0.19.0 # To fix some dependencies conflicts because of using distinct versions, which should not be a problem because the major version is still the same.

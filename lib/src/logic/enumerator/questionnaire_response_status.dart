@@ -1,9 +1,7 @@
-import 'package:adeptutils/adeptutils.dart';
 import 'package:fhir/r4.dart';
 import 'package:collection/collection.dart';
 
 /// Docs: https://hl7.org/fhir/R4/valueset-questionnaire-answers-status.html
-@JsonEnum(fieldRename: FieldRename.kebab)
 enum QuestionnaireResponseStatus {
   /// This QuestionnaireResponse has been partially filled out with answers but changes or additions are still expected to be made to it.
   inProgress('in-progress'),
