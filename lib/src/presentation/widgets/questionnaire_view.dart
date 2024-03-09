@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/src/logic/questionnaire_controller.dart';
 import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_base_localization.dart';
 import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_localization.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fhir_questionnaire/src/utils/flutter_view_utils.dart';
 import 'package:fhir_questionnaire/src/model/questionnaire_item_bundle.dart';
@@ -100,32 +97,39 @@ class QuestionnaireViewState extends State<QuestionnaireView>
       ),
       body: UnfocusView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.only(top: 16.0),
           child: isLoading
               ? const QuestionnaireLoadingView()
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (questionnaire.title.isNotEmpty) ...[
-                      Text(
-                        questionnaire.title!,
-                        style: theme.textTheme.titleLarge,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          questionnaire.title!,
+                          style: theme.textTheme.titleLarge,
+                        ),
                       ),
                       const SizedBox(height: 24.0),
                     ],
                     Expanded(
-                      child: ListView.separated(
-                          padding: const EdgeInsets.only(
-                              bottom: kFloatingActionButtonMargin + 88),
-                          shrinkWrap: true,
-                          keyboardDismissBehavior:
-                              ScrollViewKeyboardDismissBehavior.onDrag,
-                          itemBuilder: (context, index) {
-                            return itemBundles[index].view;
-                          },
-                          separatorBuilder: (context, index) =>
-                              const SizedBox(height: 16.0),
-                          itemCount: itemBundles.length),
+                      child: Scrollbar(
+                        child: ListView.separated(
+                            padding: const EdgeInsets.only(
+                                left: 16,
+                                right: 16,
+                                bottom: kFloatingActionButtonMargin + 120),
+                            shrinkWrap: true,
+                            keyboardDismissBehavior:
+                                ScrollViewKeyboardDismissBehavior.onDrag,
+                            itemBuilder: (context, index) {
+                              return itemBundles[index].view;
+                            },
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(height: 16.0),
+                            itemCount: itemBundles.length),
+                      ),
                     ),
                   ],
                 ),
@@ -152,16 +156,16 @@ class QuestionnaireViewState extends State<QuestionnaireView>
     if (validate()) {
       final questionnaireResponse = QuestionnaireController.generateResponse(
           questionnaire: questionnaire, itemBundles: itemBundles);
-      if (kDebugMode) {
-        var prettyString = const JsonEncoder.withIndent('  ')
-            .convert(questionnaireResponse.toJson());
-        print('''
-        ==================
-        $prettyString
-        ==================
-        ''');
-        return;
-      }
+      // if (kDebugMode) {
+      //   var prettyString = const JsonEncoder.withIndent('  ')
+      //       .convert(questionnaireResponse.toJson());
+      //   print('''
+      //   ==================
+      //   $prettyString
+      //   ==================
+      //   ''');
+      //   return;
+      // }
       widget.onSubmit(questionnaireResponse);
     }
   }

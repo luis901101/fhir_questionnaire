@@ -1,4 +1,5 @@
 import 'package:fhir/r4.dart';
+import 'package:fhir_questionnaire/src/logic/utils/coding_utils.dart';
 import 'package:fhir_questionnaire/src/logic/utils/questionnaire_item_utils.dart';
 import 'package:fhir_questionnaire/src/logic/utils/text_utils.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_item_view.dart';
@@ -29,7 +30,9 @@ abstract class QuestionnaireChoiceItemViewState<
   @override
   void initState() {
     super.initState();
-    controller.addListener(onControllerErrorChanged);
+    if (handleControllerErrorManually) {
+      controller.addListener(onControllerErrorChanged);
+    }
     final initial =
         item.initial?.firstWhereOrNull((item) => item.valueCoding != null);
 
@@ -43,6 +46,10 @@ abstract class QuestionnaireChoiceItemViewState<
     ]);
   }
 
+  bool get handleControllerErrorManually => true;
+  String valueNameResolver(QuestionnaireAnswerOption value) =>
+      value.valueCoding?.title ?? '';
+  List<QuestionnaireAnswerOption> get values => item.answerOption ?? [];
   String? get selectedValueCode => selectedValue?.valueCoding?.code?.value;
   QuestionnaireAnswerOption? get selectedValue => controller.value;
   set selectedValue(QuestionnaireAnswerOption? value) =>
@@ -61,8 +68,6 @@ abstract class QuestionnaireChoiceItemViewState<
       controller.clearError();
     }
   }
-
-  List<QuestionnaireAnswerOption> get values => item.answerOption ?? [];
 
   Widget choiceView(BuildContext context);
 
@@ -85,7 +90,7 @@ abstract class QuestionnaireChoiceItemViewState<
             ),
           ),
         choiceView(context),
-        if (controller.hasError)
+        if (handleControllerErrorManually && controller.hasError)
           Padding(
             padding: const EdgeInsets.only(
               left: 8.0,
@@ -105,7 +110,7 @@ abstract class QuestionnaireChoiceItemViewState<
 
   @override
   void dispose() {
-    controller.dispose();
+    controller.removeListener(onControllerErrorChanged);
     super.dispose();
   }
 }

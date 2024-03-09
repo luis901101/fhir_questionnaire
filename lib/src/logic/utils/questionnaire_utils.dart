@@ -91,6 +91,7 @@ extension QuestionnaireUtils on Questionnaire {
       "linkId": "101",
       "text": "Select your age range:",
       "type": "choice",
+      "required": true,
       "extension": [
         {
           "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",

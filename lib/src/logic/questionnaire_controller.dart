@@ -1,5 +1,6 @@
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
+import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/choice/questionnaire_drop_down_choice_item_view.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/choice/questionnaire_radio_button_choice_item_view.dart';
 import 'package:flutter/foundation.dart';
 
@@ -12,7 +13,9 @@ class QuestionnaireController {
       if (QuestionnaireItemExtensionCode.valueOf(item.extension_?.firstOrNull
               ?.valueCodeableConcept?.coding?.firstOrNull?.code?.value) ==
           QuestionnaireItemExtensionCode.dropDown) {
-        // return QuestionnaireDropDownChoiceItemView(item: item,);
+        return QuestionnaireDropDownChoiceItemView(
+          item: item,
+        );
       } else {
         return QuestionnaireRadioButtonChoiceItemView(
           item: item,
