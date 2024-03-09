@@ -1,16 +1,47 @@
 import 'package:fhir/r4.dart';
-import 'package:fhir_questionnaire/src/logic/enumerator/questionnaire_item_type.dart';
-import 'package:fhir_questionnaire/src/logic/enumerator/questionnaire_response_status.dart';
-import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/questionnaire_decimal_item_view.dart';
-import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/questionnaire_integer_item_view.dart';
-import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/questionnaire_string_item_view.dart';
-import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/questionnaire_text_item_view.dart';
-import 'package:fhir_questionnaire/src/model/questionnaire_item_bundle.dart';
-import 'package:fhir_questionnaire/src/logic/utils/questionnaire_utils.dart';
-import 'package:fhir_questionnaire/src/logic/utils/num_utils.dart';
+import 'package:fhir_questionnaire/fhir_questionnaire.dart';
+import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/choice/questionnaire_radio_button_choice_item_view.dart';
 import 'package:flutter/foundation.dart';
 
 class QuestionnaireController {
+  static QuestionnaireItemView? _choiceItemView(
+      {required QuestionnaireItem item}) {
+    if (item.repeats?.value == true) {
+      // return QuestionnaireCheckBoxChoiceItemView(item: item,);
+    } else {
+      if (QuestionnaireItemExtensionCode.valueOf(item.extension_?.firstOrNull
+              ?.valueCodeableConcept?.coding?.firstOrNull?.code?.value) ==
+          QuestionnaireItemExtensionCode.dropDown) {
+        // return QuestionnaireDropDownChoiceItemView(item: item,);
+      } else {
+        return QuestionnaireRadioButtonChoiceItemView(
+          item: item,
+        );
+      }
+    }
+    return null;
+  }
+
+  static QuestionnaireItemView? _openChoiceItemView(
+      {required QuestionnaireItem item}) {
+    if (item.repeats?.value == true) {
+      // TODO: This case is unlikely and the UI logic is complex, postpone it.
+      // return QuestionnaireCheckBoxOpenChoiceItemView(item: item,);
+    } else {
+      if (QuestionnaireItemExtensionCode.valueOf(item.extension_?.firstOrNull
+              ?.valueCodeableConcept?.coding?.firstOrNull?.code?.value) ==
+          QuestionnaireItemExtensionCode.dropDown) {
+        // TODO:
+        // return QuestionnaireDropDownOpenChoiceItemView(item: item,);
+      } else {
+        // TODO:
+        // return QuestionnaireRadioButtonOpenChoiceItemView(item: item,);
+      }
+    }
+
+    return null;
+  }
+
   static Future<List<QuestionnaireItemBundle>> buildQuestionnaireItems(
       Questionnaire questionnaire) async {
     List<QuestionnaireItemBundle> itemBundles = [];
@@ -30,6 +61,8 @@ class QuestionnaireController {
           QuestionnaireItemType.decimal => QuestionnaireDecimalItemView(
               item: item,
             ),
+          QuestionnaireItemType.choice => _choiceItemView(item: item),
+          QuestionnaireItemType.openChoice => _openChoiceItemView(item: item),
           _ => null,
         };
         if (itemView != null) {
@@ -72,6 +105,20 @@ class QuestionnaireController {
                 valueDecimal: DoubleUtils.tryParse(
                         itemBundle.controller.rawValue?.toString())
                     ?.asFhirDecimal,
+              ),
+            QuestionnaireItemType.choice => QuestionnaireResponseAnswer(
+                valueCoding: (itemBundle.controller
+                        as CustomValueController<QuestionnaireAnswerOption>)
+                    .value
+                    ?.valueCoding,
+                valueString: (itemBundle.controller
+                        as CustomValueController<QuestionnaireAnswerOption>)
+                    .value
+                    ?.valueString,
+                valueInteger: (itemBundle.controller
+                        as CustomValueController<QuestionnaireAnswerOption>)
+                    .value
+                    ?.valueInteger,
               ),
             _ => null,
           };

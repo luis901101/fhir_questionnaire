@@ -1,5 +1,6 @@
 library fhir_questionnaire;
 
+export 'package:fhir_questionnaire/src/logic/enumerator/questionnaire_item_extension_code.dart';
 export 'package:fhir_questionnaire/src/logic/enumerator/questionnaire_item_type.dart';
 export 'package:fhir_questionnaire/src/logic/enumerator/questionnaire_response_status.dart';
 export 'package:fhir_questionnaire/src/logic/utils/date_utils.dart';
@@ -15,10 +16,10 @@ export 'package:fhir_questionnaire/src/presentation/localization/questionnaire_e
 export 'package:fhir_questionnaire/src/presentation/localization/questionnaire_localization.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_item_view.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_text_field_item_view.dart';
-export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/questionnaire_decimal_item_view.dart';
-export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/questionnaire_integer_item_view.dart';
-export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/questionnaire_string_item_view.dart';
-export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/questionnaire_text_item_view.dart';
+export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/text_input/questionnaire_decimal_item_view.dart';
+export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/text_input/questionnaire_integer_item_view.dart';
+export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/text_input/questionnaire_string_item_view.dart';
+export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/text_input/questionnaire_text_item_view.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/custom_text_field.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_loading_view.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_view.dart';

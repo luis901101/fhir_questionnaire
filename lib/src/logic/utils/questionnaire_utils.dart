@@ -3,11 +3,10 @@ import 'package:fhir/r4.dart';
 extension QuestionnaireUtils on Questionnaire {
   FhirCanonical get asFhirCanonical =>
       FhirCanonical('${R4ResourceType.Questionnaire.name}/$fhirId');
-  static const sampleFromChatGpt = '''
+  static const sampleGeneric = '''
   {
   "resourceType": "Questionnaire",
-  "id": "71a60056-ed93-41aa-b7b2-13b07faaa4f5",
-  "url": "http://example.org/Questionnaires/example-all-item-types",
+  "id": "example-all-item-types",
   "version": "1",
   "name": "AllItemTypesExample",
   "title": "Questionnaire with All Possible Item Types",
@@ -34,6 +33,7 @@ extension QuestionnaireUtils on Questionnaire {
     {
       "linkId": "4",
       "text": "Please specify your gender",
+      "required": true,
       "type": "choice",
       "answerOption": [
         {"valueCoding": {"code": "male", "display": "Male"}},
@@ -52,6 +52,85 @@ extension QuestionnaireUtils on Questionnaire {
       ]
     },
     {
+      "linkId": "100",
+      "text": "Which of the following dietary preferences apply to you? (Select all that apply)",
+      "type": "choice",
+      "repeats": true,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "system": "http://example.org/dietary-preferences",
+            "code": "vegetarian",
+            "display": "Vegetarian"
+          }
+        },
+        {
+          "valueCoding": {
+            "system": "http://example.org/dietary-preferences",
+            "code": "vegan",
+            "display": "Vegan"
+          }
+        },
+        {
+          "valueCoding": {
+            "system": "http://example.org/dietary-preferences",
+            "code": "glutenFree",
+            "display": "Gluten-Free"
+          }
+        },
+        {
+          "valueCoding": {
+            "system": "http://example.org/dietary-preferences",
+            "code": "ketogenic",
+            "display": "Ketogenic"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "101",
+      "text": "Select your age range:",
+      "type": "choice",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "drop-down",
+                "display": "Drop down"
+              }
+            ],
+            "text": "Drop down"
+          }
+        }
+      ],
+      "answerOption": [
+        {
+          "valueCoding": {
+            "system": "http://example.org/age-ranges",
+            "code": "18-25",
+            "display": "18-25"
+          }
+        },
+        {
+          "valueCoding": {
+            "system": "http://example.org/age-ranges",
+            "code": "26-35",
+            "display": "26-35"
+          }
+        },
+        {
+          "valueCoding": {
+            "system": "http://example.org/age-ranges",
+            "code": "36-45",
+            "display": "36-45"
+          }
+        }
+      ]
+    },
+    {
       "linkId": "6",
       "text": "Please rate your general health",
       "type": "integer"
@@ -60,6 +139,7 @@ extension QuestionnaireUtils on Questionnaire {
       "linkId": "7",
       "text": "Enter your body height in cm",
       "type": "decimal",
+      "readOnly": true,
       "initial": [
         {
           "valueDecimal": 190.5
@@ -123,8 +203,8 @@ extension QuestionnaireUtils on Questionnaire {
             "coding": [
               {
                 "system": "http://hl7.org/fhir/questionnaire-item-control",
-                "code": "dropdown",
-                "display": "Dropdown"
+                "code": "drop-down",
+                "display": "Drop down"
               }
             ]
           }
@@ -133,7 +213,7 @@ extension QuestionnaireUtils on Questionnaire {
     }
   ]
 }
-  ''';
+''';
   static const samplePrapare = '''
 {
     "resourceType": "Questionnaire",

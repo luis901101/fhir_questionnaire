@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/src/logic/questionnaire_controller.dart';
 import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_base_localization.dart';
 import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fhir_questionnaire/src/utils/flutter_view_utils.dart';
 import 'package:fhir_questionnaire/src/model/questionnaire_item_bundle.dart';
@@ -83,15 +86,17 @@ class QuestionnaireViewState extends State<QuestionnaireView>
           );
         },
         child: FractionallySizedBox(
-            widthFactor: 0.8,
-            child: Padding(
-              padding: EdgeInsets.only(bottom: bottomPadding > 0 ? 0 : 16),
-              child: ElevatedButton(
-                onPressed: isLoading ? null : onSubmit,
-                child: Text(
-                    QuestionnaireLocalization.instance.localization.btnSubmit),
-              ),
-            )),
+          widthFactor: 0.8,
+          child: Padding(
+            padding: EdgeInsets.only(bottom: bottomPadding > 0 ? 0 : 16),
+            child: FloatingActionButton.extended(
+              shape: const StadiumBorder(),
+              onPressed: isLoading ? null : onSubmit,
+              label: Text(
+                  QuestionnaireLocalization.instance.localization.btnSubmit),
+            ),
+          ),
+        ),
       ),
       body: UnfocusView(
         child: Padding(
@@ -111,7 +116,7 @@ class QuestionnaireViewState extends State<QuestionnaireView>
                     Expanded(
                       child: ListView.separated(
                           padding: const EdgeInsets.only(
-                              bottom: kFloatingActionButtonMargin + 72),
+                              bottom: kFloatingActionButtonMargin + 88),
                           shrinkWrap: true,
                           keyboardDismissBehavior:
                               ScrollViewKeyboardDismissBehavior.onDrag,
@@ -147,6 +152,16 @@ class QuestionnaireViewState extends State<QuestionnaireView>
     if (validate()) {
       final questionnaireResponse = QuestionnaireController.generateResponse(
           questionnaire: questionnaire, itemBundles: itemBundles);
+      if (kDebugMode) {
+        var prettyString = const JsonEncoder.withIndent('  ')
+            .convert(questionnaireResponse.toJson());
+        print('''
+        ==================
+        $prettyString
+        ==================
+        ''');
+        return;
+      }
       widget.onSubmit(questionnaireResponse);
     }
   }

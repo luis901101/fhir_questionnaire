@@ -21,6 +21,9 @@ abstract class QuestionnaireTextFieldItemViewState<
         SF extends QuestionnaireTextFieldItemView>
     extends QuestionnaireItemViewState<SF> {
   @override
+  CustomTextEditingController get controller =>
+      super.controller as CustomTextEditingController;
+  @override
   void initState() {
     super.initState();
     final initial = item.initial?.firstWhereOrNull((item) =>
@@ -33,7 +36,7 @@ abstract class QuestionnaireTextFieldItemViewState<
         ?.toString();
 
     if (initialValue.isNotEmpty) {
-      (controller as CustomTextEditingController).text = initialValue!;
+      controller.text = initialValue!;
     }
     controller.validations.addAll([
       if (isRequired) ValidationUtils.requiredFieldValidation,
@@ -65,7 +68,7 @@ abstract class QuestionnaireTextFieldItemViewState<
             ),
           ),
         CustomTextField(
-          controller: controller as CustomTextEditingController,
+          controller: controller,
           focusNode: controller.focusNode,
           enabled: !isReadOnly,
           maxLength: maxLength,
