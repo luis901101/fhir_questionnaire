@@ -218,7 +218,8 @@ class CustomTextFieldState<S extends CustomTextField> extends State<S> {
                 icon: customButtonIcon,
                 iconSize: widget.customButtonIconSize,
                 padding: EdgeInsets.all(widget.customButtonIconPadding),
-                onPressed: onCustomButtonPressed,
+                onPressed:
+                    (widget.enabled ?? true) ? onCustomButtonPressed : null,
               ),
       suffixText: null,
     );

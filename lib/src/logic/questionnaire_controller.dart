@@ -1,14 +1,17 @@
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
+import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/choice/questionnaire_check_box_choice_item_view.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/choice/questionnaire_drop_down_choice_item_view.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/choice/questionnaire_radio_button_choice_item_view.dart';
 import 'package:flutter/foundation.dart';
 
 class QuestionnaireController {
-  static QuestionnaireItemView? _choiceItemView(
+  static QuestionnaireItemView? _buildChoiceItemView(
       {required QuestionnaireItem item}) {
     if (item.repeats?.value == true) {
-      // return QuestionnaireCheckBoxChoiceItemView(item: item,);
+      return QuestionnaireCheckBoxChoiceItemView(
+        item: item,
+      );
     } else {
       if (QuestionnaireItemExtensionCode.valueOf(item.extension_?.firstOrNull
               ?.valueCodeableConcept?.coding?.firstOrNull?.code?.value) ==
@@ -22,10 +25,9 @@ class QuestionnaireController {
         );
       }
     }
-    return null;
   }
 
-  static QuestionnaireItemView? _openChoiceItemView(
+  static QuestionnaireItemView? _buildOpenChoiceItemView(
       {required QuestionnaireItem item}) {
     if (item.repeats?.value == true) {
       // TODO: This case is unlikely and the UI logic is complex, postpone it.
@@ -64,8 +66,9 @@ class QuestionnaireController {
           QuestionnaireItemType.decimal => QuestionnaireDecimalItemView(
               item: item,
             ),
-          QuestionnaireItemType.choice => _choiceItemView(item: item),
-          QuestionnaireItemType.openChoice => _openChoiceItemView(item: item),
+          QuestionnaireItemType.choice => _buildChoiceItemView(item: item),
+          QuestionnaireItemType.openChoice =>
+            _buildOpenChoiceItemView(item: item),
           _ => null,
         };
         if (itemView != null) {
@@ -84,6 +87,23 @@ class QuestionnaireController {
     return itemBundles;
   }
 
+  static List<QuestionnaireResponseAnswer> _generateChoiceAnswer(dynamic data) {
+    final answers = <QuestionnaireResponseAnswer>[];
+    if (data is QuestionnaireAnswerOption) {
+      answers.add(QuestionnaireResponseAnswer(
+        valueCoding: data.valueCoding,
+        valueString: data.valueString,
+        valueInteger: data.valueInteger,
+      ));
+    } else if (data is List<QuestionnaireAnswerOption>) {
+      for (final answerOption in data) {
+        answers.addAll(_generateChoiceAnswer(answerOption));
+      }
+    }
+
+    return answers;
+  }
+
   static QuestionnaireResponse generateResponse(
       {required Questionnaire questionnaire,
       required List<QuestionnaireItemBundle> itemBundles}) {
@@ -93,36 +113,28 @@ class QuestionnaireController {
         item: itemBundles.map((itemBundle) {
           final itemType =
               QuestionnaireItemType.valueOf(itemBundle.item.type.value);
-          QuestionnaireResponseAnswer? answer = switch (itemType) {
-            QuestionnaireItemType.string ||
-            QuestionnaireItemType.text =>
-              QuestionnaireResponseAnswer(
-                valueString: itemBundle.controller.rawValue?.toString(),
-              ),
-            QuestionnaireItemType.integer => QuestionnaireResponseAnswer(
-                valueInteger: IntUtils.tryParse(
-                        itemBundle.controller.rawValue?.toString())
-                    ?.asFhirInteger,
-              ),
-            QuestionnaireItemType.decimal => QuestionnaireResponseAnswer(
-                valueDecimal: DoubleUtils.tryParse(
-                        itemBundle.controller.rawValue?.toString())
-                    ?.asFhirDecimal,
-              ),
-            QuestionnaireItemType.choice => QuestionnaireResponseAnswer(
-                valueCoding: (itemBundle.controller
-                        as CustomValueController<QuestionnaireAnswerOption>)
-                    .value
-                    ?.valueCoding,
-                valueString: (itemBundle.controller
-                        as CustomValueController<QuestionnaireAnswerOption>)
-                    .value
-                    ?.valueString,
-                valueInteger: (itemBundle.controller
-                        as CustomValueController<QuestionnaireAnswerOption>)
-                    .value
-                    ?.valueInteger,
-              ),
+          List<QuestionnaireResponseAnswer>? answers = switch (itemType) {
+            QuestionnaireItemType.string || QuestionnaireItemType.text => [
+                QuestionnaireResponseAnswer(
+                  valueString: itemBundle.controller.rawValue?.toString(),
+                )
+              ],
+            QuestionnaireItemType.integer => [
+                QuestionnaireResponseAnswer(
+                  valueInteger: IntUtils.tryParse(
+                          itemBundle.controller.rawValue?.toString())
+                      ?.asFhirInteger,
+                )
+              ],
+            QuestionnaireItemType.decimal => [
+                QuestionnaireResponseAnswer(
+                  valueDecimal: DoubleUtils.tryParse(
+                          itemBundle.controller.rawValue?.toString())
+                      ?.asFhirDecimal,
+                )
+              ],
+            QuestionnaireItemType.choice =>
+              _generateChoiceAnswer(itemBundle.controller.rawValue),
             _ => null,
           };
 
@@ -130,7 +142,7 @@ class QuestionnaireController {
             linkId: itemBundle.item.linkId,
             definition: itemBundle.item.definition,
             text: itemBundle.item.text,
-            answer: answer != null ? [answer] : null,
+            answer: answers,
           );
         }).toList());
   }

@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 
 /// Created by luis901101 on 3/9/24.
-abstract class QuestionnaireChoiceItemView extends QuestionnaireItemView {
-  QuestionnaireChoiceItemView(
+abstract class QuestionnaireSingleChoiceItemView extends QuestionnaireItemView {
+  QuestionnaireSingleChoiceItemView(
       {super.key,
       CustomValueController<QuestionnaireAnswerOption>? controller,
       required super.item})
@@ -20,8 +20,8 @@ abstract class QuestionnaireChoiceItemView extends QuestionnaireItemView {
                 ));
 }
 
-abstract class QuestionnaireChoiceItemViewState<
-        SF extends QuestionnaireChoiceItemView>
+abstract class QuestionnaireSingleChoiceItemViewState<
+        SF extends QuestionnaireSingleChoiceItemView>
     extends QuestionnaireItemViewState<SF> {
   @override
   CustomValueController<QuestionnaireAnswerOption> get controller =>

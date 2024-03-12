@@ -1,11 +1,11 @@
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/src/logic/utils/coding_utils.dart';
-import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_choice_item_view.dart';
+import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_single_choice_item_view.dart';
 import 'package:flutter/material.dart';
 
 /// Created by luis901101 on 3/9/24.
 class QuestionnaireRadioButtonChoiceItemView
-    extends QuestionnaireChoiceItemView {
+    extends QuestionnaireSingleChoiceItemView {
   QuestionnaireRadioButtonChoiceItemView(
       {super.key, super.controller, required super.item});
 
@@ -14,7 +14,7 @@ class QuestionnaireRadioButtonChoiceItemView
 }
 
 class QuestionnaireRadioButtonChoiceItemViewState
-    extends QuestionnaireChoiceItemViewState<
+    extends QuestionnaireSingleChoiceItemViewState<
         QuestionnaireRadioButtonChoiceItemView> {
   @override
   Widget choiceView(BuildContext context) {
@@ -22,6 +22,7 @@ class QuestionnaireRadioButtonChoiceItemViewState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: values
           .map((entry) => RadioListTile<QuestionnaireAnswerOption>(
+                controlAffinity: ListTileControlAffinity.leading,
                 title: Text('${entry.valueCoding?.title}'),
                 value: entry,
                 groupValue: selectedValue,
