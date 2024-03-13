@@ -76,6 +76,7 @@ class CustomTextField extends StatefulWidget {
   final IconData? customButtonIcon;
   final double customButtonIconSize;
   final double customButtonIconPadding;
+  final ValueChanged<CustomTextEditingController>? customButtonAction;
   final bool autoValidate;
   final String? Function(String)? onValidate;
 
@@ -143,6 +144,7 @@ class CustomTextField extends StatefulWidget {
     this.customButtonIcon,
     double? customButtonIconSize,
     double? customButtonIconPadding,
+    this.customButtonAction,
     this.autoValidate = true,
     this.onValidate,
     bool autoMultiline = false,
@@ -226,7 +228,11 @@ class CustomTextFieldState<S extends CustomTextField> extends State<S> {
   }
 
   void onCustomButtonPressed() {
-    controller.text = '';
+    if (widget.customButtonAction != null) {
+      widget.customButtonAction?.call(controller);
+    } else {
+      controller.text = '';
+    }
   }
 
   Widget get customButtonIcon {

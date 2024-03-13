@@ -1,4 +1,3 @@
-import 'package:fhir_questionnaire/src/logic/utils/coding_utils.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_multi_choice_item_view.dart';
 import 'package:flutter/material.dart';
 
@@ -6,7 +5,7 @@ import 'package:flutter/material.dart';
 class QuestionnaireCheckBoxChoiceItemView
     extends QuestionnaireMultiChoiceItemView {
   QuestionnaireCheckBoxChoiceItemView(
-      {super.key, super.controller, required super.item});
+      {super.key, super.controller, required super.item, super.isOpen});
 
   @override
   State createState() => QuestionnaireCheckBoxChoiceItemViewState();
@@ -22,7 +21,8 @@ class QuestionnaireCheckBoxChoiceItemViewState
       children: values
           .map((entry) => CheckboxListTile(
                 controlAffinity: ListTileControlAffinity.leading,
-                title: Text('${entry.valueCoding?.title}'),
+                contentPadding: EdgeInsets.zero,
+                title: Text(valueNameResolver(entry)),
                 value: isSelected(entry),
                 onChanged: (selected) =>
                     onSelectedValuesChanged(selected, entry),

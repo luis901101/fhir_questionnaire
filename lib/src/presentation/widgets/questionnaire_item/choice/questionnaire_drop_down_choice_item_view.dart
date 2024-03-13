@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 class QuestionnaireDropDownChoiceItemView
     extends QuestionnaireSingleChoiceItemView {
   QuestionnaireDropDownChoiceItemView(
-      {super.key, super.controller, required super.item});
+      {super.key, super.controller, required super.item, super.isOpen});
 
   @override
   State createState() => QuestionnaireDropDownChoiceItemViewState();

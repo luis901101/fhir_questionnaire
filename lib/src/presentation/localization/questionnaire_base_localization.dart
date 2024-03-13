@@ -4,6 +4,7 @@ abstract class QuestionnaireBaseLocalization {
   QuestionnaireBaseLocalization(this.locale);
 
   String get btnSubmit;
+  String get textOtherOption;
   String get exceptionNoEmptyField;
   String get exceptionValueMustBeAPositiveIntegerNumber;
   String get exceptionValueMustBeAPositiveNumber;

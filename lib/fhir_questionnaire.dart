@@ -24,5 +24,6 @@ export 'package:fhir_questionnaire/src/presentation/widgets/custom_text_field.da
 export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_loading_view.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_view.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/unfocus_view.dart';
-export 'package:fhir_questionnaire/src/utils/flutter_view_utils.dart';
-export 'package:fhir_questionnaire/src/utils/validation_utils.dart';
+export 'package:fhir_questionnaire/src/presentation/utils/flutter_view_utils.dart';
+export 'package:fhir_questionnaire/src/presentation/utils/input_method_utils.dart';
+export 'package:fhir_questionnaire/src/presentation/utils/validation_utils.dart';

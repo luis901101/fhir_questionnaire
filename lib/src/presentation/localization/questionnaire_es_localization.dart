@@ -7,6 +7,8 @@ class QuestionnaireEsLocalization extends QuestionnaireBaseLocalization {
   @override
   String get btnSubmit => 'Enviar';
   @override
+  String get textOtherOption => 'Optra opción';
+  @override
   String get exceptionNoEmptyField => 'Este campo es requerido.';
   @override
   String get exceptionValueMustBeAPositiveIntegerNumber =>

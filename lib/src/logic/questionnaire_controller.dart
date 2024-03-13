@@ -3,6 +3,9 @@ import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/choice/questionnaire_check_box_choice_item_view.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/choice/questionnaire_drop_down_choice_item_view.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/choice/questionnaire_radio_button_choice_item_view.dart';
+import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/open_choice/questionnaire_check_box_open_choice_item_view.dart';
+import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/open_choice/questionnaire_drop_down_open_choice_item_view.dart';
+import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/open_choice/questionnaire_radio_button_open_choice_item_view.dart';
 import 'package:flutter/foundation.dart';
 
 class QuestionnaireController {
@@ -30,21 +33,22 @@ class QuestionnaireController {
   static QuestionnaireItemView? _buildOpenChoiceItemView(
       {required QuestionnaireItem item}) {
     if (item.repeats?.value == true) {
-      // TODO: This case is unlikely and the UI logic is complex, postpone it.
-      // return QuestionnaireCheckBoxOpenChoiceItemView(item: item,);
+      return QuestionnaireCheckBoxOpenChoiceItemView(
+        item: item,
+      );
     } else {
       if (QuestionnaireItemExtensionCode.valueOf(item.extension_?.firstOrNull
               ?.valueCodeableConcept?.coding?.firstOrNull?.code?.value) ==
           QuestionnaireItemExtensionCode.dropDown) {
-        // TODO:
-        // return QuestionnaireDropDownOpenChoiceItemView(item: item,);
+        return QuestionnaireDropDownOpenChoiceItemView(
+          item: item,
+        );
       } else {
-        // TODO:
-        // return QuestionnaireRadioButtonOpenChoiceItemView(item: item,);
+        return QuestionnaireRadioButtonOpenChoiceItemView(
+          item: item,
+        );
       }
     }
-
-    return null;
   }
 
   static Future<List<QuestionnaireItemBundle>> buildQuestionnaireItems(
@@ -133,7 +137,8 @@ class QuestionnaireController {
                       ?.asFhirDecimal,
                 )
               ],
-            QuestionnaireItemType.choice =>
+            QuestionnaireItemType.choice ||
+            QuestionnaireItemType.openChoice =>
               _generateChoiceAnswer(itemBundle.controller.rawValue),
             _ => null,
           };

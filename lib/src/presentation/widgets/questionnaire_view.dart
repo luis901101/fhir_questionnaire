@@ -1,13 +1,6 @@
 import 'package:fhir/r4.dart';
-import 'package:fhir_questionnaire/src/logic/questionnaire_controller.dart';
-import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_base_localization.dart';
-import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_localization.dart';
+import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
-import 'package:fhir_questionnaire/src/utils/flutter_view_utils.dart';
-import 'package:fhir_questionnaire/src/model/questionnaire_item_bundle.dart';
-import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_loading_view.dart';
-import 'package:fhir_questionnaire/src/logic/utils/text_utils.dart';
-import 'package:fhir_questionnaire/src/presentation/widgets/unfocus_view.dart';
 
 /// Created by luis901101 on 3/5/24.
 class QuestionnaireView extends StatefulWidget {
@@ -54,10 +47,15 @@ class QuestionnaireViewState extends State<QuestionnaireView>
     WidgetsBinding.instance.addObserver(this);
     bottomPadding = FlutterViewUtils.get().padding.bottom;
     if (!widget.isLoading) {
+      String? locale;
+      try {
+        locale = widget.locale ??
+            FlutterViewUtils.get().platformDispatcher.locale.languageCode;
+      } catch (_) {}
       QuestionnaireLocalization.instance.init(
         defaultLocalization: widget.defaultLocalization,
         localizations: widget.localizations,
-        locale: widget.locale,
+        locale: locale,
       );
       buildQuestionnaireItems();
     }
@@ -116,6 +114,7 @@ class QuestionnaireViewState extends State<QuestionnaireView>
                     Expanded(
                       child: Scrollbar(
                         child: ListView.separated(
+                            addAutomaticKeepAlives: true,
                             padding: const EdgeInsets.only(
                                 left: 16,
                                 right: 16,
@@ -127,7 +126,7 @@ class QuestionnaireViewState extends State<QuestionnaireView>
                               return itemBundles[index].view;
                             },
                             separatorBuilder: (context, index) =>
-                                const SizedBox(height: 16.0),
+                                const SizedBox(height: 24.0),
                             itemCount: itemBundles.length),
                       ),
                     ),

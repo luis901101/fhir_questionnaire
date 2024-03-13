@@ -2,7 +2,7 @@ import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/b
 import 'package:flutter/material.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/custom_text_field.dart';
 import 'package:fhir_questionnaire/src/logic/utils/questionnaire_item_utils.dart';
-import 'package:fhir_questionnaire/src/utils/validation_utils.dart';
+import 'package:fhir_questionnaire/src/presentation/utils/validation_utils.dart';
 import 'package:fhir_questionnaire/src/logic/utils/text_utils.dart';
 import 'package:collection/collection.dart';
 
@@ -52,6 +52,7 @@ abstract class QuestionnaireTextFieldItemViewState<
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

@@ -11,11 +11,14 @@ abstract class QuestionnaireItemView extends StatefulWidget {
 }
 
 abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
-    extends State<SF> {
+    extends State<SF> with AutomaticKeepAliveClientMixin {
   FieldController get controller => widget.controller;
   QuestionnaireItem get item => widget.item;
 
   bool get isRequired => item.required_?.value ?? false;
   bool get isReadOnly => item.readOnly?.value ?? false;
   int? get maxLength => item.maxLength?.value;
+
+  @override
+  bool get wantKeepAlive => false;
 }

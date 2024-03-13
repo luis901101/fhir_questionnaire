@@ -89,9 +89,35 @@ extension QuestionnaireUtils on Questionnaire {
     },
     {
       "linkId": "101",
+      "text": "Which of the following type of exercises do you practice? (Select all that apply)",
+      "type": "open-choice",
+      "repeats": true,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "code": "yoga",
+            "display": "Yoga"
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "pilates",
+            "display": "Pilates"
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "zumba",
+            "display": "Zumba"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "102",
       "text": "Select your age range:",
-      "type": "choice",
       "required": true,
+      "type": "choice",
       "extension": [
         {
           "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
@@ -127,6 +153,47 @@ extension QuestionnaireUtils on Questionnaire {
             "system": "http://example.org/age-ranges",
             "code": "36-45",
             "display": "36-45"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "103",
+      "text": "How many hours do you sleep?",
+      "required": true,
+      "type": "open-choice",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "drop-down",
+                "display": "Drop down"
+              }
+            ],
+            "text": "Drop down"
+          }
+        }
+      ],
+      "answerOption": [
+        {
+          "valueCoding": {
+            "code": "6 hours",
+            "display": "6 hours"
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "8 hours",
+            "display": "8 hours"
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "10 hours",
+            "display": "10 hours"
           }
         }
       ]
