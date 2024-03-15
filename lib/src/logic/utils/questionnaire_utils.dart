@@ -1,5 +1,23 @@
 import 'package:fhir/r4.dart';
 
+extension FhirDateUtils on FhirDate {
+  DateTime get asDateTime => DateTime(year, month, day);
+}
+
+extension FhirTimeUtils on FhirTime {
+  DateTime get asDateTime =>
+      DateTime.now().copyWith(hour: hour, minute: minute);
+}
+
+extension FhirDateTimeUtils on FhirDateTime {
+  DateTime get asDateTime =>
+      DateTime(year, month, day, hour, minute, second, millisecond);
+}
+
+extension QuestionnaireItemUtils on QuestionnaireItem {
+  String? get title => text ?? code?.firstOrNull?.display;
+}
+
 extension QuestionnaireUtils on Questionnaire {
   FhirCanonical get asFhirCanonical =>
       FhirCanonical('${R4ResourceType.Questionnaire.name}/$fhirId');
@@ -22,8 +40,18 @@ extension QuestionnaireUtils on Questionnaire {
     },
     {
       "linkId": "2",
-      "text": "Date of birth",
+      "text": "What is your date of birth?",
       "type": "date"
+    },
+    {
+      "linkId": "2.1",
+      "text": "What time did you take your medication this morning?",
+      "type": "time"
+    },
+    {
+      "linkId": "2.2",
+      "text": "When was your last doctor's appointment?",
+      "type": "dateTime"
     },
     {
       "linkId": "3",
@@ -199,6 +227,28 @@ extension QuestionnaireUtils on Questionnaire {
       ]
     },
     {
+      "linkId": "104",
+      "text": "Do you have any dietary restrictions?",
+      "type": "choice",
+      "answerOption": [
+        {"valueCoding": {"code": "yes", "display": "Yes"}},
+        {"valueCoding": {"code": "no", "display": "No"}}
+      ]
+    },
+    {
+      "linkId": "105",
+      "text": "Please specify your dietary restrictions.",
+      "type": "text",
+      "enableWhen": [
+        {
+          "question": "104",
+          "operator": "=",
+          "answerCoding": {"code": "yes"}
+        }
+      ],
+      "enableBehavior": "all"
+    },
+    {
       "linkId": "6",
       "text": "Please rate your general health",
       "type": "integer"
@@ -241,11 +291,6 @@ extension QuestionnaireUtils on Questionnaire {
       "text": "Describe your symptoms",
       "type": "text",
       "maxLength": 160
-    },
-    {
-      "linkId": "11",
-      "text": "Appointment date and time",
-      "type": "dateTime"
     },
     {
       "linkId": "12",

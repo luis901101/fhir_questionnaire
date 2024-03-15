@@ -9,6 +9,10 @@ class QuestionnaireEsLocalization extends QuestionnaireBaseLocalization {
   @override
   String get textOtherOption => 'Optra opción';
   @override
+  String get textDate => 'Fecha';
+  @override
+  String get textTime => 'Hora';
+  @override
   String get exceptionNoEmptyField => 'Este campo es requerido.';
   @override
   String get exceptionValueMustBeAPositiveIntegerNumber =>

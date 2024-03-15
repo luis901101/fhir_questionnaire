@@ -24,39 +24,22 @@ abstract class QuestionnaireChoiceItemViewState<
   @override
   CustomValueController get controller =>
       super.controller as CustomValueController;
-  String? lastControllerError;
   final List<QuestionnaireAnswerOption> values = [];
   @override
   void initState() {
     super.initState();
     values.addAll(item.answerOption ?? []);
-    if (handleControllerErrorManually) {
-      controller.addListener(onControllerErrorChanged);
-    }
-    controller.validations.addAll([
-      if (isRequired) ValidationUtils.requiredFieldValidation,
-    ]);
   }
 
   @override
   bool get wantKeepAlive => isOpen;
 
   bool get isOpen => widget.isOpen;
-  bool get handleControllerErrorManually => true;
   String valueNameResolver(QuestionnaireAnswerOption value) =>
       value.valueCoding?.title ??
       value.valueString ??
       value.valueInteger?.toString() ??
       '';
-
-  void onControllerErrorChanged() {
-    if (lastControllerError != controller.error) {
-      lastControllerError = controller.error;
-      setState(() {});
-    } else if (lastControllerError.isNotEmpty && controller.isNotEmpty) {
-      controller.clearError();
-    }
-  }
 
   QuestionnaireAnswerOption onOpenAnswerAdded(String value,
       {bool? hideKeyboard}) {
@@ -138,11 +121,5 @@ abstract class QuestionnaireChoiceItemViewState<
         ]
       ],
     );
-  }
-
-  @override
-  void dispose() {
-    controller.removeListener(onControllerErrorChanged);
-    super.dispose();
   }
 }

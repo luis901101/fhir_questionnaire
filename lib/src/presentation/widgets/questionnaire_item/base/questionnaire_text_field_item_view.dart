@@ -1,10 +1,6 @@
-import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_item_view.dart';
-import 'package:flutter/material.dart';
-import 'package:fhir_questionnaire/src/presentation/widgets/custom_text_field.dart';
-import 'package:fhir_questionnaire/src/logic/utils/questionnaire_item_utils.dart';
-import 'package:fhir_questionnaire/src/presentation/utils/validation_utils.dart';
-import 'package:fhir_questionnaire/src/logic/utils/text_utils.dart';
 import 'package:collection/collection.dart';
+import 'package:fhir_questionnaire/fhir_questionnaire.dart';
+import 'package:flutter/material.dart';
 
 /// Created by luis901101 on 3/5/24.
 abstract class QuestionnaireTextFieldItemView extends QuestionnaireItemView {
@@ -39,7 +35,6 @@ abstract class QuestionnaireTextFieldItemViewState<
       controller.text = initialValue!;
     }
     controller.validations.addAll([
-      if (isRequired) ValidationUtils.requiredFieldValidation,
       if ((maxLength ?? 0) > 0)
         ValidationUtils.maxLengthValidation(maxLength: maxLength!),
     ]);

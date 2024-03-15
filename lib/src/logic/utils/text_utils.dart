@@ -431,6 +431,13 @@ mixin FieldController<T> {
 
   bool get hasValidations => validations.isNotEmpty;
 
+  /// Register a closure to be called when the object notifies its listeners.
+  void addListener(VoidCallback listener);
+
+  /// Remove a previously registered closure from the list of closures that the
+  /// object notifies.
+  void removeListener(VoidCallback listener);
+
   bool get isValidationsDependencySatisfied =>
       validationsDependency?.call() ?? true;
 

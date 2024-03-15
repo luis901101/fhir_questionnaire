@@ -5,6 +5,8 @@ abstract class QuestionnaireBaseLocalization {
 
   String get btnSubmit;
   String get textOtherOption;
+  String get textDate;
+  String get textTime;
   String get exceptionNoEmptyField;
   String get exceptionValueMustBeAPositiveIntegerNumber;
   String get exceptionValueMustBeAPositiveNumber;

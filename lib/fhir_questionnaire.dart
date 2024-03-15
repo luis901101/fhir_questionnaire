@@ -5,7 +5,6 @@ export 'package:fhir_questionnaire/src/logic/enumerator/questionnaire_item_type.
 export 'package:fhir_questionnaire/src/logic/enumerator/questionnaire_response_status.dart';
 export 'package:fhir_questionnaire/src/logic/utils/date_utils.dart';
 export 'package:fhir_questionnaire/src/logic/utils/num_utils.dart';
-export 'package:fhir_questionnaire/src/logic/utils/questionnaire_item_utils.dart';
 export 'package:fhir_questionnaire/src/logic/utils/questionnaire_utils.dart';
 export 'package:fhir_questionnaire/src/logic/utils/text_utils.dart';
 export 'package:fhir_questionnaire/src/logic/questionnaire_controller.dart';

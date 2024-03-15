@@ -3,6 +3,7 @@ import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/choice/questionnaire_check_box_choice_item_view.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/choice/questionnaire_drop_down_choice_item_view.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/choice/questionnaire_radio_button_choice_item_view.dart';
+import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/date/questionnaire_date_time_item_view.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/open_choice/questionnaire_check_box_open_choice_item_view.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/open_choice/questionnaire_drop_down_open_choice_item_view.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/open_choice/questionnaire_radio_button_open_choice_item_view.dart';
@@ -73,6 +74,13 @@ class QuestionnaireController {
           QuestionnaireItemType.choice => _buildChoiceItemView(item: item),
           QuestionnaireItemType.openChoice =>
             _buildOpenChoiceItemView(item: item),
+          QuestionnaireItemType.date ||
+          QuestionnaireItemType.time ||
+          QuestionnaireItemType.dateTime =>
+            QuestionnaireDateTimeItemView(
+              item: item,
+              type: DateTimeType.fromQuestionnaireItemType(itemType),
+            ),
           _ => null,
         };
         if (itemView != null) {
@@ -140,6 +148,34 @@ class QuestionnaireController {
             QuestionnaireItemType.choice ||
             QuestionnaireItemType.openChoice =>
               _generateChoiceAnswer(itemBundle.controller.rawValue),
+            QuestionnaireItemType.date =>
+              itemBundle.controller.rawValue is! DateTime
+                  ? null
+                  : [
+                      QuestionnaireResponseAnswer(
+                        valueDate: (itemBundle.controller.rawValue as DateTime)
+                            .asFhirDate,
+                      )
+                    ],
+            QuestionnaireItemType.time =>
+              itemBundle.controller.rawValue is! DateTime
+                  ? null
+                  : [
+                      QuestionnaireResponseAnswer(
+                        valueTime: (itemBundle.controller.rawValue as DateTime)
+                            .asFhirTime,
+                      )
+                    ],
+            QuestionnaireItemType.dateTime =>
+              itemBundle.controller.rawValue is! DateTime
+                  ? null
+                  : [
+                      QuestionnaireResponseAnswer(
+                        valueDateTime:
+                            (itemBundle.controller.rawValue as DateTime)
+                                .asFhirDateTime,
+                      )
+                    ],
             _ => null,
           };
 

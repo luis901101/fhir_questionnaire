@@ -34,4 +34,8 @@ extension CustomDateUtils on DateTime {
   }
 
   FhirDateTime get asFhirDateTime => FhirDateTime(this);
+  FhirDate get asFhirDate =>
+      FhirDate.fromUnits(year: year, month: month, day: day, isUtc: isUtc);
+  FhirTime get asFhirTime =>
+      FhirTime.fromUnits(hour: hour, minute: minute, second: 0, millisecond: 0);
 }
