@@ -22,12 +22,13 @@ enum DateTimeType {
 /// Created by luis901101 on 3/15/24.
 class QuestionnaireDateTimeItemView extends QuestionnaireItemView {
   final DateTimeType type;
-  QuestionnaireDateTimeItemView(
-      {super.key,
-      CustomValueController<DateTime>? controller,
-      required super.item,
-      required this.type})
-      : super(
+  QuestionnaireDateTimeItemView({
+    super.key,
+    CustomValueController<DateTime>? controller,
+    required super.item,
+    required this.type,
+    super.enableWhenController,
+  }) : super(
             controller: controller ??
                 CustomValueController<DateTime>(
                   focusNode: FocusNode(),
@@ -69,8 +70,7 @@ class QuestionnaireDateTimeItemViewState
   }
 
   @override
-  Widget build(BuildContext context) {
-    super.build(context);
+  Widget buildBody(BuildContext context) {
     final theme = Theme.of(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -97,23 +97,7 @@ class QuestionnaireDateTimeItemViewState
                           QuestionnaireLocalization
                               .instance.localization.textDate),
                       style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
-                      onPressed: () async {
-                        final newDate = await showDatePicker(
-                          context: context,
-                          initialDate: dateTime ?? DateTime.now(),
-                          firstDate: DateTime(1900),
-                          lastDate: DateTime(2100),
-                        );
-                        if (newDate != null) {
-                          dateTime = dateTime?.copyWith(
-                                year: newDate.year,
-                                month: newDate.month,
-                                day: newDate.day,
-                              ) ??
-                              newDate;
-                          setState(() {});
-                        }
-                      });
+                      onPressed: openDatePicker);
                 }),
               ),
             if (type.isDateTime)
@@ -130,25 +114,47 @@ class QuestionnaireDateTimeItemViewState
                           QuestionnaireLocalization
                               .instance.localization.textTime),
                       style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
-                      onPressed: () async {
-                        final newTime = await showTimePicker(
-                          context: context,
-                          initialTime:
-                              dateTime?.timeOfDay ?? DateTime.now().timeOfDay,
-                        );
-                        if (newTime != null) {
-                          dateTime = (dateTime ?? DateTime.now()).copyWith(
-                            hour: newTime.hour,
-                            minute: newTime.minute,
-                          );
-                          setState(() {});
-                        }
-                      });
+                      onPressed: openTimePicker);
                 }),
               ),
           ],
         ),
       ],
     );
+  }
+
+  Future<void> openDatePicker() async {
+    final newDate = await showDatePicker(
+      context: context,
+      initialDate: dateTime ?? DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+    );
+    if (newDate != null) {
+      dateTime = dateTime?.copyWith(
+            year: newDate.year,
+            month: newDate.month,
+            day: newDate.day,
+          ) ??
+          newDate;
+      setState(() {});
+      if (type.requiresTime) {
+        openTimePicker();
+      }
+    }
+  }
+
+  Future<void> openTimePicker() async {
+    final newTime = await showTimePicker(
+      context: context,
+      initialTime: dateTime?.timeOfDay ?? DateTime.now().timeOfDay,
+    );
+    if (newTime != null) {
+      dateTime = (dateTime ?? DateTime.now()).copyWith(
+        hour: newTime.hour,
+        minute: newTime.minute,
+      );
+      setState(() {});
+    }
   }
 }

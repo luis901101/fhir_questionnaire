@@ -5,7 +5,10 @@ import 'package:fhir_questionnaire/src/presentation/utils/validation_utils.dart'
 /// Created by luis901101 on 3/5/24.
 class QuestionnaireIntegerItemView extends QuestionnaireTextFieldItemView {
   QuestionnaireIntegerItemView(
-      {super.key, super.controller, required super.item});
+      {super.key,
+      super.controller,
+      required super.item,
+      super.enableWhenController});
 
   @override
   State createState() => QuestionnaireIntegerItemViewState();

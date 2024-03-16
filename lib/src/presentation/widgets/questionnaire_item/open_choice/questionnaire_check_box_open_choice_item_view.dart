@@ -4,5 +4,9 @@ import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/c
 class QuestionnaireCheckBoxOpenChoiceItemView
     extends QuestionnaireCheckBoxChoiceItemView {
   QuestionnaireCheckBoxOpenChoiceItemView(
-      {super.key, super.controller, required super.item, super.isOpen = true});
+      {super.key,
+      super.controller,
+      required super.item,
+      super.isOpen = true,
+      super.enableWhenController});
 }

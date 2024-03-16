@@ -1,8 +1,6 @@
-import 'dart:convert';
 
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 /// Created by luis901101 on 3/5/24.
@@ -116,7 +114,7 @@ class QuestionnaireViewState extends State<QuestionnaireView>
                     ],
                     Expanded(
                       child: Scrollbar(
-                        child: ListView.separated(
+                        child: ListView.builder(
                             addAutomaticKeepAlives: true,
                             padding: const EdgeInsets.only(
                                 left: 16,
@@ -128,8 +126,8 @@ class QuestionnaireViewState extends State<QuestionnaireView>
                             itemBuilder: (context, index) {
                               return itemBundles[index].view;
                             },
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(height: 24.0),
+                            // separatorBuilder: (context, index) =>
+                            //     const SizedBox(height: 24.0),
                             itemCount: itemBundles.length),
                       ),
                     ),
@@ -158,17 +156,17 @@ class QuestionnaireViewState extends State<QuestionnaireView>
     if (validate()) {
       final questionnaireResponse = QuestionnaireController.generateResponse(
           questionnaire: questionnaire, itemBundles: itemBundles);
-      if (kDebugMode) {
-        var prettyString = const JsonEncoder.withIndent('  ')
-            .convert(questionnaireResponse.toJson());
-        print('''
-        ==================
-        $prettyString
-        ==================
-        ''');
-        return;
-      }
-      // widget.onSubmit(questionnaireResponse);
+      // if (kDebugMode) {
+      //   var prettyString = const JsonEncoder.withIndent('  ')
+      //       .convert(questionnaireResponse.toJson());
+      //   print('''
+      //   ==================
+      //   $prettyString
+      //   ==================
+      //   ''');
+      //   return;
+      // }
+      widget.onSubmit(questionnaireResponse);
     }
   }
 

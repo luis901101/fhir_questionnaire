@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 
 /// Created by luis901101 on 3/5/24.
 class QuestionnaireStringItemView extends QuestionnaireTextFieldItemView {
-  QuestionnaireStringItemView(
-      {super.key, super.controller, required super.item});
+  QuestionnaireStringItemView({
+    super.key,
+    super.controller,
+    required super.item,
+    super.enableWhenController,
+  });
 
   @override
   State createState() => QuestionnaireStringItemViewState();

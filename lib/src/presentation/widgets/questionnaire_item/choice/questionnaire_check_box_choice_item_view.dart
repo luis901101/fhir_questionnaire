@@ -5,7 +5,11 @@ import 'package:flutter/material.dart';
 class QuestionnaireCheckBoxChoiceItemView
     extends QuestionnaireMultiChoiceItemView {
   QuestionnaireCheckBoxChoiceItemView(
-      {super.key, super.controller, required super.item, super.isOpen});
+      {super.key,
+      super.controller,
+      required super.item,
+      super.isOpen,
+      super.enableWhenController});
 
   @override
   State createState() => QuestionnaireCheckBoxChoiceItemViewState();

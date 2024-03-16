@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 /// Created by luis901101 on 3/5/24.
 class QuestionnaireDecimalItemView extends QuestionnaireTextFieldItemView {
   QuestionnaireDecimalItemView(
-      {super.key, super.controller, required super.item});
+      {super.key,
+      super.controller,
+      required super.item,
+      super.enableWhenController});
 
   @override
   State createState() => QuestionnaireDecimalItemViewState();

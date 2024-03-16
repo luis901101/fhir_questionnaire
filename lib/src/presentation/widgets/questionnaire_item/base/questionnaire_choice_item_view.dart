@@ -10,6 +10,7 @@ abstract class QuestionnaireChoiceItemView extends QuestionnaireItemView {
     super.key,
     CustomValueController? controller,
     required super.item,
+    super.enableWhenController,
     this.isOpen = false,
   }) : super(
             controller: controller ??
@@ -55,8 +56,7 @@ abstract class QuestionnaireChoiceItemViewState<
   Widget choiceView(BuildContext context);
 
   @override
-  Widget build(BuildContext context) {
-    super.build(context);
+  Widget buildBody(BuildContext context) {
     final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -4,5 +4,9 @@ import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/c
 class QuestionnaireDropDownOpenChoiceItemView
     extends QuestionnaireDropDownChoiceItemView {
   QuestionnaireDropDownOpenChoiceItemView(
-      {super.key, super.controller, required super.item, super.isOpen = true});
+      {super.key,
+      super.controller,
+      required super.item,
+      super.isOpen = true,
+      super.enableWhenController});
 }

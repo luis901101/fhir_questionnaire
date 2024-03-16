@@ -39,6 +39,89 @@ extension QuestionnaireUtils on Questionnaire {
       "required": true
     },
     {
+      "linkId": "104",
+      "text": "Do you have any dietary restrictions?",
+      "type": "choice",
+      "answerOption": [
+        {"valueCoding": {"code": "yes", "display": "Yes"}},
+        {"valueCoding": {"code": "no", "display": "No"}}
+      ]
+    },
+    {
+      "linkId": "105",
+      "text": "Please specify your dietary restrictions.",
+      "type": "text",
+      "enableWhen": [
+        {
+          "question": "104",
+          "operator": "=",
+          "answerCoding": {"code": "yes"}
+        },
+        {
+          "question": "1",
+          "operator": "=",
+          "answerCoding": {"code": "Luis"}
+        }
+      ],
+      "enableBehavior": "all"
+    },
+    {
+      "linkId": "200",
+      "text": "How many is 2 + 2?",
+      "type": "integer"
+    },
+    {
+      "linkId": "201",
+      "text": "Elaborate your answer on how many is 2 + 2?.",
+      "type": "text",
+      "enableWhen": [
+        {
+          "question": "200",
+          "operator": ">",
+          "answerInteger": 2
+        },
+        {
+          "question": "200",
+          "operator": "<",
+          "answerInteger": 9
+        },
+        {
+          "question": "200",
+          "operator": ">=",
+          "answerInteger": 3
+        },
+        {
+          "question": "200",
+          "operator": "<=",
+          "answerInteger": 10
+        }
+      ],
+      "enableBehavior": "all"
+    },
+    {
+      "linkId": "202",
+      "text": "How many colors has a rainbow?",
+      "type": "integer"
+    },
+    {
+      "linkId": "203",
+      "text": "Elaborate your answer on how many colors has a rainbow?",
+      "type": "text",
+      "enableWhen": [
+        {
+          "question": "202",
+          "operator": "exists",
+          "answerBoolean": true
+        },
+        {
+          "question": "200",
+          "operator": "exists",
+          "answerBoolean": false
+        }
+      ],
+      "enableBehavior": "any"
+    },
+    {
       "linkId": "2",
       "text": "What is your date of birth?",
       "type": "date"
@@ -225,28 +308,6 @@ extension QuestionnaireUtils on Questionnaire {
           }
         }
       ]
-    },
-    {
-      "linkId": "104",
-      "text": "Do you have any dietary restrictions?",
-      "type": "choice",
-      "answerOption": [
-        {"valueCoding": {"code": "yes", "display": "Yes"}},
-        {"valueCoding": {"code": "no", "display": "No"}}
-      ]
-    },
-    {
-      "linkId": "105",
-      "text": "Please specify your dietary restrictions.",
-      "type": "text",
-      "enableWhen": [
-        {
-          "question": "104",
-          "operator": "=",
-          "answerCoding": {"code": "yes"}
-        }
-      ],
-      "enableBehavior": "all"
     },
     {
       "linkId": "6",

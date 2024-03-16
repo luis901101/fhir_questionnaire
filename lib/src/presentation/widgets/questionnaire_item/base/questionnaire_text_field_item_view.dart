@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 
 /// Created by luis901101 on 3/5/24.
 abstract class QuestionnaireTextFieldItemView extends QuestionnaireItemView {
-  QuestionnaireTextFieldItemView(
-      {super.key, CustomTextEditingController? controller, required super.item})
-      : super(
+  QuestionnaireTextFieldItemView({
+    super.key,
+    CustomTextEditingController? controller,
+    required super.item,
+    super.enableWhenController,
+  }) : super(
             controller: controller ??
                 CustomTextEditingController(
                   focusNode: FocusNode(),
@@ -46,8 +49,7 @@ abstract class QuestionnaireTextFieldItemViewState<
   int? get maxLines => null;
 
   @override
-  Widget build(BuildContext context) {
-    super.build(context);
+  Widget buildBody(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

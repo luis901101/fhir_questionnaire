@@ -4,5 +4,9 @@ import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/c
 class QuestionnaireRadioButtonOpenChoiceItemView
     extends QuestionnaireRadioButtonChoiceItemView {
   QuestionnaireRadioButtonOpenChoiceItemView(
-      {super.key, super.controller, required super.item, super.isOpen = true});
+      {super.key,
+      super.controller,
+      required super.item,
+      super.isOpen = true,
+      super.enableWhenController});
 }

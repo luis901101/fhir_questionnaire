@@ -12,6 +12,7 @@ abstract class QuestionnaireMultiChoiceItemView
     CustomValueController<List<QuestionnaireAnswerOption>>? controller,
     required super.item,
     super.isOpen = false,
+    super.enableWhenController,
   }) : super(
             controller: controller ??
                 CustomValueController<List<QuestionnaireAnswerOption>>(
