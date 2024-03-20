@@ -57,8 +57,25 @@ enum QuestionnaireItemType {
 
   final String code;
   const QuestionnaireItemType(this.code);
-
   static const defaultValue = string;
+
+  bool get isGroup => this == group;
+  bool get isDisplay => this == display;
+  bool get isQuestion => this == question;
+  bool get isBoolean => this == boolean;
+  bool get isDecimal => this == decimal;
+  bool get isInteger => this == integer;
+  bool get isDate => this == date;
+  bool get isDateTime => this == dateTime;
+  bool get isTime => this == time;
+  bool get isString => this == string;
+  bool get isText => this == text;
+  bool get isUrl => this == url;
+  bool get isChoice => this == choice;
+  bool get isOpenChoice => this == openChoice;
+  bool get isAttachment => this == attachment;
+  bool get isReference => this == reference;
+  bool get isQuantity => this == quantity;
 
   @override
   String toString() => code;

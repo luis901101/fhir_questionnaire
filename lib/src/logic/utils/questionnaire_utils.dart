@@ -33,6 +33,74 @@ extension QuestionnaireUtils on Questionnaire {
   "subjectType": ["Patient"],
   "item": [
     {
+      "linkId": "301",
+      "text": "What is your height?",
+      "type": "quantity",
+      "initial": [
+        {
+          "valueQuantity": {
+            "value": 170,
+            "unit": "cm",
+            "system": "http://unitsofmeasure.org",
+            "code": "cm"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "302",
+      "text": "What is your weight?",
+      "type": "quantity",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://unitsofmeasure.org",
+                "code": "kg",
+                "display": "kilograms"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "303",
+      "text": "What is your waist circumference?",
+      "type": "quantity",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://unitsofmeasure.org",
+                "code": "in",
+                "display": "inches"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "2",
+      "text": "What is your date of birth?",
+      "type": "date"
+    },
+    {
+      "linkId": "2.1",
+      "text": "What time did you take your medication this morning?",
+      "type": "time"
+    },
+    {
+      "linkId": "2.2",
+      "text": "When was your last doctor's appointment?",
+      "type": "dateTime"
+    },
+    {
       "linkId": "1",
       "text": "Your full name",
       "type": "string",
@@ -120,22 +188,7 @@ extension QuestionnaireUtils on Questionnaire {
         }
       ],
       "enableBehavior": "any"
-    },
-    {
-      "linkId": "2",
-      "text": "What is your date of birth?",
-      "type": "date"
-    },
-    {
-      "linkId": "2.1",
-      "text": "What time did you take your medication this morning?",
-      "type": "time"
-    },
-    {
-      "linkId": "2.2",
-      "text": "When was your last doctor's appointment?",
-      "type": "dateTime"
-    },
+    },    
     {
       "linkId": "3",
       "text": "Do you have any allergies?",

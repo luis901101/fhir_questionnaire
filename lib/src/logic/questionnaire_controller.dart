@@ -11,6 +11,7 @@ import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/d
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/open_choice/questionnaire_check_box_open_choice_item_view.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/open_choice/questionnaire_drop_down_open_choice_item_view.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/open_choice/questionnaire_radio_button_open_choice_item_view.dart';
+import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/quantity/questionnaire_quantity_item_view.dart';
 import 'package:flutter/foundation.dart';
 
 class QuestionnaireController {
@@ -131,6 +132,10 @@ class QuestionnaireController {
               enableWhenController: enableWhenController,
               type: DateTimeType.fromQuestionnaireItemType(itemType),
             ),
+          QuestionnaireItemType.quantity => QuestionnaireQuantityItemView(
+              item: item,
+              enableWhenController: enableWhenController,
+            ),
           _ => null,
         };
         if (itemView != null) {
@@ -176,56 +181,62 @@ class QuestionnaireController {
           final itemType =
               QuestionnaireItemType.valueOf(itemBundle.item.type.value);
           List<QuestionnaireResponseAnswer>? answers = switch (itemType) {
-            QuestionnaireItemType.string || QuestionnaireItemType.text => [
-                QuestionnaireResponseAnswer(
-                  valueString: itemBundle.controller.rawValue?.toString(),
-                )
-              ],
-            QuestionnaireItemType.integer => [
-                QuestionnaireResponseAnswer(
-                  valueInteger: IntUtils.tryParse(
-                          itemBundle.controller.rawValue?.toString())
-                      ?.asFhirInteger,
-                )
-              ],
-            QuestionnaireItemType.decimal => [
-                QuestionnaireResponseAnswer(
-                  valueDecimal: DoubleUtils.tryParse(
-                          itemBundle.controller.rawValue?.toString())
-                      ?.asFhirDecimal,
-                )
-              ],
+            QuestionnaireItemType.string ||
+            QuestionnaireItemType.text ||
+            QuestionnaireItemType.integer ||
+            QuestionnaireItemType.decimal =>
+              TextUtils.isEmpty(itemBundle.controller.rawValue?.toString())
+                  ? null
+                  : [
+                      QuestionnaireResponseAnswer(
+                        valueString: itemType!.isString || itemType.isText
+                            ? itemBundle.controller.rawValue?.toString()
+                            : null,
+                        valueInteger: itemType.isInteger
+                            ? IntUtils.tryParse(
+                                    itemBundle.controller.rawValue?.toString())
+                                ?.asFhirInteger
+                            : null,
+                        valueDecimal: itemType.isDecimal
+                            ? DoubleUtils.tryParse(
+                                    itemBundle.controller.rawValue?.toString())
+                                ?.asFhirDecimal
+                            : null,
+                      )
+                    ],
             QuestionnaireItemType.choice ||
             QuestionnaireItemType.openChoice =>
               _generateChoiceAnswer(itemBundle.controller.rawValue),
-            QuestionnaireItemType.date =>
-              itemBundle.controller.rawValue is! DateTime
-                  ? null
-                  : [
-                      QuestionnaireResponseAnswer(
-                        valueDate: (itemBundle.controller.rawValue as DateTime)
-                            .asFhirDate,
-                      )
-                    ],
-            QuestionnaireItemType.time =>
-              itemBundle.controller.rawValue is! DateTime
-                  ? null
-                  : [
-                      QuestionnaireResponseAnswer(
-                        valueTime: (itemBundle.controller.rawValue as DateTime)
-                            .asFhirTime,
-                      )
-                    ],
+            QuestionnaireItemType.date ||
+            QuestionnaireItemType.time ||
             QuestionnaireItemType.dateTime =>
               itemBundle.controller.rawValue is! DateTime
                   ? null
                   : [
                       QuestionnaireResponseAnswer(
-                        valueDateTime:
-                            (itemBundle.controller.rawValue as DateTime)
+                        valueDate: !itemType!.isDate
+                            ? null
+                            : (itemBundle.controller.rawValue as DateTime)
+                                .asFhirDate,
+                        valueTime: !itemType.isTime
+                            ? null
+                            : (itemBundle.controller.rawValue as DateTime)
+                                .asFhirTime,
+                        valueDateTime: !itemType.isDateTime
+                            ? null
+                            : (itemBundle.controller.rawValue as DateTime)
                                 .asFhirDateTime,
                       )
                     ],
+            QuestionnaireItemType.quantity => itemBundle.controller.rawValue
+                        is! Quantity ||
+                    (itemBundle.controller.rawValue as Quantity).value == null
+                ? null
+                : [
+                    QuestionnaireResponseAnswer(
+                      valueQuantity: itemBundle.controller.rawValue as Quantity,
+                    )
+                  ],
             _ => null,
           };
 
@@ -233,7 +244,7 @@ class QuestionnaireController {
             linkId: itemBundle.item.linkId,
             definition: itemBundle.item.definition,
             text: itemBundle.item.text,
-            answer: answers,
+            answer: answers.isEmpty ? null : answers,
           );
         }).toList());
   }

@@ -9,7 +9,7 @@ class CustomDropDownButtonFormField<T> extends StatefulWidget {
   final T? value;
   final Widget? hint;
   final Widget? disabledHint;
-  final ValueChanged<T>? onChanged;
+  final ValueChanged<T?>? onChanged;
   final VoidCallback? onTap;
   final int? elevation;
   final TextStyle? style;
@@ -74,7 +74,7 @@ class CustomDropDownButtonFormField<T> extends StatefulWidget {
     CustomValueController<T>? controller,
     FocusNode? focusNode,
     InputDecoration? inputDecoration,
-    ValueChanged<T>? onChanged,
+    ValueChanged<T?>? onChanged,
     String Function(T value)? nameResolver,
     bool disabled = false,
     bool? isDense,
@@ -124,7 +124,7 @@ class CustomDropDownButtonFormField<T> extends StatefulWidget {
 }
 
 class _CustomDropDownButtonFormFieldState<T>
-    extends State<CustomDropDownButtonFormField> {
+    extends State<CustomDropDownButtonFormField<T>> {
   T? value;
 
   @override
@@ -144,7 +144,7 @@ class _CustomDropDownButtonFormFieldState<T>
       widget.focusNode?.unfocus();
     }
     return DropdownButtonFormField<T?>(
-      items: widget.items as List<DropdownMenuItem<T?>>?,
+      items: widget.items,
       selectedItemBuilder: widget.selectedItemBuilder,
       value: /*widget.disabled ? null :*/ value,
       hint: widget.hint,
@@ -170,7 +170,7 @@ class _CustomDropDownButtonFormFieldState<T>
       iconEnabledColor: widget.disabled
           ? (widget.iconDisabledColor ?? Theme.of(context).disabledColor)
           : widget.iconEnabledColor,
-      iconSize: widget.iconSize ?? 24,
+      iconSize: widget.iconSize ?? 4,
       isDense: widget.isDense ?? true,
       isExpanded: widget.isExpanded ?? true,
       itemHeight: widget.itemHeight,
