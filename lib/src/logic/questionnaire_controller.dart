@@ -4,6 +4,7 @@ import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:fhir_questionnaire/src/logic/utils/iterable_utils.dart';
 import 'package:fhir_questionnaire/src/model/questionnaire_item_enable_when_bundle.dart';
 import 'package:fhir_questionnaire/src/model/questionnaire_item_enable_when_controller.dart';
+import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/boolean/questionnaire_boolean_item_view.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/choice/questionnaire_check_box_choice_item_view.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/choice/questionnaire_drop_down_choice_item_view.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/choice/questionnaire_radio_button_choice_item_view.dart';
@@ -121,6 +122,10 @@ class QuestionnaireController {
               item: item,
               enableWhenController: enableWhenController,
             ),
+          QuestionnaireItemType.boolean => QuestionnaireBooleanItemView(
+              item: item,
+              enableWhenController: enableWhenController,
+            ),
           QuestionnaireItemType.choice => _buildChoiceItemView(
               item: item, enableWhenController: enableWhenController),
           QuestionnaireItemType.openChoice => _buildOpenChoiceItemView(
@@ -214,6 +219,14 @@ class QuestionnaireController {
                             : null,
                       )
                     ],
+            QuestionnaireItemType.boolean => itemBundle.controller.rawValue
+                    is! bool
+                ? null
+                : [
+                    QuestionnaireResponseAnswer(
+                        valueBoolean:
+                            FhirBoolean(itemBundle.controller.rawValue as bool))
+                  ],
             QuestionnaireItemType.choice ||
             QuestionnaireItemType.openChoice =>
               _generateChoiceAnswer(itemBundle.controller.rawValue),

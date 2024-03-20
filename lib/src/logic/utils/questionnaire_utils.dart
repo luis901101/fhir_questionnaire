@@ -33,6 +33,11 @@ extension QuestionnaireUtils on Questionnaire {
   "subjectType": ["Patient"],
   "item": [
     {
+      "linkId": "501",
+      "text": "Have you experienced any symptoms of a common cold in the last 14 days?",
+      "type": "boolean"
+    },
+    {
       "linkId": "401",
       "text": "What is the URL of your personal website?",
       "type": "url"
@@ -204,11 +209,6 @@ extension QuestionnaireUtils on Questionnaire {
       ],
       "enableBehavior": "any"
     },    
-    {
-      "linkId": "3",
-      "text": "Do you have any allergies?",
-      "type": "boolean"
-    },
     {
       "linkId": "4",
       "text": "Please specify your gender",
@@ -420,26 +420,6 @@ extension QuestionnaireUtils on Questionnaire {
       "text": "Describe your symptoms",
       "type": "text",
       "maxLength": 160
-    },
-    {
-      "linkId": "13",
-      "text": "Select your ethnic background",
-      "type": "choice",
-      "answerValueSet": "#ethnicBackgroundValueSet",
-      "extension": [
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://hl7.org/fhir/questionnaire-item-control",
-                "code": "drop-down",
-                "display": "Drop down"
-              }
-            ]
-          }
-        }
-      ]
     }
   ]
 }

@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
+import 'package:fhir_questionnaire/src/logic/utils/iterable_utils.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_choice_item_view.dart';
 import 'package:flutter/material.dart';
 
@@ -30,13 +31,15 @@ abstract class QuestionnaireMultiChoiceItemViewState<
   @override
   void initState() {
     super.initState();
-    final initial =
-        item.initial?.firstWhereOrNull((item) => item.valueCoding != null);
+    if (controller.value.isEmpty) {
+      final initial =
+          item.initial?.firstWhereOrNull((item) => item.valueCoding != null);
 
-    if (initial?.valueCoding != null) {
-      selectedValues.add(QuestionnaireAnswerOption(
-        valueCoding: initial?.valueCoding!,
-      ));
+      if (initial?.valueCoding != null) {
+        selectedValues.add(QuestionnaireAnswerOption(
+          valueCoding: initial?.valueCoding!,
+        ));
+      }
     }
   }
 

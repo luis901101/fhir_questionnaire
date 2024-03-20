@@ -424,7 +424,7 @@ class DecimalRangeValidationController extends ValidationController {
 }
 
 mixin FieldController<T> {
-  List<ValidationController> validations = [];
+  Set<ValidationController> validations = {};
   BoolCallback? validationsDependency;
   FocusNode? focusNode;
   String? error;
@@ -502,7 +502,7 @@ class CustomTextEditingController extends TextEditingController
   CustomTextEditingController({
     super.text,
     FocusNode? focusNode,
-    List<ValidationController>? validations,
+    Set<ValidationController>? validations,
     BoolCallback? validationsDependency,
   }) {
     this.focusNode = focusNode;
@@ -543,7 +543,7 @@ class CustomValueController<T> extends ValueNotifier<T?>
   CustomValueController({
     T? value,
     FocusNode? focusNode,
-    List<ValidationController>? validations,
+    Set<ValidationController>? validations,
     BoolCallback? validationsDependency,
   }) : super(value) {
     this.focusNode = focusNode;
@@ -581,7 +581,7 @@ class CustomValueNSController<T> extends ValueNotifier<T>
   CustomValueNSController({
     required T value,
     FocusNode? focusNode,
-    List<ValidationController>? validations,
+    Set<ValidationController>? validations,
     BoolCallback? validationsDependency,
   }) : super(value) {
     this.focusNode = focusNode;

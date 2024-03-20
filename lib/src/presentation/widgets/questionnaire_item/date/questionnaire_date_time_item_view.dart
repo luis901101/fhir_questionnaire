@@ -50,22 +50,24 @@ class QuestionnaireDateTimeItemViewState
   @override
   void initState() {
     super.initState();
-    final DateTime? initial = switch (type) {
-      DateTimeType.date => item.initial
-          ?.firstWhereOrNull((item) => item.valueDate != null)
-          ?.valueDate
-          ?.asDateTime,
-      DateTimeType.time => item.initial
-          ?.firstWhereOrNull((item) => item.valueTime != null)
-          ?.valueTime
-          ?.asDateTime,
-      DateTimeType.dateTime => item.initial
-          ?.firstWhereOrNull((item) => item.valueDateTime != null)
-          ?.valueDateTime
-          ?.asDateTime,
-    };
-    if (initial != null) {
-      dateTime = initial;
+    if (dateTime == null) {
+      final DateTime? initial = switch (type) {
+        DateTimeType.date => item.initial
+            ?.firstWhereOrNull((item) => item.valueDate != null)
+            ?.valueDate
+            ?.asDateTime,
+        DateTimeType.time => item.initial
+            ?.firstWhereOrNull((item) => item.valueTime != null)
+            ?.valueTime
+            ?.asDateTime,
+        DateTimeType.dateTime => item.initial
+            ?.firstWhereOrNull((item) => item.valueDateTime != null)
+            ?.valueDateTime
+            ?.asDateTime,
+      };
+      if (initial != null) {
+        dateTime = initial;
+      }
     }
   }
 

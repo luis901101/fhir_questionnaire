@@ -30,13 +30,15 @@ abstract class QuestionnaireSingleChoiceItemViewState<
   @override
   void initState() {
     super.initState();
-    final initial =
-        item.initial?.firstWhereOrNull((item) => item.valueCoding != null);
+    if (controller.value == null) {
+      final initial =
+          item.initial?.firstWhereOrNull((item) => item.valueCoding != null);
 
-    if (initial?.valueCoding != null) {
-      controller.value = QuestionnaireAnswerOption(
-        valueCoding: initial?.valueCoding!,
-      );
+      if (initial?.valueCoding != null) {
+        controller.value = QuestionnaireAnswerOption(
+          valueCoding: initial?.valueCoding!,
+        );
+      }
     }
   }
 
