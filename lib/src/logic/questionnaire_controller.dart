@@ -12,6 +12,7 @@ import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/o
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/open_choice/questionnaire_drop_down_open_choice_item_view.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/open_choice/questionnaire_radio_button_open_choice_item_view.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/quantity/questionnaire_quantity_item_view.dart';
+import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/text_input/questionnaire_url_item_view.dart';
 import 'package:flutter/foundation.dart';
 
 class QuestionnaireController {
@@ -136,6 +137,10 @@ class QuestionnaireController {
               item: item,
               enableWhenController: enableWhenController,
             ),
+          QuestionnaireItemType.url => QuestionnaireUrlItemView(
+              item: item,
+              enableWhenController: enableWhenController,
+            ),
           _ => null,
         };
         if (itemView != null) {
@@ -183,6 +188,7 @@ class QuestionnaireController {
           List<QuestionnaireResponseAnswer>? answers = switch (itemType) {
             QuestionnaireItemType.string ||
             QuestionnaireItemType.text ||
+            QuestionnaireItemType.url ||
             QuestionnaireItemType.integer ||
             QuestionnaireItemType.decimal =>
               TextUtils.isEmpty(itemBundle.controller.rawValue?.toString())
@@ -191,6 +197,10 @@ class QuestionnaireController {
                       QuestionnaireResponseAnswer(
                         valueString: itemType!.isString || itemType.isText
                             ? itemBundle.controller.rawValue?.toString()
+                            : null,
+                        valueUri: itemType.isUrl
+                            ? FhirUri(
+                                itemBundle.controller.rawValue!.toString())
                             : null,
                         valueInteger: itemType.isInteger
                             ? IntUtils.tryParse(

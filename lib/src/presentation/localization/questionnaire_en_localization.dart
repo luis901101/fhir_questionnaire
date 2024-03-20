@@ -21,6 +21,8 @@ class QuestionnaireEnLocalization extends QuestionnaireBaseLocalization {
   String get exceptionValueMustBeAPositiveNumber =>
       'Value must be a positive number.';
   @override
+  String get exceptionInvalidUrl => 'Invalid url.';
+  @override
   String exceptionValueOutOfRange(dynamic minValue, dynamic maxValue) =>
       'The value must be in a range of $minValue to $maxValue.';
   @override

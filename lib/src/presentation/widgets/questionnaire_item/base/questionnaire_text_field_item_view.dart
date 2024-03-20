@@ -27,9 +27,11 @@ abstract class QuestionnaireTextFieldItemViewState<
     super.initState();
     final initial = item.initial?.firstWhereOrNull((item) =>
         item.valueString.isNotEmpty ||
+        TextUtils.isNotEmpty(item.valueUri?.value?.toString()) ||
         item.valueInteger?.value != null ||
         item.valueDecimal?.value != null);
     final String? initialValue = (initial?.valueString ??
+            initial?.valueUri?.value?.toString() ??
             initial?.valueInteger?.value ??
             initial?.valueDecimal?.value)
         ?.toString();

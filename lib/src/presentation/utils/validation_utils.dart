@@ -94,6 +94,16 @@ class ValidationUtils {
             return length <= maxLength;
           });
 
+  static ValidationController urlValidation({
+    String? message,
+    bool required = false,
+  }) =>
+      UrlValidationController(
+        message: message ??
+            QuestionnaireLocalization.instance.localization.exceptionInvalidUrl,
+        required: required,
+      );
+
   static bool isPhoneNumberValid({String? number, Country? country}) {
     return number != null &&
         country != null &&

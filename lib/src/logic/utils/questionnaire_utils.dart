@@ -33,6 +33,21 @@ extension QuestionnaireUtils on Questionnaire {
   "subjectType": ["Patient"],
   "item": [
     {
+      "linkId": "401",
+      "text": "What is the URL of your personal website?",
+      "type": "url"
+    },
+    {
+      "linkId": "402",
+      "text": "Please provide the URL of your LinkedIn profile.",
+      "type": "url",
+      "initial": [
+        {
+          "valueUri": "http://example.com/your-default-linkedin"
+        }
+      ]
+    },
+    {
       "linkId": "301",
       "text": "What is your height?",
       "type": "quantity",
@@ -405,18 +420,6 @@ extension QuestionnaireUtils on Questionnaire {
       "text": "Describe your symptoms",
       "type": "text",
       "maxLength": 160
-    },
-    {
-      "linkId": "12",
-      "text": "Time since last meal",
-      "type": "quantity",
-      "item": [
-        {
-          "linkId": "11.1",
-          "text": "Hours",
-          "type": "integer"
-        }
-      ]
     },
     {
       "linkId": "13",
