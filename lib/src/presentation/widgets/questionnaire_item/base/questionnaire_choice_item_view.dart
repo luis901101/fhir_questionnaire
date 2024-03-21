@@ -50,6 +50,7 @@ abstract class QuestionnaireChoiceItemViewState<
     if (hideKeyboard) {
       InputMethodUtils.hideInputMethod(force: true);
     }
+    controller.clearError();
     return anwser;
   }
 

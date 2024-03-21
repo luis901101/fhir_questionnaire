@@ -205,8 +205,8 @@ class QuestionnaireViewState extends State<QuestionnaireView>
       if (fieldContext == null) return;
       Scrollable.ensureVisible(fieldContext,
           duration: const Duration(milliseconds: 100), curve: Curves.ease);
-    });
-    // controller.focusNode?.requestFocus();
+    }).whenComplete(() => Future.delayed(const Duration(milliseconds: 100),
+        () => controller.focusNode?.requestFocus()));
   }
 
   void onSubmit() {
