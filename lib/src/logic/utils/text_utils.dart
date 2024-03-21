@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/src/logic/utils/date_utils.dart';
 import 'package:fhir_questionnaire/src/logic/utils/num_utils.dart';

@@ -1,5 +1,6 @@
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
+import 'package:fhir_questionnaire/src/presentation/utils/view_utils.dart';
 import 'package:flutter/material.dart';
 
 /// Created by luis901101 on 3/5/24.
@@ -27,8 +28,8 @@ class QuestionnaireView extends StatefulWidget {
 class QuestionnaireViewState extends State<QuestionnaireView>
     with WidgetsBindingObserver {
   static const fabSize = kFloatingActionButtonMargin + 56;
+  double questionnaireTitleHeight = 0;
   ScrollController? scrollController;
-
   bool isKeyboardVisible = false;
   bool scrollReachedBottom = false;
   final showFAB = ValueNotifier<bool>(false);
@@ -69,6 +70,9 @@ class QuestionnaireViewState extends State<QuestionnaireView>
   }
 
   void onCreated(_) {
+    if (!widget.isLoading) {
+      calculateQuestionnaireTitleHeight();
+    }
     if (!widget.isLoading && scrollController == null) {
       scrollController = PrimaryScrollController.of(context);
       scrollController?.addListener(onScrollListener);
@@ -100,11 +104,26 @@ class QuestionnaireViewState extends State<QuestionnaireView>
     }
   }
 
+  void calculateQuestionnaireTitleHeight() {
+    try {
+      questionnaireTitleHeight = ViewUtils.getTextHeightAfterRender(
+        context: context,
+        text: questionnaire.title!,
+        padding:
+            const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 24.0),
+        textStyle: Theme.of(context).textTheme.titleLarge,
+      );
+    } catch (_) {}
+  }
+
   Future<void> buildQuestionnaireItems() async {
     itemBundles =
         await QuestionnaireController.buildQuestionnaireItems(questionnaire);
     loading(false);
   }
+
+  int get listViewCount =>
+      itemBundles.length + (questionnaire.title.isNotEmpty ? 1 : 0);
 
   @override
   Widget build(BuildContext context) {
@@ -134,43 +153,38 @@ class QuestionnaireViewState extends State<QuestionnaireView>
         ),
       ),
       body: UnfocusView(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 16.0),
-          child: isLoading
-              ? const QuestionnaireLoadingView()
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (questionnaire.title.isNotEmpty) ...[
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text(
-                          questionnaire.title!,
-                          style: theme.textTheme.titleLarge,
-                        ),
-                      ),
-                      const SizedBox(height: 24.0),
-                    ],
-                    Expanded(
-                      child: Scrollbar(
-                        child: ListView.builder(
-                            addAutomaticKeepAlives: true,
-                            padding: const EdgeInsets.only(
-                                left: 16, right: 16, bottom: fabSize + 64),
-                            shrinkWrap: true,
-                            keyboardDismissBehavior:
-                                ScrollViewKeyboardDismissBehavior.onDrag,
-                            itemBuilder: (context, index) {
-                              return itemBundles[index].view;
-                            },
-                            // separatorBuilder: (context, index) =>
-                            //     const SizedBox(height: 24.0),
-                            itemCount: itemBundles.length),
-                      ),
-                    ),
-                  ],
-                ),
-        ),
+        child: isLoading
+            ? const QuestionnaireLoadingView()
+            : Scrollbar(
+                child: ListView.builder(
+                    addAutomaticKeepAlives: true,
+                    padding: const EdgeInsets.only(
+                        top: 16, left: 16, right: 16, bottom: fabSize + 64),
+                    shrinkWrap: true,
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    itemBuilder: (context, index) {
+                      if (index == 0 && questionnaire.title.isNotEmpty) {
+                        return Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 24.0,
+                          ),
+                          child: Text(
+                            questionnaire.title!,
+                            style: theme.textTheme.titleLarge
+                                ?.copyWith(color: theme.colorScheme.primary),
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      }
+                      return itemBundles[
+                              index - (questionnaire.title.isNotEmpty ? 1 : 0)]
+                          .view;
+                    },
+                    // separatorBuilder: (context, index) =>
+                    //     const SizedBox(height: 24.0),
+                    itemCount: listViewCount),
+              ),
       ),
     );
   }
@@ -179,7 +193,7 @@ class QuestionnaireViewState extends State<QuestionnaireView>
     setState(() {});
     bool isValid = true;
     FieldController? controller;
-    double tempOffset = 0;
+    double tempOffset = questionnaireTitleHeight;
     double indexOffset = 0;
     for (int i = 0; i < itemBundles.length; ++i) {
       final item = itemBundles[i];
