@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 /// Created by luis901101 on 3/5/24.
@@ -29,7 +26,11 @@ class QuestionnaireView extends StatefulWidget {
 
 class QuestionnaireViewState extends State<QuestionnaireView>
     with WidgetsBindingObserver {
-  final isKeyboardVisible = ValueNotifier<bool>(false);
+  static const fabSize = kFloatingActionButtonMargin + 56;
+  ScrollController? scrollControler;
+  bool isKeyboardVisible = false;
+  bool scrollReachedBottom = false;
+  final showFAB = ValueNotifier<bool>(false);
   Questionnaire get questionnaire => widget.questionnaire;
   List<QuestionnaireItem> get questionnaireItems => questionnaire.item ?? [];
 
@@ -48,6 +49,9 @@ class QuestionnaireViewState extends State<QuestionnaireView>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      onCreated();
+    });
     bottomPadding = FlutterViewUtils.get().padding.bottom;
     if (!widget.isLoading) {
       String? locale;
@@ -64,6 +68,27 @@ class QuestionnaireViewState extends State<QuestionnaireView>
     }
   }
 
+  void onCreated() {
+    scrollControler = PrimaryScrollController.of(context);
+    scrollControler?.addListener(onScrollListener);
+  }
+
+  void onScrollListener() {
+    if (scrollControler!.position.pixels >=
+        scrollControler!.position.maxScrollExtent - fabSize) {
+      final isBottom = scrollControler!.position.pixels != 0;
+      if (isBottom != scrollReachedBottom) {
+        scrollReachedBottom = isBottom;
+        updateFABVisibility();
+      }
+    } else {
+      if (scrollReachedBottom) {
+        scrollReachedBottom = false;
+        updateFABVisibility();
+      }
+    }
+  }
+
   Future<void> buildQuestionnaireItems() async {
     itemBundles =
         await QuestionnaireController.buildQuestionnaireItems(questionnaire);
@@ -76,14 +101,15 @@ class QuestionnaireViewState extends State<QuestionnaireView>
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: ValueListenableBuilder(
-        valueListenable: isKeyboardVisible,
+        valueListenable: showFAB,
         builder: (context, value, child) {
           return AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
-            child: isKeyboardVisible.value ? const SizedBox() : child,
+            child: !showFAB.value ? const SizedBox() : child,
           );
         },
         child: FractionallySizedBox(
+          key: ValueKey('showFAB: ${showFAB.value}'),
           widthFactor: 0.8,
           child: Padding(
             padding: EdgeInsets.only(bottom: bottomPadding > 0 ? 0 : 16),
@@ -116,12 +142,21 @@ class QuestionnaireViewState extends State<QuestionnaireView>
                     ],
                     Expanded(
                       child: Scrollbar(
+                        // child: SingleChildScrollView(
+                        //   keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                        //   child: Padding(
+                        //     padding: const EdgeInsets.only(
+                        //         left: 16,
+                        //         right: 16,
+                        //         bottom: kFloatingActionButtonMargin + 120),
+                        //     child: Column(
+                        //       children: itemBundles.map((itemBundle) => itemBundle.view).toList()),
+                        //   ),
+                        // ),
                         child: ListView.builder(
                             addAutomaticKeepAlives: true,
                             padding: const EdgeInsets.only(
-                                left: 16,
-                                right: 16,
-                                bottom: kFloatingActionButtonMargin + 120),
+                                left: 16, right: 16, bottom: fabSize + 64),
                             shrinkWrap: true,
                             keyboardDismissBehavior:
                                 ScrollViewKeyboardDismissBehavior.onDrag,
@@ -158,25 +193,34 @@ class QuestionnaireViewState extends State<QuestionnaireView>
     if (validate()) {
       final questionnaireResponse = QuestionnaireController.generateResponse(
           questionnaire: questionnaire, itemBundles: itemBundles);
-      if (kDebugMode) {
-        var prettyString = const JsonEncoder.withIndent('  ')
-            .convert(questionnaireResponse.toJson());
-        print('''
-        ========================================================================
-        $prettyString
-        ========================================================================
-        ''');
-        return;
-      }
-      // widget.onSubmit(questionnaireResponse);
+      // if (kDebugMode) {
+      //   var prettyString = const JsonEncoder.withIndent('  ')
+      //       .convert(questionnaireResponse.toJson());
+      //   print('''
+      //   ========================================================================
+      //   $prettyString
+      //   ========================================================================
+      //   ''');
+      //   return;
+      // }
+      widget.onSubmit(questionnaireResponse);
+    }
+  }
+
+  void updateFABVisibility() {
+    final temp = !isKeyboardVisible && scrollReachedBottom;
+    if (showFAB.value != temp) {
+      showFAB.value = temp;
+      setState(() {});
     }
   }
 
   void checkKeyboardVisibility() {
     bool keyboardVisible =
         FlutterViewUtils.get(context: context).viewInsets.bottom > 0.0;
-    if (isKeyboardVisible.value != keyboardVisible) {
-      isKeyboardVisible.value = keyboardVisible;
+    if (isKeyboardVisible != keyboardVisible) {
+      isKeyboardVisible = keyboardVisible;
+      updateFABVisibility();
     }
   }
 
@@ -188,8 +232,9 @@ class QuestionnaireViewState extends State<QuestionnaireView>
 
   @override
   void dispose() {
-    isKeyboardVisible.dispose();
+    showFAB.dispose();
     WidgetsBinding.instance.removeObserver(this);
+    scrollControler?.removeListener(onScrollListener);
     for (final item in itemBundles) {
       item.controller.focusNode?.dispose();
     }
