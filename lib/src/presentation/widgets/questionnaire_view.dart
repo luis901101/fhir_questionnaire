@@ -65,20 +65,31 @@ class QuestionnaireViewState extends State<QuestionnaireView>
         locale: locale,
       );
       buildQuestionnaireItems();
+      checkScrollOnInit();
     }
   }
 
   void onCreated() {
-    scrollControler = PrimaryScrollController.of(context);
-    scrollControler?.addListener(onScrollListener);
+    if(!widget.isLoading && scrollControler == null) {
+      scrollControler = PrimaryScrollController.of(context);
+      scrollControler?.addListener(onScrollListener);
+    }
+    checkScrollOnInit();
+  }
+
+  void checkScrollOnInit() {
+    Future.delayed(const Duration(milliseconds: 300), (){
+      if(scrollControler?.hasClients ?? false) {
+        onScrollListener();
+      }
+    });
   }
 
   void onScrollListener() {
     if (scrollControler!.position.pixels >=
         scrollControler!.position.maxScrollExtent - fabSize) {
-      final isBottom = scrollControler!.position.pixels != 0;
-      if (isBottom != scrollReachedBottom) {
-        scrollReachedBottom = isBottom;
+      if (!scrollReachedBottom) {
+        scrollReachedBottom = true;
         updateFABVisibility();
       }
     } else {
