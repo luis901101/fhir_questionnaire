@@ -54,6 +54,9 @@ abstract class QuestionnaireTextFieldItemViewState<
   int? get maxLines => null;
 
   @override
+  bool get handleControllerErrorManually => false;
+
+  @override
   Widget buildBody(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

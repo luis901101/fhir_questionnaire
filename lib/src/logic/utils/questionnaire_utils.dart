@@ -33,6 +33,11 @@ extension QuestionnaireUtils on Questionnaire {
   "subjectType": ["Patient"],
   "item": [
     {
+      "linkId": "intro",
+      "text": "Welcome to the Health and Wellness Survey! Please read the instructions carefully before proceeding.",
+      "type": "display"
+    },
+    {
       "linkId": "501",
       "text": "Have you experienced any symptoms of a common cold in the last 14 days?",
       "type": "boolean"

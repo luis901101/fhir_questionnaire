@@ -612,3 +612,26 @@ class CustomValueNSController<T> extends ValueNotifier<T>
     clearError();
   }
 }
+
+class DummyController with FieldController {
+  @override
+  void addListener(VoidCallback listener) {}
+
+  @override
+  void clear() {}
+
+  @override
+  void clearError({bool notify = true}) {}
+
+  @override
+  bool get isEmpty => true;
+
+  @override
+  get rawValue => null;
+
+  @override
+  void removeListener(VoidCallback listener) {}
+
+  @override
+  void setError(String? error, {bool notify = true}) {}
+}
