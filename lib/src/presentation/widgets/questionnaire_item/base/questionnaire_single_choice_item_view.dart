@@ -48,6 +48,7 @@ abstract class QuestionnaireSingleChoiceItemViewState<
       controller.value = value;
   void onSelectedValueChanged(QuestionnaireAnswerOption? value) {
     setState(() {
+      controller.clearError();
       selectedValue = value;
     });
   }

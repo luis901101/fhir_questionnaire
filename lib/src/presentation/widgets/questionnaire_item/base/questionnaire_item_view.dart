@@ -1,6 +1,7 @@
 import 'package:fhir_questionnaire/src/logic/utils/text_utils.dart';
 import 'package:fhir_questionnaire/src/model/questionnaire_item_enable_when_controller.dart';
 import 'package:fhir_questionnaire/src/presentation/utils/validation_utils.dart';
+import 'package:fhir_questionnaire/src/presentation/widgets/size_renderer.dart';
 import 'package:flutter/material.dart';
 import 'package:fhir/r4.dart';
 
@@ -52,6 +53,7 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
       setState(() {});
     } else if (lastControllerError.isNotEmpty && controller.isNotEmpty) {
       controller.clearError();
+      setState(() {});
     }
   }
 
@@ -70,19 +72,20 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
       duration: const Duration(milliseconds: 300),
       child: SizedBox(
         height: isEnabled ? null : 0,
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 24.0),
-          child: buildBody(context),
+        child: SizeRenderer(
+          onSizeRendered: onSizeRendered,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 24.0),
+            child: buildBody(context),
+          ),
         ),
       ),
     );
-    // return Visibility(
-    //     visible: isEnabled,
-    //     child: Padding(
-    //       padding: const EdgeInsets.only(bottom: 24.0),
-    //       child: buildBody(context),
-    //     ),
-    // );
+  }
+
+  void onSizeRendered(Size size, GlobalKey key) {
+    controller.size = size;
+    controller.key = key;
   }
 
   @override

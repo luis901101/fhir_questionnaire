@@ -27,7 +27,8 @@ class QuestionnaireView extends StatefulWidget {
 class QuestionnaireViewState extends State<QuestionnaireView>
     with WidgetsBindingObserver {
   static const fabSize = kFloatingActionButtonMargin + 56;
-  ScrollController? scrollControler;
+  ScrollController? scrollController;
+
   bool isKeyboardVisible = false;
   bool scrollReachedBottom = false;
   final showFAB = ValueNotifier<bool>(false);
@@ -49,9 +50,7 @@ class QuestionnaireViewState extends State<QuestionnaireView>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      onCreated();
-    });
+    WidgetsBinding.instance.addPostFrameCallback(onCreated);
     bottomPadding = FlutterViewUtils.get().padding.bottom;
     if (!widget.isLoading) {
       String? locale;
@@ -69,25 +68,26 @@ class QuestionnaireViewState extends State<QuestionnaireView>
     }
   }
 
-  void onCreated() {
-    if(!widget.isLoading && scrollControler == null) {
-      scrollControler = PrimaryScrollController.of(context);
-      scrollControler?.addListener(onScrollListener);
+  void onCreated(_) {
+    if (!widget.isLoading && scrollController == null) {
+      scrollController = PrimaryScrollController.of(context);
+      scrollController?.addListener(onScrollListener);
     }
     checkScrollOnInit();
   }
 
   void checkScrollOnInit() {
-    Future.delayed(const Duration(milliseconds: 300), (){
-      if(scrollControler?.hasClients ?? false) {
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (scrollController?.hasClients ?? false) {
         onScrollListener();
       }
     });
   }
 
   void onScrollListener() {
-    if (scrollControler!.position.pixels >=
-        scrollControler!.position.maxScrollExtent - fabSize) {
+    if (scrollController!.hasClients &&
+        scrollController!.position.pixels >=
+            scrollController!.position.maxScrollExtent - fabSize) {
       if (!scrollReachedBottom) {
         scrollReachedBottom = true;
         updateFABVisibility();
@@ -153,17 +153,6 @@ class QuestionnaireViewState extends State<QuestionnaireView>
                     ],
                     Expanded(
                       child: Scrollbar(
-                        // child: SingleChildScrollView(
-                        //   keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                        //   child: Padding(
-                        //     padding: const EdgeInsets.only(
-                        //         left: 16,
-                        //         right: 16,
-                        //         bottom: kFloatingActionButtonMargin + 120),
-                        //     child: Column(
-                        //       children: itemBundles.map((itemBundle) => itemBundle.view).toList()),
-                        //   ),
-                        // ),
                         child: ListView.builder(
                             addAutomaticKeepAlives: true,
                             padding: const EdgeInsets.only(
@@ -189,15 +178,35 @@ class QuestionnaireViewState extends State<QuestionnaireView>
   bool validate() {
     setState(() {});
     bool isValid = true;
-    FocusNode? focusNode;
-    for (final item in itemBundles) {
+    FieldController? controller;
+    double tempOffset = 0;
+    double indexOffset = 0;
+    for (int i = 0; i < itemBundles.length; ++i) {
+      final item = itemBundles[i];
       if (!item.controller.validate() && isValid) {
         isValid = false;
-        focusNode = item.controller.focusNode;
+        indexOffset = tempOffset;
+        controller = item.controller;
       }
+      tempOffset += item.controller.size.height;
     }
-    focusNode?.requestFocus();
+    scrollToField(controller: controller, indexOffset: indexOffset);
     return isValid;
+  }
+
+  Future<void> scrollToField(
+      {required FieldController? controller,
+      required double indexOffset}) async {
+    if (controller == null) return;
+    scrollController?.animateTo(indexOffset,
+        duration: const Duration(milliseconds: 300), curve: Curves.ease);
+    Future.delayed(const Duration(milliseconds: 200), () {
+      final fieldContext = controller.key.currentContext;
+      if (fieldContext == null) return;
+      Scrollable.ensureVisible(fieldContext,
+          duration: const Duration(milliseconds: 100), curve: Curves.ease);
+    });
+    // controller.focusNode?.requestFocus();
   }
 
   void onSubmit() {
@@ -245,7 +254,7 @@ class QuestionnaireViewState extends State<QuestionnaireView>
   void dispose() {
     showFAB.dispose();
     WidgetsBinding.instance.removeObserver(this);
-    scrollControler?.removeListener(onScrollListener);
+    scrollController?.removeListener(onScrollListener);
     for (final item in itemBundles) {
       item.controller.focusNode?.dispose();
     }

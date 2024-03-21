@@ -28,6 +28,7 @@ class QuestionnaireDropDownChoiceItemViewState
         QuestionnaireAnswerOption>(
       controller: controller,
       values: values,
+      onChanged: onSelectedValueChanged,
       nameResolver: valueNameResolver,
     );
   }

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/src/logic/utils/date_utils.dart';
 import 'package:fhir_questionnaire/src/logic/utils/num_utils.dart';
@@ -425,6 +427,8 @@ class DecimalRangeValidationController extends ValidationController {
 
 mixin FieldController<T> {
   Set<ValidationController> validations = {};
+  GlobalKey key = GlobalKey();
+  Size size = Size.zero;
   BoolCallback? validationsDependency;
   FocusNode? focusNode;
   String? error;
