@@ -21,7 +21,7 @@ extension QuestionnaireItemUtils on QuestionnaireItem {
 extension QuestionnaireUtils on Questionnaire {
   FhirCanonical get asFhirCanonical =>
       FhirCanonical('${R4ResourceType.Questionnaire.name}/$fhirId');
-  static const sampleGeneric = '''
+  static String get sampleGeneric => '''
   {
   "resourceType": "Questionnaire",
   "id": "example-all-item-types",
@@ -41,6 +41,11 @@ extension QuestionnaireUtils on Questionnaire {
       "linkId": "501",
       "text": "Have you experienced any symptoms of a common cold in the last 14 days?",
       "type": "boolean"
+    },
+    {
+      "linkId": "502",
+      "text": "Please upload your most recent blood test results.",
+      "type": "attachment"
     },
     {
       "linkId": "401",
@@ -400,28 +405,6 @@ extension QuestionnaireUtils on Questionnaire {
     },
     {
       "linkId": "8",
-      "text": "Blood Pressure (systolic/diastolic)",
-      "type": "group",
-      "item": [
-        {
-          "linkId": "8.1",
-          "text": "Systolic (mmHg)",
-          "type": "decimal"
-        },
-        {
-          "linkId": "8.2",
-          "text": "Diastolic (mmHg)",
-          "type": "decimal"
-        }
-      ]
-    },
-    {
-      "linkId": "9",
-      "text": "Upload your recent lab results",
-      "type": "attachment"
-    },
-    {
-      "linkId": "10",
       "text": "Describe your symptoms",
       "type": "text",
       "maxLength": 160
@@ -429,7 +412,7 @@ extension QuestionnaireUtils on Questionnaire {
   ]
 }
 ''';
-  static const samplePrapare = '''
+  static String get samplePrapare => '''
 {
     "resourceType": "Questionnaire",
     "meta": {
@@ -629,7 +612,7 @@ extension QuestionnaireUtils on Questionnaire {
     "id": "cc6d76d5-3d6b-4cbe-827e-5f424dd278be"
   }
 ''';
-  static const samplePHQ9 = '''
+  static String get samplePHQ9 => '''
 {
   "resourceType": "Questionnaire",
   "meta": {
@@ -1676,7 +1659,7 @@ extension QuestionnaireUtils on Questionnaire {
   "id": "9bca2d21-ace0-4da2-af34-b6d20b44c560"
 }
 ''';
-  static const sampleGAD7 = '''
+  static String get sampleGAD7 => '''
 {
     "resourceType": "Questionnaire",
     "meta": {

@@ -7,6 +7,12 @@ class QuestionnaireEsLocalization extends QuestionnaireBaseLocalization {
   @override
   String get btnSubmit => 'Enviar';
   @override
+  String get btnUpload => 'Cargar';
+  @override
+  String get btnChange => 'Cambiar';
+  @override
+  String get btnRemove => 'Quitar';
+  @override
   String get textOtherOption => 'Optra opción';
   @override
   String get textDate => 'Fecha';

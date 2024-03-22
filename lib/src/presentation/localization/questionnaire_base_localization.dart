@@ -4,6 +4,9 @@ abstract class QuestionnaireBaseLocalization {
   QuestionnaireBaseLocalization(this.locale);
 
   String get btnSubmit;
+  String get btnUpload;
+  String get btnChange;
+  String get btnRemove;
   String get textOtherOption;
   String get textDate;
   String get textTime;

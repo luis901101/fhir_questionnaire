@@ -4,6 +4,7 @@ import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:fhir_questionnaire/src/logic/utils/iterable_utils.dart';
 import 'package:fhir_questionnaire/src/model/questionnaire_item_enable_when_bundle.dart';
 import 'package:fhir_questionnaire/src/model/questionnaire_item_enable_when_controller.dart';
+import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/attachment/questionnaire_attachment_item_view.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/boolean/questionnaire_boolean_item_view.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/choice/questionnaire_check_box_choice_item_view.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/choice/questionnaire_drop_down_choice_item_view.dart';
@@ -99,7 +100,8 @@ class QuestionnaireController {
   }
 
   static Future<List<QuestionnaireItemBundle>> buildQuestionnaireItems(
-      Questionnaire questionnaire) async {
+      Questionnaire questionnaire,
+      {Future<Attachment?> Function()? onAttachmentLoaded}) async {
     List<QuestionnaireItemBundle> itemBundles = [];
     try {
       for (final QuestionnaireItem item in questionnaire.item ?? []) {
@@ -149,6 +151,11 @@ class QuestionnaireController {
             ),
           QuestionnaireItemType.display => QuestionnaireDisplayItemView(
               item: item,
+              enableWhenController: enableWhenController,
+            ),
+          QuestionnaireItemType.attachment => QuestionnaireAttachmentItemView(
+              item: item,
+              onAttachmentLoaded: onAttachmentLoaded,
               enableWhenController: enableWhenController,
             ),
           _ => null,
@@ -270,6 +277,16 @@ class QuestionnaireController {
               : [
                   QuestionnaireResponseAnswer(
                     valueQuantity: itemBundle.controller.rawValue as Quantity,
+                  )
+                ];
+          break;
+        case QuestionnaireItemType.attachment:
+          answers = itemBundle.controller.rawValue is! Attachment
+              ? null
+              : [
+                  QuestionnaireResponseAnswer(
+                    valueAttachment:
+                        itemBundle.controller.rawValue as Attachment,
                   )
                 ];
           break;

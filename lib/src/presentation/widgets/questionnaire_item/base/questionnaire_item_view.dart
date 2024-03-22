@@ -63,6 +63,12 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
     }
   }
 
+  @override
+  void setState(VoidCallback fn) {
+    if (!mounted) return;
+    super.setState(fn);
+  }
+
   Widget buildBody(BuildContext context);
 
   @override

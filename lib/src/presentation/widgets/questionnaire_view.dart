@@ -5,16 +5,34 @@ import 'package:flutter/material.dart';
 
 /// Created by luis901101 on 3/5/24.
 class QuestionnaireView extends StatefulWidget {
+  /// The Questionnaire definition.
   final Questionnaire questionnaire;
+
+  /// Get the QuestionnaireResponse once the user taps on Submit button.
   final ValueChanged<QuestionnaireResponse> onSubmit;
+
+  /// Necessary callback when Questionnaire has items of type = `attachment`
+  /// so the logic of loading an Attachment is handled outside of the logic
+  /// of QuestionnaireView
+  final Future<Attachment?> Function()? onAttachmentLoaded;
+
+  /// To indicate there is an ongoing loading process
   final bool isLoading;
+
+  /// Indicates what should be the fallback localization if loalce is not
+  /// supported
   final QuestionnaireBaseLocalization? defaultLocalization;
+
+  /// Indicates the definition of each supported localizations.
   final List<QuestionnaireBaseLocalization>? localizations;
+
+  /// The expected locale to show, by default Platform locale is used.
   final String? locale;
   const QuestionnaireView({
     super.key,
     required this.questionnaire,
     required this.onSubmit,
+    this.onAttachmentLoaded,
     this.isLoading = false,
     this.defaultLocalization,
     this.localizations,
@@ -117,8 +135,9 @@ class QuestionnaireViewState extends State<QuestionnaireView>
   }
 
   Future<void> buildQuestionnaireItems() async {
-    itemBundles =
-        await QuestionnaireController.buildQuestionnaireItems(questionnaire);
+    itemBundles = await QuestionnaireController.buildQuestionnaireItems(
+        questionnaire,
+        onAttachmentLoaded: widget.onAttachmentLoaded);
     loading(false);
   }
 
