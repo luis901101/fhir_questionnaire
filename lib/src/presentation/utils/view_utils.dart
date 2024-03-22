@@ -20,7 +20,7 @@ class ViewUtils {
           ),
       textDirection: rendering.TextDirection.ltr,
       // Important as the user can have increased text on his device
-      textScaler: TextScaler.linear(mediaQuery.textScaleFactor),
+      textScaler: MediaQuery.textScalerOf(context),
     );
     final horizontalPadding = padding?.horizontal ?? 0;
     final verticalPadding = padding?.vertical ?? 0;

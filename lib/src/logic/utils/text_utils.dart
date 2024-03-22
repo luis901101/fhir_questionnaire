@@ -4,14 +4,12 @@ import 'package:fhir_questionnaire/src/logic/utils/num_utils.dart';
 import 'package:validators/validators.dart' as validators;
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:html/parser.dart';
 import 'package:intl/intl.dart' as intl;
 
 extension StringExtension on String {
   num? get asNum => NumUtils.tryParse(this);
   int? get asInt => int.tryParse(this);
   double? get asDouble => DoubleUtils.tryParse(this);
-  String get removeHtmlTags => parse(this).documentElement?.text ?? this;
 
   Annotation asAnnotation({Reference? authorReference}) => Annotation(
       text: FhirMarkdown(this),

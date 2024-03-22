@@ -1,6 +1,5 @@
 import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:intl_phone_field/countries.dart';
 import 'package:fhir_questionnaire/src/logic/utils/num_utils.dart';
 import 'package:fhir_questionnaire/src/logic/utils/text_utils.dart';
 
@@ -55,7 +54,6 @@ class ValidationUtils {
     int? maxLength,
     String? message,
     bool required = false,
-    bool considerHtmlTags = false,
     bool considerExtendedCharacters = true,
   }) =>
       ValidationController(
@@ -64,7 +62,6 @@ class ValidationUtils {
                   .exceptionTextLength(minLength, maxLength ?? (minLength * 2)),
           isValid: ({controller}) {
             String textValue = controller?.rawValue?.toString().trim() ?? '';
-            if (considerHtmlTags) textValue = textValue.removeHtmlTags;
             int length = considerExtendedCharacters
                 ? textValue.characters.length
                 : textValue.length;
@@ -77,7 +74,6 @@ class ValidationUtils {
     required int maxLength,
     String? message,
     bool required = false,
-    bool considerHtmlTags = false,
     bool considerExtendedCharacters = true,
   }) =>
       ValidationController(
@@ -86,7 +82,6 @@ class ValidationUtils {
                   .exceptionTextMaxLength(maxLength),
           isValid: ({controller}) {
             String textValue = controller?.rawValue?.toString().trim() ?? '';
-            if (considerHtmlTags) textValue = textValue.removeHtmlTags;
             int length = considerExtendedCharacters
                 ? textValue.characters.length
                 : textValue.length;
@@ -103,13 +98,6 @@ class ValidationUtils {
             QuestionnaireLocalization.instance.localization.exceptionInvalidUrl,
         required: required,
       );
-
-  static bool isPhoneNumberValid({String? number, Country? country}) {
-    return number != null &&
-        country != null &&
-        number.length >= country.minLength &&
-        number.length <= country.maxLength;
-  }
 }
 
 class EnhancedEmptyValidationController extends ValidationController {

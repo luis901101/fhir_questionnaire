@@ -1,6 +1,6 @@
 name: fhir_questionnaire
 description: "A library to render FHIR Questionnaires and generate a QuestionnaireResponse"
-version: 0.0.1
+version: 1.0.0
 repository: https://github.com/luis901101/fhir_questionnaire
 issue_tracker: https://github.com/luis901101/fhir_questionnaire/issues
 topics:
@@ -20,14 +20,7 @@ dependencies:
   shimmer: ^3.0.0
   fhir: ^0.12.0
   intl: ^0.19.0
-  duration: ^3.0.13
-  html: ^0.15.4
-  intl_phone_field: ^3.2.0
   validators: ^3.0.0
-
-dependency_overrides:
-  intl: ^0.19.0 # To fix some dependencies conflicts because of using distinct versions, which should not be a problem because the major version is still the same.
-
 
 dev_dependencies:
   flutter_test:
