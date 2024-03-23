@@ -59,7 +59,7 @@ onSubmit: onSubmit, // Callback to get the QuestionnaireResponse
 
 ## Demo
 <div>
- <a href="https://raw.githubusercontent.com/luis901101/fhir_questionnaire/master/example/doc/gifs/demo.gif">
-<img src="https://raw.githubusercontent.com/luis901101/fhir_questionnaire/master/example/doc/gifs/demo.gif" width="230"/>
+ <a href="https://raw.githubusercontent.com/luis901101/fhir_questionnaire/main/example/doc/gif/demo.gif">
+<img src="https://raw.githubusercontent.com/luis901101/fhir_questionnaire/main/example/doc/gif/demo.gif" width="230"/>
 </a>
 </div>
