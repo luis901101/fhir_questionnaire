@@ -33,12 +33,12 @@ Just add a `QuestionnaireView` widget to your widget tree and you will have your
 
 ```dart
 QuestionnaireView(
-questionnaire: questionnaire, // A FHIR R4 Questionnaire instance
-onAttachmentLoaded: onAttachmentLoaded, // A callback to handle attachment loading (explained below) 
-locale: locale, // The specific locale for the Button and validation texts
-localizations: localizations, // To add support for extra localization 
-isLoading: loading, // Wether is some ongoing operation before loading the UI 
-onSubmit: onSubmit, // Callback to get the QuestionnaireResponse
+    questionnaire: questionnaire, // A FHIR R4 Questionnaire instance
+    onAttachmentLoaded: onAttachmentLoaded, // A callback to handle attachment loading (explained below) 
+    locale: locale, // The specific locale for the Button and validation texts
+    localizations: localizations, // To add support for extra localization 
+    isLoading: loading, // Wether is some ongoing operation before loading the UI 
+    onSubmit: onSubmit, // Callback to get the QuestionnaireResponse
 )
 ```
 
