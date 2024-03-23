@@ -1,8 +1,5 @@
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
-import 'package:fhir_questionnaire/src/logic/enumerator/questionnaire_enable_when_operator.dart';
-import 'package:fhir_questionnaire/src/logic/enumerator/questionnaire_enable_when_behavior.dart';
 import 'package:fhir/r4.dart';
-import 'package:fhir_questionnaire/src/model/questionnaire_item_enable_when_bundle.dart';
 import 'package:flutter/cupertino.dart';
 
 class QuestionnaireItemEnableWhenController {

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+packageName="fhir_questionnaire";
+
+cd lib
+echo "library fhir_questionnaire;" > package_temp.dart
+echo "" >> package_temp.dart
+
+cd src
+while IFS= read -r line; do
+    # Remove the leading "./" from the file path
+    modified_line=${line#./}
+    echo "export 'package:${packageName}/src/${modified_line}';"
+done < <(find . -type f -name "*.dart") >> ../package_temp.dart
+cd ../
+mv package_temp.dart fhir_questionnaire.dart
+
+echo "Generated successfully"

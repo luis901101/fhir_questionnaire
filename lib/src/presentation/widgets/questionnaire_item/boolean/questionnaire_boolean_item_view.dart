@@ -16,10 +16,10 @@ class QuestionnaireBooleanItemView extends QuestionnaireItemView {
                 ));
 
   @override
-  State createState() => QuestionnaireDateTimeItemViewState();
+  State createState() => QuestionnaireBooleanItemViewState();
 }
 
-class QuestionnaireDateTimeItemViewState
+class QuestionnaireBooleanItemViewState
     extends QuestionnaireItemViewState<QuestionnaireBooleanItemView> {
   @override
   CustomValueController<bool> get controller =>

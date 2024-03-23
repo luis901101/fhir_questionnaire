@@ -1,6 +1,5 @@
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
-import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_choice_item_view.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 

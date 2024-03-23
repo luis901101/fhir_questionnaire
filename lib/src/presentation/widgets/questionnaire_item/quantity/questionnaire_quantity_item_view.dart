@@ -2,8 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:fhir/r4.dart';
 import 'package:fhir/r4/general_types/general_types.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
-import 'package:fhir_questionnaire/src/logic/enumerator/questionnaire_custom_quantity_comparator.dart';
-import 'package:fhir_questionnaire/src/presentation/widgets/custom_drop_down_button_form_field.dart';
 import 'package:flutter/material.dart';
 
 /// Created by luis901101 on 3/19/24.
@@ -20,10 +18,10 @@ class QuestionnaireQuantityItemView extends QuestionnaireItemView {
                 ));
 
   @override
-  State createState() => QuestionnaireDateTimeItemViewState();
+  State createState() => QuestionnaireQuantityItemViewState();
 }
 
-class QuestionnaireDateTimeItemViewState
+class QuestionnaireQuantityItemViewState
     extends QuestionnaireItemViewState<QuestionnaireQuantityItemView> {
   @override
   CustomValueController<Quantity> get controller =>

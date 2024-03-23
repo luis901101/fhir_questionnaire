@@ -1,6 +1,5 @@
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
-import 'package:fhir_questionnaire/src/logic/utils/coding_utils.dart';
 import 'package:flutter/material.dart';
 
 /// Created by luis901101 on 3/9/24.

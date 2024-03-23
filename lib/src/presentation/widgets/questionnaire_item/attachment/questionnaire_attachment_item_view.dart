@@ -19,10 +19,10 @@ class QuestionnaireAttachmentItemView extends QuestionnaireItemView {
                 ));
 
   @override
-  State createState() => QuestionnaireDateTimeItemViewState();
+  State createState() => QuestionnaireAttachmentItemViewState();
 }
 
-class QuestionnaireDateTimeItemViewState
+class QuestionnaireAttachmentItemViewState
     extends QuestionnaireItemViewState<QuestionnaireAttachmentItemView> {
   bool isLoading = false;
   @override

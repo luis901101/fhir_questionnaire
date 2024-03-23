@@ -10,10 +10,10 @@ class QuestionnaireDisplayItemView extends QuestionnaireItemView {
   }) : super(controller: DummyController());
 
   @override
-  State createState() => QuestionnaireDateTimeItemViewState();
+  State createState() => QuestionnaireDisplayItemViewState();
 }
 
-class QuestionnaireDateTimeItemViewState
+class QuestionnaireDisplayItemViewState
     extends QuestionnaireItemViewState<QuestionnaireDisplayItemView> {
   @override
   bool get handleControllerErrorManually => false;
