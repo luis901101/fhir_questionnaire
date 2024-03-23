@@ -245,6 +245,7 @@ class QuestionnairePageState extends State<QuestionnairePage> {
   }
 
   void onSubmit(QuestionnaireResponse questionnaireResponse) async {
+    Navigator.pop(context);
     var prettyString = const JsonEncoder.withIndent('  ')
         .convert(questionnaireResponse.toJson());
     // ignore: avoid_print

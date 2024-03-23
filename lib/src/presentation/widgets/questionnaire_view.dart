@@ -176,8 +176,7 @@ class QuestionnaireViewState extends State<QuestionnaireView>
       body: UnfocusView(
         child: isLoading
             ? const Padding(
-                padding: EdgeInsets.only(
-                    top: 16, left: 16, right: 16, bottom: fabSize + 64),
+                padding: EdgeInsets.all(16),
                 child: QuestionnaireLoadingView(),
               )
             : Scrollbar(
