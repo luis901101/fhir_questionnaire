@@ -20,10 +20,13 @@ class QuestionnaireView extends StatefulWidget {
   final bool isLoading;
 
   /// Indicates what should be the fallback localization if loalce is not
-  /// supported
+  /// supported.
+  /// Defaults to English
   final QuestionnaireBaseLocalization? defaultLocalization;
 
-  /// Indicates the definition of each supported localizations.
+  /// Indicates the definition of extra supported localizations.
+  /// By default Spanish and English are supported, but you can set
+  /// other localizations on this List to be considered.
   final List<QuestionnaireBaseLocalization>? localizations;
 
   /// The expected locale to show, by default Platform locale is used.
@@ -173,9 +176,14 @@ class QuestionnaireViewState extends State<QuestionnaireView>
       ),
       body: UnfocusView(
         child: isLoading
-            ? const QuestionnaireLoadingView()
+            ? const Padding(
+                padding: EdgeInsets.only(
+                    top: 16, left: 16, right: 16, bottom: fabSize + 64),
+                child: QuestionnaireLoadingView(),
+              )
             : Scrollbar(
                 child: ListView.builder(
+                    primary: true,
                     addAutomaticKeepAlives: true,
                     padding: const EdgeInsets.only(
                         top: 16, left: 16, right: 16, bottom: fabSize + 64),

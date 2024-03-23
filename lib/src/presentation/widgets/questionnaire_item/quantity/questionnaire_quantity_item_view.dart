@@ -64,6 +64,12 @@ class QuestionnaireDateTimeItemViewState
 
   @override
   Widget buildBody(BuildContext context) {
+    final theme = Theme.of(context);
+    final noInputBorder =
+        theme.inputDecorationTheme.border is! OutlineInputBorder ||
+            (theme.inputDecorationTheme.border?.borderSide.style ==
+                    BorderStyle.none &&
+                theme.inputDecorationTheme.border?.borderSide.width == 0);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -96,65 +102,70 @@ class QuestionnaireDateTimeItemViewState
             );
           },
           decoration: InputDecoration(
-            prefixIcon: Padding(
-              padding: const EdgeInsets.only(right: 4.0),
-              child: SizedBox(
-                width: 70,
-                child: CustomDropDownButtonFormField.buildDropDown<
-                        QuestionnaireCustomQuantityComparator>(
-                    controller: comparatorController,
-                    disabled: isReadOnly,
-                    values: QuestionnaireCustomQuantityComparator.values,
-                    itemBuilder: (item, pos) {
-                      return Align(
-                        alignment: Alignment.centerRight,
-                        child: FittedBox(
-                          child: Text(
-                            item.symbol,
-                            textAlign: TextAlign.center,
+            prefixIcon: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: 70,
+                  child: CustomDropDownButtonFormField.buildDropDown<
+                          QuestionnaireCustomQuantityComparator>(
+                      controller: comparatorController,
+                      disabled: isReadOnly,
+                      values: QuestionnaireCustomQuantityComparator.values,
+                      itemBuilder: (item, pos) {
+                        return Align(
+                          alignment: Alignment.centerRight,
+                          child: FittedBox(
+                            child: Text(
+                              item.symbol,
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                    onChanged: (comparator) {
-                      value = value.copyWith(
-                        comparator: comparator?.asQuantityComparator,
-                      );
-                    },
-                    inputDecoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                      borderRadius: BorderRadius.horizontal(
-                        left: Radius.circular(100),
-                      ),
-                    ))),
-              ),
-            ),
-            suffixIcon: Padding(
-              padding: const EdgeInsets.only(left: 4.0),
-              child: SizedBox(
-                width: 80,
-                child: CustomTextField(
-                  controller: unitEditingController,
-                  focusNode: unitEditingController.focusNode,
-                  enabled: !isReadOnly && fixedUnit == null,
-                  maxLength: maxLength,
-                  useCustomButton: false,
-                  textAlign: TextAlign.center,
-                  textInputAction: TextInputAction.next,
-                  onChanged: (text) {
-                    value = value.copyWith(
-                      unit: text.isEmpty ? null : text,
-                    );
-                  },
-                  decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.all(12),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.horizontal(
-                          right: Radius.circular(100),
-                        ),
-                      )),
+                        );
+                      },
+                      onChanged: (comparator) {
+                        value = value.copyWith(
+                          comparator: comparator?.asQuantityComparator,
+                        );
+                      },
+                      inputDecoration: const InputDecoration()),
                 ),
-              ),
+                if (noInputBorder)
+                  const SizedBox(height: 20, child: VerticalDivider()),
+                const SizedBox(
+                  width: 8.0,
+                ),
+              ],
+            ),
+            suffixIcon: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (noInputBorder)
+                  const SizedBox(height: 20, child: VerticalDivider()),
+                const SizedBox(
+                  width: 8.0,
+                ),
+                SizedBox(
+                  width: 80,
+                  child: CustomTextField(
+                    controller: unitEditingController,
+                    focusNode: unitEditingController.focusNode,
+                    enabled: !isReadOnly && fixedUnit == null,
+                    maxLength: maxLength,
+                    useCustomButton: false,
+                    textAlign: TextAlign.center,
+                    textInputAction: TextInputAction.next,
+                    onChanged: (text) {
+                      value = value.copyWith(
+                        unit: text.isEmpty ? null : text,
+                      );
+                    },
+                    decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.all(12),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
