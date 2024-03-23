@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
-import 'package:fhir_questionnaire/src/logic/utils/iterable_utils.dart';
 import 'package:fhir_questionnaire/src/model/questionnaire_item_enable_when_bundle.dart';
 import 'package:fhir_questionnaire/src/model/questionnaire_item_enable_when_controller.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/attachment/questionnaire_attachment_item_view.dart';
