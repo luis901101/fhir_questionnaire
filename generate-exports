@@ -15,4 +15,4 @@ done < <(find . -type f -name "*.dart") >> ../package_temp.dart
 cd ../
 mv package_temp.dart fhir_questionnaire.dart
 
-echo "Generated successfully"
+echo "Generated exports successfully"

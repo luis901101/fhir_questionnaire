@@ -1,5 +1,13 @@
 import 'package:fhir/r4.dart';
 
+extension CodeableConceptUtils on CodeableConcept {
+  String? get title => text ?? coding?.firstOrNull?.title;
+}
+
+extension CodingUtils on Coding {
+  String? get title => display ?? code?.value ?? system?.value?.toString();
+}
+
 extension FhirDateUtils on FhirDate {
   DateTime get asDateTime => DateTime(year, month, day);
 }
@@ -15,7 +23,7 @@ extension FhirDateTimeUtils on FhirDateTime {
 }
 
 extension QuestionnaireItemUtils on QuestionnaireItem {
-  String? get title => text ?? code?.firstOrNull?.display;
+  String? get title => text ?? code?.firstOrNull?.title;
 }
 
 extension QuestionnaireUtils on Questionnaire {
