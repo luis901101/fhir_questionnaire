@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:example/attachment_utils.dart';
+import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:fhir/r4.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,19 +21,20 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<InputDecorationTheme?>(
-        stream: inputDecorationThemeStream.stream,
-        initialData: null,
-        builder: (context, snapshot) {
-          return MaterialApp(
-            title: 'FHIR Questionnaire Demo',
-            scrollBehavior: const CustomScrollBehavior(),
-            theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-                useMaterial3: true,
-                inputDecorationTheme: snapshot.data),
-            home: const MyHomePage(),
-          );
-        });
+      stream: inputDecorationThemeStream.stream,
+      initialData: null,
+      builder: (context, snapshot) {
+        return MaterialApp(
+          title: 'FHIR Questionnaire Demo',
+          scrollBehavior: const CustomScrollBehavior(),
+          theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+              useMaterial3: true,
+              inputDecorationTheme: snapshot.data),
+          home: const MyHomePage(),
+        );
+      },
+    );
   }
 }
 
@@ -157,7 +158,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   items: inputDecorationThemes
                       .map((e) => DropdownMenuItem<InputDecorationTheme>(
                             value: e.value,
-                            child: Text(e.name),
+                            child: Text(
+                              e.name,
+                              style: const TextStyle(fontSize: 14),
+                            ),
                           ))
                       .toList(),
                   onChanged: (value) {
