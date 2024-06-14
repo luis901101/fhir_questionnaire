@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:example/attachment_utils.dart';
+import 'package:example/questionnaire_utils.dart';
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -194,10 +196,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Questionnaire get questionnaire =>
       Questionnaire.fromJsonString(switch (selectedQuestionnaire) {
-        1 => QuestionnaireUtils.samplePrapare,
-        2 => QuestionnaireUtils.samplePHQ9,
-        3 => QuestionnaireUtils.sampleGAD7,
-        0 || _ => QuestionnaireUtils.sampleGeneric,
+        1 => QuestionnaireSamples.samplePrapare,
+        2 => QuestionnaireSamples.samplePHQ9,
+        3 => QuestionnaireSamples.sampleGAD7,
+        0 || _ => QuestionnaireSamples.sampleGeneric,
       });
 }
 
