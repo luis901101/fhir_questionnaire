@@ -63,10 +63,3 @@ QuestionnaireView(
 <img src="https://raw.githubusercontent.com/luis901101/fhir_questionnaire/main/example/doc/gif/demo.gif" width="230"/>
 </a>
 </div>
-
-## Contribution guide
-
-For managing flutter/dart version of this project we use [fvm](https://fvm.app/). 
-after cloning the project please read the current flutter version used for developing this project from `.fvmrc` and run `fvm use x.x.x` to setup flutter in the cloned repo.
-
-Please read more about fvm [docs](https://fvm.app/documentation/getting-started) for more information about fvm.
