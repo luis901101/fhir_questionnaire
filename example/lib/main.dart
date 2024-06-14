@@ -158,9 +158,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   items: inputDecorationThemes
                       .map((e) => DropdownMenuItem<InputDecorationTheme>(
                             value: e.value,
-                            child: Text(
-                              e.name,
-                              style: const TextStyle(fontSize: 14),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.78,
+                              child: Text(e.name),
                             ),
                           ))
                       .toList(),
