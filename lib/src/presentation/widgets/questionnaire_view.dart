@@ -138,8 +138,9 @@ class QuestionnaireViewState extends State<QuestionnaireView>
 
   Future<void> buildQuestionnaireItems() async {
     itemBundles = await QuestionnaireController.buildQuestionnaireItems(
-        questionnaire,
-        onAttachmentLoaded: widget.onAttachmentLoaded);
+      questionnaire.item,
+      onAttachmentLoaded: widget.onAttachmentLoaded,
+    );
     loading(false);
   }
 
