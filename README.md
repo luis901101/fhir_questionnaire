@@ -9,7 +9,7 @@ This package takes care building the UI of a **FHIR R4 Questionnaire**, handle b
 So far this package only supports [FHIR R4 Item Types](https://hl7.org/fhir/R4/valueset-item-type.html)
 | Item | Supported |  
 | ------ | ------ |  
-| Group | :ballot_box_with_check: |  
+| Group | :white_check_mark: |  
 | Display | :white_check_mark: |  
 | Question | :ballot_box_with_check: |  
 | Boolean | :white_check_mark: |  
