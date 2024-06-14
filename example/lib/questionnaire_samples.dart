@@ -2,6 +2,1166 @@
 import 'package:fhir/r4.dart';
 
 extension QuestionnaireSamples on Questionnaire {
+
+  /// a sample questionnaire with items of type group
+  static String get sampleWithGroups => '''
+{
+  "resourceType": "Questionnaire",
+  "title": "Questionnaire with items of type group",
+  "status": "draft",
+  "description": "Fragebogen zum Gesundheitszustand und zur aktuellen Sozial- / Pflegesituation",
+  "purpose": "Ihre Angaben dienen den verschiedenen Fachpersonen zur Gesprächsvorbereitung und gezielten Planung rund um Ihre Operation.",
+  "item": [
+    {
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "2574327208500",
+          "text": "Haben Sie Mühe ohne Unterbruch zwei Stockwerke Treppen zu steigen?",
+          "required": true,
+          "repeats": false,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        }
+      ],
+      "type": "group",
+      "linkId": "4077546882162",
+      "text": "1. Fitness"
+    },
+    {
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "6709942586423",
+          "text": "Zu hoher Blutdruck (Hypertonie), zu niedriger Blutdruck, Schlaganfall?",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "3152949168833",
+          "text": "Angina pectoris, Herzinfarkt, Herzfehler, -Rhythmusstörungen, unregelmässiger Puls?",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        }
+      ],
+      "type": "group",
+      "linkId": "2878131797431",
+      "text": "2. Kreislauf"
+    },
+    {
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "4393248775047",
+          "text": "Asthma bronchiale, chronische Bronchitis?",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        }
+      ],
+      "type": "group",
+      "linkId": "3310056703841",
+      "text": "3. Herz"
+    },
+    {
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "5702781448552",
+          "text": "Schlafapnoe mit / ohne CPAP-Gerät?",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        }
+      ],
+      "type": "group",
+      "linkId": "4345075156217",
+      "text": "4. Lunge"
+    },
+    {
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "2612604838259",
+          "text": "Nieren- oder Blasenkrankheiten, Nierensteine, Harnleitersteine?",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        }
+      ],
+      "type": "group",
+      "linkId": "1708688253082",
+      "text": "5. Nier / Blase"
+    },
+    {
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "4314724224515",
+          "text": "Gelbsucht, Hepatitis?",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        }
+      ],
+      "type": "group",
+      "linkId": "594018935372",
+      "text": "6. Leber"
+    },
+    {
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "4754619861696",
+          "text": "Magengeschwür, saures Aufstossen, Erbrechen?",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        }
+      ],
+      "type": "group",
+      "linkId": "605726712448",
+      "text": "7. Magen"
+    },
+    {
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "5569831788102",
+          "text": "Vergrösserung, Über- / Unterfunktion?",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        }
+      ],
+      "type": "group",
+      "linkId": "3825001205476",
+      "text": "8. Schilddrüse",
+      "required": true
+    },
+    {
+      "type": "group",
+      "linkId": "4977687158265",
+      "text": "9. Stoffwechsel",
+      "required": true,
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "661452156719",
+          "text": "z.B. erhöhter Cholesterinspiegel, Gicht?",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "9271010576081",
+          "text": "Zuckerkrankheit?",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        }
+      ],
+      "type": "group",
+      "linkId": "5747631826565",
+      "text": "10. Diabetes"
+    },
+    {
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "2460062078985",
+          "text": "Wirbelsäulen-, Gelenkbeschwerden?",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        }
+      ],
+      "type": "group",
+      "linkId": "3423308980338",
+      "text": "11. Skelett",
+      "required": true
+    },
+    {
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "2841428067568",
+          "text": "Migräne, Epilepsie, Lähmungen?",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        }
+      ],
+      "type": "group",
+      "linkId": "8379960498556",
+      "text": "12. Neurologie",
+      "required": true
+    },
+    {
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "1394756617692",
+          "text": "Depression, Schizophrenie?",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        }
+      ],
+      "type": "group",
+      "linkId": "8113680508349",
+      "text": "13. Psyche",
+      "required": true
+    },
+    {
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "9287908018323",
+          "text": "Thrombose / Embolie oder verstärkte Blutungsneigung (rasch oder spontan blaue Flecken?)",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        }
+      ],
+      "type": "group",
+      "linkId": "1897933505032",
+      "text": "14. Gerinnung",
+      "required": true
+    },
+    {
+      "type": "group",
+      "linkId": "3431833625433",
+      "text": "15. EKG",
+      "required": true,
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "6462856782497",
+          "text": "Wurde in den letzten Monaten bei Ihnen ein EKG angefertigt? (falls ja, bitte mitnehmen)",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "7920129927985",
+          "text": "Wurde Ihr Brustkorb in den letzten 6 Monaten geröntgt? (falls ja, bitte mitnehmen)",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        }
+      ],
+      "type": "group",
+      "linkId": "6221811869086",
+      "text": "16. Röntgen",
+      "required": true
+    },
+    {
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "884108664462",
+          "text": "Rauchen Sie?",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ],
+          "item": [
+            {
+              "type": "text",
+              "linkId": "218182296115",
+              "text": "Wenn ja: wie viel?"
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "3909361302584",
+          "text": "Trinken Sie regelmässig Alkohol?",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ],
+          "item": [
+            {
+              "type": "string",
+              "linkId": "660409947494",
+              "text": "Wenn ja: wie viel?"
+            }
+          ]
+        }
+      ],
+      "type": "group",
+      "linkId": "6287102032509",
+      "text": "17. Nikotin, Alkohol, Drogen",
+      "required": true
+    },
+    {
+      "type": "group",
+      "linkId": "6607548645781",
+      "text": "18. Familie",
+      "required": true,
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "931027239391",
+          "text": "Kam es bei Ihnen oder Blutsverwandten jemals zu einem Narkosezwischenfall?",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "linkId": "2030622070701",
+      "text": "19. Operationen & Transfusionen",
+      "required": true,
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "7402885355890",
+          "text": "Wurden Sie bereits einmal operiert oder hatten Sie eine Narkose?",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ],
+          "item": [
+            {
+              "type": "text",
+              "linkId": "6319342296554",
+              "text": "Was? / Wann?"
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "1094752609952",
+          "text": "Haben Sie in den letzten 3 Monaten eine Bluttransfusion erhalten?",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "4038754358587",
+          "text": "Ergaben sich bei Ihnen jemals Komplikationen bei einer Bluttransfusion?",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "linkId": "652569258516",
+      "text": "20.  Medikamente & Schrittmacher",
+      "required": true,
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "4826926434779",
+          "text": "Nehmen Sie Medikamente zur Blutverdünnung (z.B. Aspirin, Plavix, Marcoumar, Xarelto)?",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "drop-down",
+                    "display": "Drop down"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "4843383751995",
+          "text": "Nehmen Sie noch andere Medikamente ein und wenn ja welche?",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "drop-down",
+                    "display": "Drop down"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "3785916996480",
+          "text": "Tragen Sie ein Gerät? (z.B. Schrittmacher, Schmerz- oder Insulinpumpe, Stimulator)",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "linkId": "8149852477848",
+      "text": "21. Schwangerschaft",
+      "required": true,
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "4058791424005",
+          "text": "Sind sie möglicherweise schwanger? Stillen Sie?",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "linkId": "4726977357919",
+      "text": "22. Allergien & Unverträglichkeiten",
+      "required": true,
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "3602491290593",
+          "text": "Leiden Sie z.B. unter Heuschnupfen, Bienenstichallergie, Nesselfieber?",
+          "required": true
+        },
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "2640851293912",
+          "text": "Reaktionen auf Medikamente, Desinfektionsmittel, Heftpflaster, Latex?",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "linkId": "1610849624820",
+      "text": "23. Zahnersatz",
+      "required": true,
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "596551503350",
+          "text": "Tragen Sie einen herausnehmbaren Zahnersatz?",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Ja"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+  ''';
+
   static String get sampleGeneric => '''
   {
   "resourceType": "Questionnaire",
