@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:example/attachment_utils.dart';
+import 'package:example/questionnaire_samples.dart';
+import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:fhir/r4.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -21,19 +23,20 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<InputDecorationTheme?>(
-        stream: inputDecorationThemeStream.stream,
-        initialData: null,
-        builder: (context, snapshot) {
-          return MaterialApp(
-            title: 'FHIR Questionnaire Demo',
-            scrollBehavior: const CustomScrollBehavior(),
-            theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-                useMaterial3: true,
-                inputDecorationTheme: snapshot.data),
-            home: const MyHomePage(),
-          );
-        });
+      stream: inputDecorationThemeStream.stream,
+      initialData: null,
+      builder: (context, snapshot) {
+        return MaterialApp(
+          title: 'FHIR Questionnaire Demo',
+          scrollBehavior: const CustomScrollBehavior(),
+          theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+              useMaterial3: true,
+              inputDecorationTheme: snapshot.data),
+          home: const MyHomePage(),
+        );
+      },
+    );
   }
 }
 
@@ -157,7 +160,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   items: inputDecorationThemes
                       .map((e) => DropdownMenuItem<InputDecorationTheme>(
                             value: e.value,
-                            child: Text(e.name),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.78,
+                              child: Text(e.name),
+                            ),
                           ))
                       .toList(),
                   onChanged: (value) {
@@ -190,10 +196,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Questionnaire get questionnaire =>
       Questionnaire.fromJsonString(switch (selectedQuestionnaire) {
-        1 => QuestionnaireUtils.samplePrapare,
-        2 => QuestionnaireUtils.samplePHQ9,
-        3 => QuestionnaireUtils.sampleGAD7,
-        0 || _ => QuestionnaireUtils.sampleGeneric,
+        1 => QuestionnaireSamples.samplePrapare,
+        2 => QuestionnaireSamples.samplePHQ9,
+        3 => QuestionnaireSamples.sampleGAD7,
+        0 || _ => QuestionnaireSamples.sampleGeneric,
       });
 }
 
