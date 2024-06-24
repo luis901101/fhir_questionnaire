@@ -30,10 +30,14 @@ class QuestionnaireView extends StatefulWidget {
 
   /// The expected locale to show, by default Platform locale is used.
   final String? locale;
+
+  /// The QuestionnaireController to use for item view and response generation.
+  final QuestionnaireController? controller;
   const QuestionnaireView({
     super.key,
     required this.questionnaire,
     required this.onSubmit,
+    this.controller,
     this.onAttachmentLoaded,
     this.isLoading = false,
     this.defaultLocalization,
@@ -47,6 +51,7 @@ class QuestionnaireView extends StatefulWidget {
 
 class QuestionnaireViewState extends State<QuestionnaireView>
     with WidgetsBindingObserver {
+  late final QuestionnaireController controller;
   static const fabSize = kFloatingActionButtonMargin + 56;
   double questionnaireTitleHeight = 0;
   ScrollController? scrollController;
@@ -70,6 +75,7 @@ class QuestionnaireViewState extends State<QuestionnaireView>
   @override
   void initState() {
     super.initState();
+    controller = widget.controller ?? QuestionnaireController();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback(onCreated);
     bottomPadding = FlutterViewUtils.get().padding.bottom;
@@ -137,8 +143,7 @@ class QuestionnaireViewState extends State<QuestionnaireView>
   }
 
   Future<void> buildQuestionnaireItems() async {
-    itemBundles = await QuestionnaireController.buildQuestionnaireItems(
-        questionnaire,
+    itemBundles = controller.buildQuestionnaireItems(questionnaire,
         onAttachmentLoaded: widget.onAttachmentLoaded);
     loading(false);
   }
@@ -250,18 +255,8 @@ class QuestionnaireViewState extends State<QuestionnaireView>
 
   void onSubmit() {
     if (validate()) {
-      final questionnaireResponse = QuestionnaireController.generateResponse(
+      final questionnaireResponse = controller.generateResponse(
           questionnaire: questionnaire, itemBundles: itemBundles);
-      // if (kDebugMode) {
-      //   var prettyString = const JsonEncoder.withIndent('  ')
-      //       .convert(questionnaireResponse.toJson());
-      //   print('''
-      //   ========================================================================
-      //   $prettyString
-      //   ========================================================================
-      //   ''');
-      //   return;
-      // }
       widget.onSubmit(questionnaireResponse);
     }
   }

@@ -24,6 +24,7 @@ export 'package:fhir_questionnaire/src/presentation/widgets/custom_drop_down_but
 export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_view.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_loading_view.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/unfocus_view.dart';
+export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/group/questionnaire_group_item_view.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/attachment/questionnaire_attachment_item_view.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/date/questionnaire_date_time_item_view.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/choice/questionnaire_radio_button_choice_item_view.dart';

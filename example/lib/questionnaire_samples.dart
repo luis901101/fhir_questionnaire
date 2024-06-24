@@ -1,4 +1,3 @@
-
 import 'package:fhir/r4.dart';
 
 extension QuestionnaireSamples on Questionnaire {
@@ -44,55 +43,62 @@ extension QuestionnaireSamples on Questionnaire {
       ]
     },
     {
-      "linkId": "301",
-      "text": "What is your height?",
-      "type": "quantity",
-      "initial": [
+      "linkId": "300",
+      "text": "Body Info",
+      "type": "group",
+      "item": [
         {
-          "valueQuantity": {
-            "value": 170,
-            "unit": "cm",
-            "system": "http://unitsofmeasure.org",
-            "code": "cm"
-          }
-        }
-      ]
-    },
-    {
-      "linkId": "302",
-      "text": "What is your weight?",
-      "type": "quantity",
-      "extension": [
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
-          "valueCodeableConcept": {
-            "coding": [
-              {
+          "linkId": "301",
+          "text": "What is your height?",
+          "type": "quantity",
+          "initial": [
+            {
+              "valueQuantity": {
+                "value": 170,
+                "unit": "cm",
                 "system": "http://unitsofmeasure.org",
-                "code": "kg",
-                "display": "kilograms"
+                "code": "cm"
               }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "linkId": "303",
-      "text": "What is your waist circumference?",
-      "type": "quantity",
-      "extension": [
+            }
+          ]
+        },
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "in",
-                "display": "inches"
+          "linkId": "302",
+          "text": "What is your weight?",
+          "type": "quantity",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://unitsofmeasure.org",
+                    "code": "kg",
+                    "display": "kilograms"
+                  }
+                ]
               }
-            ]
-          }
+            }
+          ]
+        },
+        {
+          "linkId": "303",
+          "text": "What is your waist circumference?",
+          "type": "quantity",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://unitsofmeasure.org",
+                    "code": "in",
+                    "display": "inches"
+                  }
+                ]
+              }
+            }
+          ]
         }
       ]
     },
@@ -122,8 +128,8 @@ extension QuestionnaireSamples on Questionnaire {
       "text": "Do you have any dietary restrictions?",
       "type": "choice",
       "answerOption": [
-        {"valueCoding": {"code": "yes", "display": "Yes"}},
-        {"valueCoding": {"code": "no", "display": "No"}}
+        { "valueCoding": { "code": "yes", "display": "Yes" } },
+        { "valueCoding": { "code": "no", "display": "No" } }
       ]
     },
     {
@@ -134,12 +140,12 @@ extension QuestionnaireSamples on Questionnaire {
         {
           "question": "104",
           "operator": "=",
-          "answerCoding": {"code": "yes"}
+          "answerCoding": { "code": "yes" }
         },
         {
           "question": "1",
           "operator": "=",
-          "answerCoding": {"code": "Luis"}
+          "answerCoding": { "code": "Luis" }
         }
       ],
       "enableBehavior": "all"
@@ -199,17 +205,17 @@ extension QuestionnaireSamples on Questionnaire {
         }
       ],
       "enableBehavior": "any"
-    },    
+    },
     {
       "linkId": "4",
       "text": "Please specify your gender",
       "required": true,
       "type": "choice",
       "answerOption": [
-        {"valueCoding": {"code": "male", "display": "Male"}},
-        {"valueCoding": {"code": "female", "display": "Female"}},
-        {"valueCoding": {"code": "other", "display": "Other"}},
-        {"valueCoding": {"code": "unknown", "display": "Prefer not to say"}}
+        { "valueCoding": { "code": "male", "display": "Male" } },
+        { "valueCoding": { "code": "female", "display": "Female" } },
+        { "valueCoding": { "code": "other", "display": "Other" } },
+        { "valueCoding": { "code": "unknown", "display": "Prefer not to say" } }
       ]
     },
     {
@@ -217,8 +223,8 @@ extension QuestionnaireSamples on Questionnaire {
       "text": "List your current medications",
       "type": "open-choice",
       "answerOption": [
-        {"valueCoding": {"code": "med1", "display": "Medication A"}},
-        {"valueCoding": {"code": "med2", "display": "Medication B"}}
+        { "valueCoding": { "code": "med1", "display": "Medication A" } },
+        { "valueCoding": { "code": "med2", "display": "Medication B" } }
       ]
     },
     {

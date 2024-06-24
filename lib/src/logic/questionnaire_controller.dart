@@ -4,7 +4,7 @@ import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/foundation.dart';
 
 class QuestionnaireController {
-  static QuestionnaireItemView? _buildChoiceItemView(
+  QuestionnaireItemView? buildChoiceItemView(
       {required QuestionnaireItem item,
       QuestionnaireItemEnableWhenController? enableWhenController}) {
     if (item.repeats?.value == true) {
@@ -29,7 +29,7 @@ class QuestionnaireController {
     }
   }
 
-  static QuestionnaireItemView? _buildOpenChoiceItemView(
+  QuestionnaireItemView? buildOpenChoiceItemView(
       {required QuestionnaireItem item,
       QuestionnaireItemEnableWhenController? enableWhenController}) {
     if (item.repeats?.value == true) {
@@ -54,7 +54,7 @@ class QuestionnaireController {
     }
   }
 
-  static QuestionnaireItemEnableWhenController? getEnableWhenController({
+  QuestionnaireItemEnableWhenController? getEnableWhenController({
     required QuestionnaireItem item,
     required List<QuestionnaireItemBundle> itemBundles,
   }) {
@@ -84,71 +84,108 @@ class QuestionnaireController {
     return controller;
   }
 
-  static Future<List<QuestionnaireItemBundle>> buildQuestionnaireItems(
-      Questionnaire questionnaire,
-      {Future<Attachment?> Function()? onAttachmentLoaded}) async {
+  List<QuestionnaireItemBundle> buildQuestionnaireItemBundles(
+      List<QuestionnaireItem>? questionnaireItems,
+      {required Future<Attachment?> Function()? onAttachmentLoaded}) {
     List<QuestionnaireItemBundle> itemBundles = [];
     try {
-      for (final QuestionnaireItem item in questionnaire.item ?? []) {
+      for (final QuestionnaireItem item in questionnaireItems ?? []) {
         QuestionnaireItemEnableWhenController? enableWhenController =
             getEnableWhenController(item: item, itemBundles: itemBundles);
         final itemType = QuestionnaireItemType.valueOf(item.type.value);
-        final itemView = switch (itemType) {
-          QuestionnaireItemType.string => QuestionnaireStringItemView(
+
+        QuestionnaireItemView? itemView;
+        List<QuestionnaireItemBundle>? children;
+
+        switch (itemType) {
+          case QuestionnaireItemType.string:
+            itemView = QuestionnaireStringItemView(
               item: item,
               enableWhenController: enableWhenController,
-            ),
-          QuestionnaireItemType.text => QuestionnaireTextItemView(
+            );
+            break;
+          case QuestionnaireItemType.text:
+            itemView = QuestionnaireTextItemView(
               item: item,
               enableWhenController: enableWhenController,
-            ),
-          QuestionnaireItemType.integer => QuestionnaireIntegerItemView(
+            );
+            break;
+          case QuestionnaireItemType.integer:
+            itemView = QuestionnaireIntegerItemView(
               item: item,
               enableWhenController: enableWhenController,
-            ),
-          QuestionnaireItemType.decimal => QuestionnaireDecimalItemView(
+            );
+            break;
+          case QuestionnaireItemType.decimal:
+            itemView = QuestionnaireDecimalItemView(
               item: item,
               enableWhenController: enableWhenController,
-            ),
-          QuestionnaireItemType.boolean => QuestionnaireBooleanItemView(
+            );
+            break;
+          case QuestionnaireItemType.boolean:
+            itemView = QuestionnaireBooleanItemView(
               item: item,
               enableWhenController: enableWhenController,
-            ),
-          QuestionnaireItemType.choice => _buildChoiceItemView(
-              item: item, enableWhenController: enableWhenController),
-          QuestionnaireItemType.openChoice => _buildOpenChoiceItemView(
-              item: item, enableWhenController: enableWhenController),
-          QuestionnaireItemType.date ||
-          QuestionnaireItemType.time ||
-          QuestionnaireItemType.dateTime =>
-            QuestionnaireDateTimeItemView(
+            );
+            break;
+          case QuestionnaireItemType.choice:
+            itemView = buildChoiceItemView(
+                item: item, enableWhenController: enableWhenController);
+            break;
+          case QuestionnaireItemType.openChoice:
+            itemView = buildOpenChoiceItemView(
+                item: item, enableWhenController: enableWhenController);
+            break;
+          case QuestionnaireItemType.date:
+          case QuestionnaireItemType.time:
+          case QuestionnaireItemType.dateTime:
+            itemView = QuestionnaireDateTimeItemView(
               item: item,
               enableWhenController: enableWhenController,
               type: DateTimeType.fromQuestionnaireItemType(itemType),
-            ),
-          QuestionnaireItemType.quantity => QuestionnaireQuantityItemView(
+            );
+            break;
+          case QuestionnaireItemType.quantity:
+            itemView = QuestionnaireQuantityItemView(
               item: item,
               enableWhenController: enableWhenController,
-            ),
-          QuestionnaireItemType.url => QuestionnaireUrlItemView(
+            );
+            break;
+          case QuestionnaireItemType.url:
+            itemView = QuestionnaireUrlItemView(
               item: item,
               enableWhenController: enableWhenController,
-            ),
-          QuestionnaireItemType.display => QuestionnaireDisplayItemView(
+            );
+            break;
+          case QuestionnaireItemType.display:
+            itemView = QuestionnaireDisplayItemView(
               item: item,
               enableWhenController: enableWhenController,
-            ),
-          QuestionnaireItemType.attachment => QuestionnaireAttachmentItemView(
+            );
+            break;
+          case QuestionnaireItemType.attachment:
+            itemView = QuestionnaireAttachmentItemView(
               item: item,
               onAttachmentLoaded: onAttachmentLoaded,
               enableWhenController: enableWhenController,
-            ),
-          _ => null,
-        };
+            );
+            break;
+          case QuestionnaireItemType.group:
+            children = buildQuestionnaireItemBundles(item.item,
+                onAttachmentLoaded: onAttachmentLoaded);
+            itemView = QuestionnaireGroupItemView(
+              item: item,
+              enableWhenController: enableWhenController,
+              children: children.map((itemBundle) => itemBundle.view).toList(),
+            );
+            break;
+          default:
+        }
         if (itemView != null) {
           itemBundles.add(QuestionnaireItemBundle(
             item: item,
             view: itemView,
+            children: children,
             controller: itemView.controller,
           ));
         }
@@ -161,7 +198,22 @@ class QuestionnaireController {
     return itemBundles;
   }
 
-  static List<QuestionnaireResponseAnswer> _generateChoiceAnswer(dynamic data) {
+  List<QuestionnaireItemBundle> buildQuestionnaireItems(
+      Questionnaire questionnaire,
+      {Future<Attachment?> Function()? onAttachmentLoaded}) {
+    List<QuestionnaireItemBundle> itemBundles = [];
+    try {
+      itemBundles.addAll(buildQuestionnaireItemBundles(questionnaire.item,
+          onAttachmentLoaded: onAttachmentLoaded));
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+    return itemBundles;
+  }
+
+  List<QuestionnaireResponseAnswer> generateChoiceAnswer(dynamic data) {
     final answers = <QuestionnaireResponseAnswer>[];
     if (data is QuestionnaireAnswerOption) {
       answers.add(QuestionnaireResponseAnswer(
@@ -171,16 +223,28 @@ class QuestionnaireController {
       ));
     } else if (data is List<QuestionnaireAnswerOption>) {
       for (final answerOption in data) {
-        answers.addAll(_generateChoiceAnswer(answerOption));
+        answers.addAll(generateChoiceAnswer(answerOption));
       }
     }
 
     return answers;
   }
 
-  static QuestionnaireResponse generateResponse(
+  QuestionnaireResponse generateResponse(
       {required Questionnaire questionnaire,
       required List<QuestionnaireItemBundle> itemBundles}) {
+    List<QuestionnaireResponseItem> itemResponses =
+        generateItemResponses(itemBundles: itemBundles);
+
+    return QuestionnaireResponse(
+      questionnaire: questionnaire.asFhirCanonical,
+      status: QuestionnaireResponseStatus.completed.asFhirCode,
+      item: itemResponses,
+    );
+  }
+
+  List<QuestionnaireResponseItem> generateItemResponses(
+      {required List<QuestionnaireItemBundle> itemBundles}) {
     List<QuestionnaireResponseItem> items = [];
     for (final itemBundle in itemBundles) {
       List<QuestionnaireResponseAnswer>? answers;
@@ -231,7 +295,7 @@ class QuestionnaireController {
           break;
         case QuestionnaireItemType.choice:
         case QuestionnaireItemType.openChoice:
-          answers = _generateChoiceAnswer(itemBundle.controller.rawValue);
+          answers = generateChoiceAnswer(itemBundle.controller.rawValue);
           break;
         case QuestionnaireItemType.date:
         case QuestionnaireItemType.time:
@@ -275,6 +339,14 @@ class QuestionnaireController {
                   )
                 ];
           break;
+
+        /// The answers of a group are the answers of the children
+        case QuestionnaireItemType.group:
+          if (itemBundle.children.isNotEmpty) {
+            items.addAll(
+                generateItemResponses(itemBundles: itemBundle.children!));
+          }
+          continue;
         default:
       }
 
@@ -286,9 +358,6 @@ class QuestionnaireController {
       ));
     }
 
-    return QuestionnaireResponse(
-        questionnaire: questionnaire.asFhirCanonical,
-        status: QuestionnaireResponseStatus.completed.asFhirCode,
-        item: items);
+    return items;
   }
 }

@@ -6,12 +6,14 @@ class QuestionnaireItemBundle {
   /// Use it just to group views
   final String? groupId;
   final QuestionnaireItem item;
+  final List<QuestionnaireItemBundle>? children;
   final FieldController controller;
   final QuestionnaireItemView view;
 
   const QuestionnaireItemBundle({
     this.groupId,
     required this.item,
+    this.children,
     required this.controller,
     required this.view,
   });

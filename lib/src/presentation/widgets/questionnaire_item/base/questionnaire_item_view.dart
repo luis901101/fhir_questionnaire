@@ -9,11 +9,13 @@ import 'package:fhir/r4.dart';
 abstract class QuestionnaireItemView extends StatefulWidget {
   final FieldController controller;
   final QuestionnaireItem item;
+  final List<QuestionnaireItemView>? children;
   final QuestionnaireItemEnableWhenController? enableWhenController;
   const QuestionnaireItemView(
       {super.key,
       required this.controller,
       required this.item,
+      this.children,
       this.enableWhenController});
 }
 
@@ -25,6 +27,7 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
   QuestionnaireItemEnableWhenController? get enableWhenController =>
       widget.enableWhenController;
   QuestionnaireItem get item => widget.item;
+  List<QuestionnaireItemView>? get children => widget.children;
 
   bool get isRequired => item.required_?.value ?? false;
   bool get isReadOnly => item.readOnly?.value ?? false;

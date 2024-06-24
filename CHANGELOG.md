@@ -9,6 +9,14 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## 2.0.0
+### Added
+- Added support for `group` item type.
+- Added `QuestionnaireController? controller` as param to `QuestionnaireView` to allow control over how the items and response are generated for `QuestionnaireView`.
+
+### Changed
+- `QuestionnaireController` refactored to support extension and function override.
+
 ## 1.0.1
 ### Added
 - `CodeableConcept` extension added to easily access title.

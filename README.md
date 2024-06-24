@@ -9,7 +9,7 @@ This package takes care building the UI of a **FHIR R4 Questionnaire**, handle b
 So far this package only supports [FHIR R4 Item Types](https://hl7.org/fhir/R4/valueset-item-type.html)
 | Item | Supported |  
 | ------ | ------ |  
-| Group | :ballot_box_with_check: |  
+| Group | :white_check_mark: |  
 | Display | :white_check_mark: |  
 | Question | :ballot_box_with_check: |  
 | Boolean | :white_check_mark: |  
@@ -39,6 +39,7 @@ QuestionnaireView(
     localizations: localizations, // To add support for extra localization 
     isLoading: loading, // Wether is some ongoing operation before loading the UI 
     onSubmit: onSubmit, // Callback to get the QuestionnaireResponse
+    controller: controller, // The QuestionnaireController to use for item view and response generation.
 )
 ```
 
@@ -50,6 +51,7 @@ QuestionnaireView(
 5. **bool isLoading**: use this to indicate there is an ongoing operation, for instance if you need to make an API request to load your **Questionnaire** you can set `isLoading = true` so the `QuestionnaireView` will show a Shimmer loading effect view.
 6. **Future<Attachment?> Function()? onAttachmentLoaded**: To make this package simpler and compatible with all Flutter supported platforms, the feature to load an attachment is delegated to the App, so you have to handle this logic by implementing this function and returning an [Attachment](https://hl7.org/fhir/R4/datatypes.html#attachment) instance according to FHIR.
 7. **ValueChanged<QuestionnaireResponse> onSubmit**: This is the callback that will be triggered once the user taps on the Submit button, and you will get a `QuestionnaireResponse` instance ready, you just have to set the subject or whatever extra data you consider necessary but the answers will covered.
+8. **QuestionnaireController? controller**: This is the controller to be used for items and response generation within the `QuestionnaireView`, the purpose of this controller here is to allow you to use an instance of an extension of `QuestionnaireController` so you can override the behavior and widgets.
 
 ## Some extra notes
 1. This widget will use the app Theme to build, so if you want to change colors, InputDecorations, etc, you just have to change it in your app Theme. Also all the package widgets are public and exposed so you could override it if necessary.
