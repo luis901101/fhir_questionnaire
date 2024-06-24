@@ -110,7 +110,10 @@ class QuestionnaireController {
               controller: groupTitleItemView.controller,
               view: groupTitleItemView,
             ),
-            ...(await buildQuestionnaireItems(childItems)),
+            ...(await buildQuestionnaireItems(
+              childItems,
+              onAttachmentLoaded: onAttachmentLoaded,
+            )),
           ]);
         } else {
           final itemView = switch (itemType) {
