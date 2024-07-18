@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:fhir_questionnaire/src/logic/utils/text_utils.dart';
 import 'package:fhir_questionnaire/src/model/questionnaire_item_enable_when_controller.dart';
 import 'package:fhir_questionnaire/src/presentation/utils/validation_utils.dart';
@@ -34,6 +35,15 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
   int? get maxLength => item.maxLength?.value;
   @override
   bool get wantKeepAlive => false;
+
+  bool get isHidden =>
+      (item.extension_ ?? [])
+          .firstWhereOrNull((ext) =>
+              ext.url ==
+              FhirUri(
+                  'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden'))
+          ?.valueBoolean ==
+      FhirBoolean(true);
 
   bool get handleControllerErrorManually => true;
 
@@ -77,19 +87,21 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return AnimatedSize(
-      duration: const Duration(milliseconds: 300),
-      child: SizedBox(
-        height: isEnabled ? null : 0,
-        child: SizeRenderer(
-          onSizeRendered: onSizeRendered,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 24.0),
-            child: buildBody(context),
-          ),
-        ),
-      ),
-    );
+    return isHidden
+        ? const SizedBox.shrink()
+        : AnimatedSize(
+            duration: const Duration(milliseconds: 300),
+            child: SizedBox(
+              height: isEnabled ? null : 0,
+              child: SizeRenderer(
+                onSizeRendered: onSizeRendered,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 24.0),
+                  child: buildBody(context),
+                ),
+              ),
+            ),
+          );
   }
 
   void onSizeRendered(Size size, GlobalKey key) {
