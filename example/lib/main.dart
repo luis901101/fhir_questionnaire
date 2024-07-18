@@ -193,6 +193,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  /*
   Questionnaire get questionnaire =>
       Questionnaire.fromJsonString(switch (selectedQuestionnaire) {
         1 => QuestionnaireSamples.samplePrapare,
@@ -200,6 +201,9 @@ class _MyHomePageState extends State<MyHomePage> {
         3 => QuestionnaireSamples.sampleGAD7,
         0 || _ => QuestionnaireSamples.sampleGeneric,
       });
+  */
+  Questionnaire get questionnaire =>
+      Questionnaire.fromJsonString(QuestionnaireSamples.bmiQuestionnaire);
 }
 
 class QuestionnairePage extends StatefulWidget {

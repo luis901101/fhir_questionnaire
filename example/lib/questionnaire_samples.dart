@@ -1,6 +1,75 @@
 import 'package:fhir/r4.dart';
 
 extension QuestionnaireSamples on Questionnaire {
+  static String get bmiQuestionnaire => '''
+  {
+          "resourceType": "Questionnaire",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/variable",
+              "valueExpression": {
+                "name": "weight",
+                "language": "text/fhirpath",
+                "expression": "%resource.repeat(item).where(linkId='3.3.1').item.answer.value"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/variable",
+              "valueExpression": {
+                "name": "height",
+                "language": "text/fhirpath",
+                "expression": "%resource.repeat(item).where(linkId='3.3.2').item.answer.value*0.0254"
+              }
+            }
+          ],
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                  "valueCoding": {
+                    "system": "http://unitsofmeasure.org",
+                    "code": "kg"
+                  }
+                }
+              ],
+              "linkId": "3.3.1",
+              "text": "Weight (kg)",
+              "type": "decimal"
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                  "valueCoding": {
+                    "system": "http://unitsofmeasure.org",
+                    "code": "[in_i]"
+                  }
+                }
+              ],
+              "linkId": "3.3.2",
+              "text": "Body Height (inches)",
+              "type": "decimal"
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
+                  "valueExpression": {
+                    "description": "BMI Calculation",
+                    "language": "text/fhirpath",
+                    "expression": "(%weight/(%height.power(2))).round(1)"
+                  }
+                }
+              ],
+              "linkId": "3.3.3",
+              "text": "Your Body Mass Index (BMI) is ",
+              "type": "decimal",
+              "readOnly": true
+            }
+          ]
+        }
+  ''';
   static String get sampleGeneric => '''
   {
   "resourceType": "Questionnaire",
