@@ -255,24 +255,35 @@ class QuestionnaireController {
       final expressionName = exp.valueExpression?.name?.value;
 
       if (expression == null) {
-        print('Calculated expression has no expression, skipping.');
+        if (kDebugMode) {
+          print('Calculated expression has no expression, skipping.');
+        }
         continue;
       }
 
       if (expressionName == null) {
-        print('Calculated expression has no name, skiping.');
+        if (kDebugMode) {
+          print('Calculated expression has no name, skiping.');
+        }
         continue;
       }
 
-      final result = walkFhirPath(
-        environment: calculatedResults,
-        pathExpression: expression,
-        context: questionnaireResponse.toJson(),
-        resource: questionnaireResponse.toJson(),
-      );
+      try {
+        final result = walkFhirPath(
+          environment: calculatedResults,
+          pathExpression: expression,
+          context: questionnaireResponse.toJson(),
+          resource: questionnaireResponse.toJson(),
+        );
 
-      if (result.isNotEmpty) {
-        calculatedResults['%$expressionName'] = result.first;
+        if (result.isNotEmpty) {
+          calculatedResults['%$expressionName'] = result.first;
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          print(
+              'Failed to compute fhirpath expression "$expression", subsequent evaluations may fail as well: $e');
+        }
       }
     }
 
@@ -351,6 +362,9 @@ class QuestionnaireController {
     for (int itemIndex = 0; itemIndex < updatedList.length; itemIndex++) {
       // skip items that already have an answer
       if (updatedList[itemIndex].answer != null) {
+        // remove any extensions that we copied over from the build process
+        updatedList[itemIndex] =
+            updatedList[itemIndex].copyWith(extension_: null);
         continue;
       }
 
@@ -370,47 +384,51 @@ class QuestionnaireController {
             calculatedExpressionExtensions.first.valueExpression?.expression;
 
         if (expression == null) {
-          print('Calculated expression has no expression, skipping.');
+          if (kDebugMode) {
+            print('Calculated expression has no expression, skipping.');
+          }
           continue;
         }
 
-        final result = walkFhirPath(
-          environment: environment,
-          pathExpression: expression,
-          context: questionnaireResponse.toJson(),
-          resource: questionnaireResponse.toJson(),
-        );
-
-        if (result.isNotEmpty) {
-          final resultValue = result.first;
-
-          QuestionnaireResponseAnswer? answer;
-
-          if (resultValue is int) {
-            answer = QuestionnaireResponseAnswer(
-              valueInteger: FhirInteger(resultValue),
-            );
-          } else if (resultValue is num) {
-            answer = QuestionnaireResponseAnswer(
-              valueDecimal: FhirDecimal(resultValue),
-            );
-          } else {
-            answer = QuestionnaireResponseAnswer(valueString: resultValue);
-          }
-
-          updatedList[itemIndex] = itemList[itemIndex].copyWith(
-            // insert calculation result as answer
-            answer: [answer],
-            // remove extension to indicate completion
-            // extension_: itemList[itemIndex]
-            //    .extension_
-            //    ?.where((ext) =>
-            //        ext.fhirId !=
-            //        calculatedExpressionExtensions.first.fhirId)
-            //    .toList(),
+        try {
+          final result = walkFhirPath(
+            environment: environment,
+            pathExpression: expression,
+            context: questionnaireResponse.toJson(),
+            resource: questionnaireResponse.toJson(),
           );
 
-          return updatedList;
+          if (result.isNotEmpty) {
+            final resultValue = result.first;
+
+            QuestionnaireResponseAnswer? answer;
+
+            if (resultValue is int) {
+              answer = QuestionnaireResponseAnswer(
+                valueInteger: FhirInteger(resultValue),
+              );
+            } else if (resultValue is num) {
+              answer = QuestionnaireResponseAnswer(
+                valueDecimal: FhirDecimal(resultValue),
+              );
+            } else {
+              answer = QuestionnaireResponseAnswer(valueString: resultValue);
+            }
+
+            updatedList[itemIndex] = itemList[itemIndex].copyWith(
+              // insert calculation result as answer
+              answer: [answer],
+              // remove extensions again that were inserted in the builder
+              extension_: null,
+            );
+
+            return updatedList;
+          }
+        } catch (e) {
+          if (kDebugMode) {
+            print(
+                'Failed to compute fhirpath expression "$expression", subsequent evaluations may fail as well: $e');
+          }
         }
       }
     }
