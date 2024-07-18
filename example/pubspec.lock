@@ -81,6 +81,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.12.0"
+  fhir_path:
+    dependency: transitive
+    description:
+      path: "."
+      ref: update-fhir-0-12-0
+      resolved-ref: "286c5394e9e6ef3e7cea73b08890d36ad2b360ce"
+      url: "https://github.com/evoleen/fhir_path.git"
+    source: git
+    version: "0.11.3"
   fhir_questionnaire:
     dependency: "direct main"
     description:
@@ -436,6 +445,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.2"
+  ucum:
+    dependency: transitive
+    description:
+      name: ucum
+      sha256: "45767ceaa8376da962cfabe48facbcdeb27cb92005cf89b6d4abf89d9e2ce796"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0"
   uuid:
     dependency: transitive
     description:

@@ -10,7 +10,7 @@ extension QuestionnaireSamples on Questionnaire {
               "valueExpression": {
                 "name": "weight",
                 "language": "text/fhirpath",
-                "expression": "%resource.repeat(item).where(linkId='3.3.1').item.answer.value"
+                "expression": "%resource.repeat(item).where(linkId='3.3.1').answer.value"
               }
             },
             {
@@ -18,7 +18,7 @@ extension QuestionnaireSamples on Questionnaire {
               "valueExpression": {
                 "name": "height",
                 "language": "text/fhirpath",
-                "expression": "%resource.repeat(item).where(linkId='3.3.2').item.answer.value*0.0254"
+                "expression": "%resource.repeat(item).where(linkId='3.3.2').answer.value*0.0254"
               }
             }
           ],
