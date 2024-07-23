@@ -11,10 +11,14 @@ class QuestionnaireItemBundle {
   final QuestionnaireItemView view;
 
   const QuestionnaireItemBundle({
-    this.groupId,
+    required this.groupId,
     required this.item,
     this.children,
     required this.controller,
     required this.view,
   });
+
+  /// Returns linkId of the questionnaire [item] prefixed by its parent item
+  /// link ids, showing a unique id for this questionnaire [item].
+  String get uid => '$groupId/${item.linkId}';
 }
