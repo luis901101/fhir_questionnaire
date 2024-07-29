@@ -4,7 +4,9 @@ import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/foundation.dart';
 
 class QuestionnaireController {
-  QuestionnaireController();
+  QuestionnaireController({
+    this.questionnaireResponseItemMapper,
+  });
 
   /// Allows modification on a [QuestionnaireResponseItem] when generating
   /// the [QuestionnaireResponse] object. This callback would be a great
