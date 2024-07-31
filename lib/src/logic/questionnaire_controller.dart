@@ -4,6 +4,16 @@ import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/foundation.dart';
 
 class QuestionnaireController {
+  QuestionnaireController({
+    this.overrideQuestionnaireItemMapper,
+  });
+
+  QuestionnaireItemView? Function(
+    QuestionnaireItem questionnaireItem,
+    Future<Attachment?> Function()? onAttachmentLoaded,
+    QuestionnaireItemEnableWhenController? enableWhenController,
+  )? overrideQuestionnaireItemMapper;
+
   QuestionnaireItemView? buildChoiceItemView(
       {required QuestionnaireItem item,
       QuestionnaireItemEnableWhenController? enableWhenController}) {
@@ -87,11 +97,6 @@ class QuestionnaireController {
   List<QuestionnaireItemBundle> buildQuestionnaireItemBundles(
     List<QuestionnaireItem>? questionnaireItems, {
     required Future<Attachment?> Function()? onAttachmentLoaded,
-    final QuestionnaireItemView? Function(
-      QuestionnaireItem questionnaireItem,
-      Future<Attachment?> Function()? onAttachmentLoaded,
-      QuestionnaireItemEnableWhenController? enableWhenController,
-    )? overrideQuestionnaireItemMapper,
   }) {
     List<QuestionnaireItemBundle> itemBundles = [];
     try {
@@ -193,7 +198,6 @@ class QuestionnaireController {
               children = buildQuestionnaireItemBundles(
                 item.item,
                 onAttachmentLoaded: onAttachmentLoaded,
-                overrideQuestionnaireItemMapper: overrideQuestionnaireItemMapper,
               );
               itemView = QuestionnaireGroupItemView(
                 item: item,
