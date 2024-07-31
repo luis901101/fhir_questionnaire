@@ -85,8 +85,14 @@ class QuestionnaireController {
   }
 
   List<QuestionnaireItemBundle> buildQuestionnaireItemBundles(
-      List<QuestionnaireItem>? questionnaireItems,
-      {required Future<Attachment?> Function()? onAttachmentLoaded}) {
+    List<QuestionnaireItem>? questionnaireItems, {
+    required Future<Attachment?> Function()? onAttachmentLoaded,
+    final QuestionnaireItemView? Function(
+      QuestionnaireItem questionnaireItem,
+      Future<Attachment?> Function()? onAttachmentLoaded,
+      QuestionnaireItemEnableWhenController? enableWhenController,
+    )? overrideQuestionnaireItemMapper,
+  }) {
     List<QuestionnaireItemBundle> itemBundles = [];
     try {
       for (final QuestionnaireItem item in questionnaireItems ?? []) {
@@ -94,100 +100,118 @@ class QuestionnaireController {
             getEnableWhenController(item: item, itemBundles: itemBundles);
         final itemType = QuestionnaireItemType.valueOf(item.type.value);
 
-        QuestionnaireItemView? itemView;
-        List<QuestionnaireItemBundle>? children;
+        final customItemView = overrideQuestionnaireItemMapper?.call(
+          item,
+          onAttachmentLoaded,
+          enableWhenController,
+        );
 
-        switch (itemType) {
-          case QuestionnaireItemType.string:
-            itemView = QuestionnaireStringItemView(
-              item: item,
-              enableWhenController: enableWhenController,
-            );
-            break;
-          case QuestionnaireItemType.text:
-            itemView = QuestionnaireTextItemView(
-              item: item,
-              enableWhenController: enableWhenController,
-            );
-            break;
-          case QuestionnaireItemType.integer:
-            itemView = QuestionnaireIntegerItemView(
-              item: item,
-              enableWhenController: enableWhenController,
-            );
-            break;
-          case QuestionnaireItemType.decimal:
-            itemView = QuestionnaireDecimalItemView(
-              item: item,
-              enableWhenController: enableWhenController,
-            );
-            break;
-          case QuestionnaireItemType.boolean:
-            itemView = QuestionnaireBooleanItemView(
-              item: item,
-              enableWhenController: enableWhenController,
-            );
-            break;
-          case QuestionnaireItemType.choice:
-            itemView = buildChoiceItemView(
-                item: item, enableWhenController: enableWhenController);
-            break;
-          case QuestionnaireItemType.openChoice:
-            itemView = buildOpenChoiceItemView(
-                item: item, enableWhenController: enableWhenController);
-            break;
-          case QuestionnaireItemType.date:
-          case QuestionnaireItemType.time:
-          case QuestionnaireItemType.dateTime:
-            itemView = QuestionnaireDateTimeItemView(
-              item: item,
-              enableWhenController: enableWhenController,
-              type: DateTimeType.fromQuestionnaireItemType(itemType),
-            );
-            break;
-          case QuestionnaireItemType.quantity:
-            itemView = QuestionnaireQuantityItemView(
-              item: item,
-              enableWhenController: enableWhenController,
-            );
-            break;
-          case QuestionnaireItemType.url:
-            itemView = QuestionnaireUrlItemView(
-              item: item,
-              enableWhenController: enableWhenController,
-            );
-            break;
-          case QuestionnaireItemType.display:
-            itemView = QuestionnaireDisplayItemView(
-              item: item,
-              enableWhenController: enableWhenController,
-            );
-            break;
-          case QuestionnaireItemType.attachment:
-            itemView = QuestionnaireAttachmentItemView(
-              item: item,
-              onAttachmentLoaded: onAttachmentLoaded,
-              enableWhenController: enableWhenController,
-            );
-            break;
-          case QuestionnaireItemType.group:
-            children = buildQuestionnaireItemBundles(item.item,
-                onAttachmentLoaded: onAttachmentLoaded);
-            itemView = QuestionnaireGroupItemView(
-              item: item,
-              enableWhenController: enableWhenController,
-              children: children.map((itemBundle) => itemBundle.view).toList(),
-            );
-            break;
-          default:
-        }
-        if (itemView != null) {
+        if (customItemView != null) {
           itemBundles.add(QuestionnaireItemBundle(
             item: item,
-            view: itemView,
-            children: children,
-            controller: itemView.controller,
+            view: customItemView,
+            controller: customItemView.controller,
           ));
+        } else {
+          QuestionnaireItemView? itemView;
+          List<QuestionnaireItemBundle>? children;
+
+          switch (itemType) {
+            case QuestionnaireItemType.string:
+              itemView = QuestionnaireStringItemView(
+                item: item,
+                enableWhenController: enableWhenController,
+              );
+              break;
+            case QuestionnaireItemType.text:
+              itemView = QuestionnaireTextItemView(
+                item: item,
+                enableWhenController: enableWhenController,
+              );
+              break;
+            case QuestionnaireItemType.integer:
+              itemView = QuestionnaireIntegerItemView(
+                item: item,
+                enableWhenController: enableWhenController,
+              );
+              break;
+            case QuestionnaireItemType.decimal:
+              itemView = QuestionnaireDecimalItemView(
+                item: item,
+                enableWhenController: enableWhenController,
+              );
+              break;
+            case QuestionnaireItemType.boolean:
+              itemView = QuestionnaireBooleanItemView(
+                item: item,
+                enableWhenController: enableWhenController,
+              );
+              break;
+            case QuestionnaireItemType.choice:
+              itemView = buildChoiceItemView(
+                  item: item, enableWhenController: enableWhenController);
+              break;
+            case QuestionnaireItemType.openChoice:
+              itemView = buildOpenChoiceItemView(
+                  item: item, enableWhenController: enableWhenController);
+              break;
+            case QuestionnaireItemType.date:
+            case QuestionnaireItemType.time:
+            case QuestionnaireItemType.dateTime:
+              itemView = QuestionnaireDateTimeItemView(
+                item: item,
+                enableWhenController: enableWhenController,
+                type: DateTimeType.fromQuestionnaireItemType(itemType),
+              );
+              break;
+            case QuestionnaireItemType.quantity:
+              itemView = QuestionnaireQuantityItemView(
+                item: item,
+                enableWhenController: enableWhenController,
+              );
+              break;
+            case QuestionnaireItemType.url:
+              itemView = QuestionnaireUrlItemView(
+                item: item,
+                enableWhenController: enableWhenController,
+              );
+              break;
+            case QuestionnaireItemType.display:
+              itemView = QuestionnaireDisplayItemView(
+                item: item,
+                enableWhenController: enableWhenController,
+              );
+              break;
+            case QuestionnaireItemType.attachment:
+              itemView = QuestionnaireAttachmentItemView(
+                item: item,
+                onAttachmentLoaded: onAttachmentLoaded,
+                enableWhenController: enableWhenController,
+              );
+              break;
+            case QuestionnaireItemType.group:
+              children = buildQuestionnaireItemBundles(
+                item.item,
+                onAttachmentLoaded: onAttachmentLoaded,
+                overrideQuestionnaireItemMapper: overrideQuestionnaireItemMapper,
+              );
+              itemView = QuestionnaireGroupItemView(
+                item: item,
+                enableWhenController: enableWhenController,
+                children:
+                    children.map((itemBundle) => itemBundle.view).toList(),
+              );
+              break;
+            default:
+          }
+          if (itemView != null) {
+            itemBundles.add(QuestionnaireItemBundle(
+              item: item,
+              view: itemView,
+              children: children,
+              controller: itemView.controller,
+            ));
+          }
         }
       }
     } catch (e) {
