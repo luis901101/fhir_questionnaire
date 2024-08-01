@@ -243,11 +243,14 @@ class QuestionnaireController {
     );
   }
 
-  List<QuestionnaireResponseItem> generateItemResponses(
-      {required List<QuestionnaireItemBundle> itemBundles}) {
+  List<QuestionnaireResponseItem> generateItemResponses({
+    required List<QuestionnaireItemBundle> itemBundles,
+  }) {
     List<QuestionnaireResponseItem> items = [];
     for (final itemBundle in itemBundles) {
+      List<QuestionnaireResponseItem>? childItems;
       List<QuestionnaireResponseAnswer>? answers;
+
       final itemType =
           QuestionnaireItemType.valueOf(itemBundle.item.type.value);
       switch (itemType) {
@@ -343,8 +346,8 @@ class QuestionnaireController {
         /// The answers of a group are the answers of the children
         case QuestionnaireItemType.group:
           if (itemBundle.children.isNotEmpty) {
-            items.addAll(
-                generateItemResponses(itemBundles: itemBundle.children!));
+            childItems =
+                generateItemResponses(itemBundles: itemBundle.children!);
           }
           continue;
         default:
@@ -355,6 +358,7 @@ class QuestionnaireController {
         definition: itemBundle.item.definition,
         text: itemBundle.item.text,
         answer: answers.isEmpty ? null : answers,
+        item: childItems,
       ));
     }
 
