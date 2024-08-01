@@ -349,7 +349,7 @@ class QuestionnaireController {
             childItems =
                 generateItemResponses(itemBundles: itemBundle.children!);
           }
-          continue;
+          break;
         default:
       }
 
