@@ -9,9 +9,10 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
-## 2.1.0
+## 3.0.0
 ### Added
-- Added support for [Calculated Expression](http://hl7.org/fhir/uv/sdc/STU3/StructureDefinition-sdc-questionnaire-calculatedExpression.html).
+- Added support for [Calculated Expression](http://hl7.org/fhir/uv/sdc/STU3/StructureDefinition-sdc-questionnaire-calculatedExpression.html). Thanks [tigloo](https://github.com/tigloo).
+- Added `uid` on `QuestionnaireItemBundle`, functions for item builder override and response override and other improvements. Thanks [easazade](https://github.com/easazade).
 
 ## 2.0.0
 ### Added

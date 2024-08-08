@@ -255,8 +255,8 @@ class QuestionnairePageState extends State<QuestionnairePage> {
     Navigator.pop(context);
     var prettyString = const JsonEncoder.withIndent('  ')
         .convert(questionnaireResponse.toJson());
-    // ignore: avoid_print
-    print('''
+
+    debugPrint('''
       ========================================================================
       $prettyString
       ========================================================================

@@ -246,7 +246,7 @@ class QuestionnaireViewState extends State<QuestionnaireView>
         duration: const Duration(milliseconds: 300), curve: Curves.ease);
     Future.delayed(const Duration(milliseconds: 200), () {
       final fieldContext = controller.key.currentContext;
-      if (fieldContext == null) return;
+      if (fieldContext == null || !fieldContext.mounted) return;
       Scrollable.ensureVisible(fieldContext,
           duration: const Duration(milliseconds: 100), curve: Curves.ease);
     }).whenComplete(() => Future.delayed(const Duration(milliseconds: 100),
