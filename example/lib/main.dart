@@ -199,7 +199,7 @@ class _MyHomePageState extends State<MyHomePage> {
         1 => QuestionnaireSamples.samplePrapare,
         2 => QuestionnaireSamples.samplePHQ9,
         3 => QuestionnaireSamples.sampleGAD7,
-        4 => QuestionnaireSamples.sampleBmiQuestionnaire,
+        4 => QuestionnaireSamples.sampleBMI,
         0 || _ => QuestionnaireSamples.sampleGeneric,
       });
 }

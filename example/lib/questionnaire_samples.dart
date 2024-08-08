@@ -2395,9 +2395,10 @@ extension QuestionnaireSamples on Questionnaire {
     "id": "13d63616-203c-4dcb-a9f1-faa4d45e76ca"
   }
   ''';
-  static String get sampleBmiQuestionnaire => '''
+  static String get sampleBMI => '''
   {
           "resourceType": "Questionnaire",
+          "id": "example-bmi-with-fhirpath",
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/variable",
@@ -2454,7 +2455,11 @@ extension QuestionnaireSamples on Questionnaire {
                     "language": "text/fhirpath",
                     "expression": "(%weight/(%height.power(2))).round(1)"
                   }
-                }
+                },
+                {
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden",
+                "valueBoolean": true
+              }
               ],
               "linkId": "3.3.3",
               "text": "Your Body Mass Index (BMI) is ",
