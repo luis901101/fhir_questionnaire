@@ -58,6 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
     (name: 'PRAPARE', value: 1),
     (name: 'PHQ-9', value: 2),
     (name: 'GAD-7', value: 3),
+    (name: 'BMI', value: 4),
   ];
   final List<({String name, InputDecorationTheme? value})>
       inputDecorationThemes = [
@@ -198,6 +199,7 @@ class _MyHomePageState extends State<MyHomePage> {
         1 => QuestionnaireSamples.samplePrapare,
         2 => QuestionnaireSamples.samplePHQ9,
         3 => QuestionnaireSamples.sampleGAD7,
+        4 => QuestionnaireSamples.sampleBmiQuestionnaire,
         0 || _ => QuestionnaireSamples.sampleGeneric,
       });
 }

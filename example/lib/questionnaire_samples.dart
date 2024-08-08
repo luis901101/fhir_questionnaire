@@ -2395,4 +2395,73 @@ extension QuestionnaireSamples on Questionnaire {
     "id": "13d63616-203c-4dcb-a9f1-faa4d45e76ca"
   }
   ''';
+  static String get sampleBmiQuestionnaire => '''
+  {
+          "resourceType": "Questionnaire",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/variable",
+              "valueExpression": {
+                "name": "weight",
+                "language": "text/fhirpath",
+                "expression": "%resource.repeat(item).where(linkId='3.3.1').answer.value"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/variable",
+              "valueExpression": {
+                "name": "height",
+                "language": "text/fhirpath",
+                "expression": "%resource.repeat(item).where(linkId='3.3.2').answer.value*0.0254"
+              }
+            }
+          ],
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                  "valueCoding": {
+                    "system": "http://unitsofmeasure.org",
+                    "code": "kg"
+                  }
+                }
+              ],
+              "linkId": "3.3.1",
+              "text": "Weight (kg)",
+              "type": "decimal"
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                  "valueCoding": {
+                    "system": "http://unitsofmeasure.org",
+                    "code": "[in_i]"
+                  }
+                }
+              ],
+              "linkId": "3.3.2",
+              "text": "Body Height (inches)",
+              "type": "decimal"
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
+                  "valueExpression": {
+                    "description": "BMI Calculation",
+                    "language": "text/fhirpath",
+                    "expression": "(%weight/(%height.power(2))).round(1)"
+                  }
+                }
+              ],
+              "linkId": "3.3.3",
+              "text": "Your Body Mass Index (BMI) is ",
+              "type": "decimal",
+              "readOnly": true
+            }
+          ]
+        }
+  ''';
 }
