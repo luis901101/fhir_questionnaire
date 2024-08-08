@@ -27,6 +27,11 @@ So far this package only supports [FHIR R4 Item Types](https://hl7.org/fhir/R4/v
 | Reference | :ballot_box_with_check: |  
 | Quantity | :white_check_mark: |
 
+## Supported extra features
+1. [enableWhen](http://hl7.org/fhir/R4/questionnaire-definitions.html#Questionnaire.item.enableWhen) supported
+2. [enableBehavior](http://hl7.org/fhir/R4/questionnaire-definitions.html#Questionnaire.item.enableBehavior) supported.
+3. [Calculated Expression](http://hl7.org/fhir/uv/sdc/STU3/StructureDefinition-sdc-questionnaire-calculatedExpression.html) supported
+
 
 ## How to use
 Just add a `QuestionnaireView` widget to your widget tree and you will have your Questionnaire UI.
@@ -56,8 +61,7 @@ QuestionnaireView(
 ## Some extra notes
 1. This widget will use the app Theme to build, so if you want to change colors, InputDecorations, etc, you just have to change it in your app Theme. Also all the package widgets are public and exposed so you could override it if necessary.
 2. The `QuestionnaireView` implementation takes care of validations depending on each `QuestionnaireItem` definition.
-3. `enableWhen` and `enableBehavior` supported.
-4. Check the example project which shows all the features in action.
+3. Check the example project which shows all the features in action.
 
 ## Demo
 <div>
