@@ -84,12 +84,11 @@ packages:
   fhir_path:
     dependency: transitive
     description:
-      path: "."
-      ref: update-fhir-0-12-0
-      resolved-ref: "286c5394e9e6ef3e7cea73b08890d36ad2b360ce"
-      url: "https://github.com/evoleen/fhir_path.git"
-    source: git
-    version: "0.11.3"
+      name: fhir_path
+      sha256: "72facf58e3e492822936b7e2992aa96e482592a2665eb4c5ac9adf299c22d856"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.12.0"
   fhir_questionnaire:
     dependency: "direct main"
     description:
