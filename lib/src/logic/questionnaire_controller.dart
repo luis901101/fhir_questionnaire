@@ -86,8 +86,10 @@ class QuestionnaireController {
   }
 
   List<QuestionnaireItemBundle> buildQuestionnaireItemBundles(
-      List<QuestionnaireItem>? questionnaireItems,
-      {required Future<Attachment?> Function()? onAttachmentLoaded}) {
+    List<QuestionnaireItem>? questionnaireItems, {
+    required Future<Attachment?> Function()? onAttachmentLoaded,
+    String? groupId,
+  }) {
     List<QuestionnaireItemBundle> itemBundles = [];
     try {
       for (final QuestionnaireItem item in questionnaireItems ?? []) {
@@ -172,8 +174,14 @@ class QuestionnaireController {
             );
             break;
           case QuestionnaireItemType.group:
-            children = buildQuestionnaireItemBundles(item.item,
-                onAttachmentLoaded: onAttachmentLoaded);
+            final groupIdForChildren =
+                '${groupId != null ? "$groupId/" : ""}${item.linkId}';
+
+            children = buildQuestionnaireItemBundles(
+              item.item,
+              onAttachmentLoaded: onAttachmentLoaded,
+              groupId: groupIdForChildren,
+            );
             itemView = QuestionnaireGroupItemView(
               item: item,
               enableWhenController: enableWhenController,
@@ -188,6 +196,7 @@ class QuestionnaireController {
             view: itemView,
             children: children,
             controller: itemView.controller,
+            groupId: groupId,
           ));
         }
       }
