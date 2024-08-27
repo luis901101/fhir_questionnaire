@@ -12,16 +12,21 @@ class QuestionnaireController {
     QuestionnaireResponseItem questionnaireResponseItem,
   )? onGenerateItemResponse;
 
-  QuestionnaireItemBundle? Function({
-    required QuestionnaireItem item,
+  /// Allows customizing the logic that maps [QuestionnaireItem] objects into
+  /// [QuestionnaireItemView] widgets.
+  ///
+  /// [enableWhenController] needs to be passed to the returned [QuestionnaireItemView]
+  /// otherwise the enableWhen functionality of for that QuestionnaireItem will not work.
+  /// assuming that questionnaire item has enableWhen values
+  QuestionnaireItemView? Function(
+    QuestionnaireItem item,
     QuestionnaireItemEnableWhenController? enableWhenController,
     Future<Attachment?> Function()? onAttachmentLoaded,
-    String? groupId,
-  })? onBuildItemBundle;
+  )? onBuildItemView;
 
   QuestionnaireController({
     this.onGenerateItemResponse,
-    this.onBuildItemBundle,
+    this.onBuildItemView,
   });
 
   QuestionnaireItemView? buildChoiceItemView(
@@ -110,13 +115,20 @@ class QuestionnaireController {
     Future<Attachment?> Function()? onAttachmentLoaded,
     String? groupId,
   }) {
-    final itemBundleOverride = onBuildItemBundle?.call(
-      item: item,
-      enableWhenController: enableWhenController,
-      onAttachmentLoaded: onAttachmentLoaded,
-      groupId: groupId,
+    final itemViewOverride = onBuildItemView?.call(
+      item,
+      enableWhenController,
+      onAttachmentLoaded,
     );
-    if (itemBundleOverride != null) return itemBundleOverride;
+
+    if (itemViewOverride != null) {
+      return QuestionnaireItemBundle(
+        groupId: groupId,
+        item: item,
+        controller: itemViewOverride.controller,
+        view: itemViewOverride,
+      );
+    }
 
     QuestionnaireItemView? itemView;
     List<QuestionnaireItemBundle>? children;
@@ -673,10 +685,7 @@ class QuestionnaireController {
     );
 
     if (onGenerateItemResponse != null) {
-      item = onGenerateItemResponse!.call(
-        itemBundle: itemBundle,
-        questionnaireResponseItem: item,
-      );
+      item = onGenerateItemResponse!.call(itemBundle, item);
     }
 
     return item;
