@@ -6,9 +6,11 @@ import 'package:flutter/foundation.dart';
 
 class QuestionnaireController {
   /// Allows to override the function to generate individual item response
-  QuestionnaireResponseItem? Function({
-    required QuestionnaireItemBundle itemBundle,
-  })? onGenerateItemResponse;
+  /// either to generate a new [QuestionnaireResponseItem] or modify the generated one
+  QuestionnaireResponseItem Function(
+    QuestionnaireItemBundle itemBundle,
+    QuestionnaireResponseItem questionnaireResponseItem,
+  )? onGenerateItemResponse;
 
   QuestionnaireItemBundle? Function({
     required QuestionnaireItem item,
@@ -563,9 +565,6 @@ class QuestionnaireController {
 
   QuestionnaireResponseItem? generateItemResponse(
       QuestionnaireItemBundle itemBundle) {
-    final itemResponseOverride = onGenerateItemResponse?.call(itemBundle: itemBundle);
-    if (itemResponseOverride != null) return itemResponseOverride;
-
     List<QuestionnaireResponseItem>? childItems;
     List<QuestionnaireResponseAnswer>? answers;
     final itemType = QuestionnaireItemType.valueOf(itemBundle.item.type.value);
@@ -663,7 +662,8 @@ class QuestionnaireController {
         break;
       default:
     }
-    return QuestionnaireResponseItem(
+
+    var item = QuestionnaireResponseItem(
       linkId: itemBundle.item.linkId,
       definition: itemBundle.item.definition,
       text: itemBundle.item.text,
@@ -671,6 +671,15 @@ class QuestionnaireController {
       item: childItems,
       extension_: itemBundle.item.extension_,
     );
+
+    if (onGenerateItemResponse != null) {
+      item = onGenerateItemResponse!.call(
+        itemBundle: itemBundle,
+        questionnaireResponseItem: item,
+      );
+    }
+
+    return item;
   }
 
   List<QuestionnaireResponseItem> generateItemResponses(
