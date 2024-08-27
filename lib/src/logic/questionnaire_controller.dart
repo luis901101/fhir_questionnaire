@@ -115,114 +115,108 @@ class QuestionnaireController {
     Future<Attachment?> Function()? onAttachmentLoaded,
     String? groupId,
   }) {
-    final itemViewOverride = onBuildItemView?.call(
+    QuestionnaireItemView? itemView;
+    List<QuestionnaireItemBundle>? children;
+    final itemType = QuestionnaireItemType.valueOf(item.type.value);
+
+    final groupIdForChildren =
+        '${groupId != null ? "$groupId/" : ""}${item.linkId}';
+
+    children = buildQuestionnaireItemBundles(
+      item.item,
+      onAttachmentLoaded: onAttachmentLoaded,
+      groupId: groupIdForChildren,
+    );
+
+    itemView = onBuildItemView?.call(
       item,
       enableWhenController,
       onAttachmentLoaded,
     );
 
-    if (itemViewOverride != null) {
-      return QuestionnaireItemBundle(
-        groupId: groupId,
-        item: item,
-        controller: itemViewOverride.controller,
-        view: itemViewOverride,
-      );
-    }
-
-    QuestionnaireItemView? itemView;
-    List<QuestionnaireItemBundle>? children;
-    final itemType = QuestionnaireItemType.valueOf(item.type.value);
-
-    switch (itemType) {
-      case QuestionnaireItemType.string:
-        itemView = QuestionnaireStringItemView(
-          item: item,
-          enableWhenController: enableWhenController,
-        );
-        break;
-      case QuestionnaireItemType.text:
-        itemView = QuestionnaireTextItemView(
-          item: item,
-          enableWhenController: enableWhenController,
-        );
-        break;
-      case QuestionnaireItemType.integer:
-        itemView = QuestionnaireIntegerItemView(
-          item: item,
-          enableWhenController: enableWhenController,
-        );
-        break;
-      case QuestionnaireItemType.decimal:
-        itemView = QuestionnaireDecimalItemView(
-          item: item,
-          enableWhenController: enableWhenController,
-        );
-        break;
-      case QuestionnaireItemType.boolean:
-        itemView = QuestionnaireBooleanItemView(
-          item: item,
-          enableWhenController: enableWhenController,
-        );
-        break;
-      case QuestionnaireItemType.choice:
-        itemView = buildChoiceItemView(
-            item: item, enableWhenController: enableWhenController);
-        break;
-      case QuestionnaireItemType.openChoice:
-        itemView = buildOpenChoiceItemView(
-            item: item, enableWhenController: enableWhenController);
-        break;
-      case QuestionnaireItemType.date:
-      case QuestionnaireItemType.time:
-      case QuestionnaireItemType.dateTime:
-        itemView = QuestionnaireDateTimeItemView(
-          item: item,
-          enableWhenController: enableWhenController,
-          type: DateTimeType.fromQuestionnaireItemType(itemType),
-        );
-        break;
-      case QuestionnaireItemType.quantity:
-        itemView = QuestionnaireQuantityItemView(
-          item: item,
-          enableWhenController: enableWhenController,
-        );
-        break;
-      case QuestionnaireItemType.url:
-        itemView = QuestionnaireUrlItemView(
-          item: item,
-          enableWhenController: enableWhenController,
-        );
-        break;
-      case QuestionnaireItemType.display:
-        itemView = QuestionnaireDisplayItemView(
-          item: item,
-          enableWhenController: enableWhenController,
-        );
-        break;
-      case QuestionnaireItemType.attachment:
-        itemView = QuestionnaireAttachmentItemView(
-          item: item,
-          onAttachmentLoaded: onAttachmentLoaded,
-          enableWhenController: enableWhenController,
-        );
-        break;
-      case QuestionnaireItemType.group:
-        final groupIdForChildren =
-            '${groupId != null ? "$groupId/" : ""}${item.linkId}';
-
-        children = buildQuestionnaireItemBundles(
-          item.item,
-          onAttachmentLoaded: onAttachmentLoaded,
-          groupId: groupIdForChildren,
-        );
-        itemView = QuestionnaireGroupItemView(
-          item: item,
-          enableWhenController: enableWhenController,
-          children: children.map((itemBundle) => itemBundle.view).toList(),
-        );
-        break;
-      default:
+    if (itemView == null) {
+      switch (itemType) {
+        case QuestionnaireItemType.string:
+          itemView = QuestionnaireStringItemView(
+            item: item,
+            enableWhenController: enableWhenController,
+          );
+          break;
+        case QuestionnaireItemType.text:
+          itemView = QuestionnaireTextItemView(
+            item: item,
+            enableWhenController: enableWhenController,
+          );
+          break;
+        case QuestionnaireItemType.integer:
+          itemView = QuestionnaireIntegerItemView(
+            item: item,
+            enableWhenController: enableWhenController,
+          );
+          break;
+        case QuestionnaireItemType.decimal:
+          itemView = QuestionnaireDecimalItemView(
+            item: item,
+            enableWhenController: enableWhenController,
+          );
+          break;
+        case QuestionnaireItemType.boolean:
+          itemView = QuestionnaireBooleanItemView(
+            item: item,
+            enableWhenController: enableWhenController,
+          );
+          break;
+        case QuestionnaireItemType.choice:
+          itemView = buildChoiceItemView(
+              item: item, enableWhenController: enableWhenController);
+          break;
+        case QuestionnaireItemType.openChoice:
+          itemView = buildOpenChoiceItemView(
+              item: item, enableWhenController: enableWhenController);
+          break;
+        case QuestionnaireItemType.date:
+        case QuestionnaireItemType.time:
+        case QuestionnaireItemType.dateTime:
+          itemView = QuestionnaireDateTimeItemView(
+            item: item,
+            enableWhenController: enableWhenController,
+            type: DateTimeType.fromQuestionnaireItemType(itemType),
+          );
+          break;
+        case QuestionnaireItemType.quantity:
+          itemView = QuestionnaireQuantityItemView(
+            item: item,
+            enableWhenController: enableWhenController,
+          );
+          break;
+        case QuestionnaireItemType.url:
+          itemView = QuestionnaireUrlItemView(
+            item: item,
+            enableWhenController: enableWhenController,
+          );
+          break;
+        case QuestionnaireItemType.display:
+          itemView = QuestionnaireDisplayItemView(
+            item: item,
+            enableWhenController: enableWhenController,
+          );
+          break;
+        case QuestionnaireItemType.attachment:
+          itemView = QuestionnaireAttachmentItemView(
+            item: item,
+            onAttachmentLoaded: onAttachmentLoaded,
+            enableWhenController: enableWhenController,
+          );
+          break;
+        case QuestionnaireItemType.group:
+          itemView = QuestionnaireGroupItemView(
+            item: item,
+            enableWhenController: enableWhenController,
+            children: children.map((itemBundle) => itemBundle.view).toList(),
+          );
+          break;
+        default:
+      }
     }
 
     return itemView != null
