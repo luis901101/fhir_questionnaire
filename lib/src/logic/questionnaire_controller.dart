@@ -574,6 +574,10 @@ class QuestionnaireController {
     List<QuestionnaireResponseItem>? childItems;
     List<QuestionnaireResponseAnswer>? answers;
     final itemType = QuestionnaireItemType.valueOf(itemBundle.item.type.value);
+    if (itemBundle.children.isNotEmpty) {
+      childItems = generateItemResponses(itemBundles: itemBundle.children!);
+    }
+
     switch (itemType) {
       case QuestionnaireItemType.display:
 
@@ -660,11 +664,8 @@ class QuestionnaireController {
               ];
         break;
 
-      /// The answers of a group are the answers of the children
       case QuestionnaireItemType.group:
-        if (itemBundle.children.isNotEmpty) {
-          childItems = generateItemResponses(itemBundles: itemBundle.children!);
-        }
+      // The answers of a group are the answers of the children
         break;
       default:
     }
