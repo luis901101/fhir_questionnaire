@@ -51,7 +51,11 @@ abstract class QuestionnaireMultiChoiceItemViewState<
     } else {
       selectedValues.remove(value);
     }
-    setState(() {});
+
+    setState(() {
+      controller.value = selectedValues;
+      controller.clearError(notify: true);
+    });
   }
 
   @override

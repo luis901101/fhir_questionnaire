@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:fhir/r4.dart';
 import 'package:flutter/cupertino.dart';
@@ -42,24 +43,43 @@ class QuestionnaireItemEnableWhenController {
           enableWhenBundle.expectedAnswer.answerDate?.asDateTime ??
           enableWhenBundle.expectedAnswer.answerDateTime?.asDateTime ??
           enableWhenBundle.expectedAnswer.answerCoding?.code?.value;
-      dynamic controllerValue;
+      List<dynamic> controllerValues = [];
       if (controller.rawValue is QuestionnaireAnswerOption) {
         final answerOption = controller.rawValue as QuestionnaireAnswerOption;
-        controllerValue = answerOption.valueString ??
+        final controllerValueOption = answerOption.valueString ??
             answerOption.valueInteger?.value ??
             answerOption.valueTime?.asDateTime ??
             answerOption.valueDate?.asDateTime ??
             answerOption.valueCoding?.code?.value;
+        if (controllerValueOption != null) {
+          controllerValues = [controllerValueOption];
+        }
+      } else if (controller.rawValue is List<QuestionnaireAnswerOption>) {
+        final answerOptions =
+            controller.rawValue as List<QuestionnaireAnswerOption>;
+
+        final values = answerOptions
+            .map((answerOption) =>
+                answerOption.valueString ??
+                answerOption.valueInteger?.value ??
+                answerOption.valueTime?.asDateTime ??
+                answerOption.valueDate?.asDateTime ??
+                answerOption.valueCoding?.code?.value)
+            .whereNotNull();
+
+        controllerValues = values.toList() as List<dynamic>;
       } else {
         // Any other possible controller value can be treated as dynamic
-        controllerValue = controller.rawValue;
+        controllerValues = [controller.rawValue];
       }
 
-      num? controllerValueAsNum =
-          NumUtils.tryParse(controllerValue?.toString());
+      List<num>? controllerValuesAsNum = controllerValues
+          .map((e) => NumUtils.tryParse(e?.toString()))
+          .whereNotNull()
+          .toList();
       num? expectedValueAsNum = NumUtils.tryParse(expectedValue?.toString());
 
-      if (controllerValue == null && expectedValue == null) {
+      if (controllerValues.isEmpty && expectedValue == null) {
         continue;
       }
 
@@ -75,40 +95,56 @@ class QuestionnaireItemEnableWhenController {
                       !existAnswer));
           break;
         case QuestionnaireEnableWhenOperator.equals:
-          enabled = _behavior.check(enabled,
-              controllerValue?.toString() == expectedValue?.toString());
+          enabled = _behavior.check(
+            enabled,
+            controllerValues.firstWhereOrNull((controllerValue) =>
+                    controllerValue?.toString() == expectedValue?.toString()) !=
+                null,
+          );
           break;
         case QuestionnaireEnableWhenOperator.notEquals:
-          enabled = _behavior.check(enabled,
-              controllerValue?.toString() != expectedValue?.toString());
+          enabled = _behavior.check(
+            enabled,
+            controllerValues.firstWhereOrNull((controllerValue) =>
+                    controllerValue?.toString() != expectedValue?.toString()) !=
+                null,
+          );
           break;
         case QuestionnaireEnableWhenOperator.greaterThan:
           enabled = _behavior.check(
-              enabled,
-              controllerValueAsNum != null &&
-                  expectedValueAsNum != null &&
-                  controllerValueAsNum > expectedValueAsNum);
+            enabled,
+            expectedValueAsNum != null &&
+                controllerValuesAsNum.firstWhereOrNull(
+                        (value) => value > expectedValueAsNum) !=
+                    null,
+          );
           break;
         case QuestionnaireEnableWhenOperator.lessThan:
           enabled = _behavior.check(
-              enabled,
-              controllerValueAsNum != null &&
-                  expectedValueAsNum != null &&
-                  controllerValueAsNum < expectedValueAsNum);
+            enabled,
+            expectedValueAsNum != null &&
+                controllerValuesAsNum.firstWhereOrNull(
+                        (value) => value < expectedValueAsNum) !=
+                    null,
+          );
           break;
         case QuestionnaireEnableWhenOperator.greaterOrEquals:
           enabled = _behavior.check(
-              enabled,
-              controllerValueAsNum != null &&
-                  expectedValueAsNum != null &&
-                  controllerValueAsNum >= expectedValueAsNum);
+            enabled,
+            expectedValueAsNum != null &&
+                controllerValuesAsNum.firstWhereOrNull(
+                        (value) => value >= expectedValueAsNum) !=
+                    null,
+          );
           break;
         case QuestionnaireEnableWhenOperator.lessOrEquals:
           enabled = _behavior.check(
-              enabled,
-              controllerValueAsNum != null &&
-                  expectedValueAsNum != null &&
-                  controllerValueAsNum <= expectedValueAsNum);
+            enabled,
+            expectedValueAsNum != null &&
+                controllerValuesAsNum.firstWhereOrNull(
+                        (value) => value <= expectedValueAsNum) !=
+                    null,
+          );
           break;
       }
       if (enabled && _behavior.isAny) {
