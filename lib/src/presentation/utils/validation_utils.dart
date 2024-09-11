@@ -1,3 +1,4 @@
+import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:fhir_questionnaire/src/logic/utils/num_utils.dart';
@@ -106,7 +107,13 @@ class EnhancedEmptyValidationController extends ValidationController {
           message: message ??
               QuestionnaireLocalization
                   .instance.localization.exceptionNoEmptyField,
-          isValid: ({controller}) =>
-              TextUtils.isNotEmpty(controller?.rawValue?.toString().trim()),
+          isValid: ({controller}) {
+            final rawValue = controller?.rawValue;
+            if (rawValue is List<QuestionnaireAnswerOption>) {
+              return rawValue.isNotEmpty;
+            } else {
+              return TextUtils.isNotEmpty(rawValue?.toString().trim());
+            }
+          },
         );
 }
