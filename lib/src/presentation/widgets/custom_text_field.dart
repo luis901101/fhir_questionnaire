@@ -196,6 +196,7 @@ class CustomTextField extends StatefulWidget {
 class CustomTextFieldState<S extends CustomTextField> extends State<S> {
   late final CustomTextEditingController controller;
   String lastText = '';
+  bool startedTyping = false;
 
   CustomTextFieldState();
 
@@ -257,6 +258,9 @@ class CustomTextFieldState<S extends CustomTextField> extends State<S> {
   }
 
   void onChanged(String value) {
+    if (value.isNotEmpty) {
+      startedTyping = true;
+    }
     bool refreshState = autoValidate && onValidate(value);
     if (hadText != value.isNotEmpty) {
       refreshState |= true;
@@ -282,7 +286,10 @@ class CustomTextFieldState<S extends CustomTextField> extends State<S> {
     } else {
       final wasValid = !controller.hasError;
       final lastError = controller.error;
-      final isValid = controller.validate(notify: false);
+      var isValid = true;
+      if (startedTyping) {
+        isValid = controller.validate(notify: false);
+      }
       final currentError = controller.error;
       if (isValid) {
         controller.clearError();
