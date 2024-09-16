@@ -76,6 +76,7 @@ class CustomTextField extends StatefulWidget {
   final IconData? customButtonIcon;
   final double customButtonIconSize;
   final double customButtonIconPadding;
+  final EdgeInsetsGeometry customButtonMargin;
   final ValueChanged<CustomTextEditingController>? customButtonAction;
   final bool useCustomButton;
   final bool autoValidate;
@@ -145,6 +146,7 @@ class CustomTextField extends StatefulWidget {
     this.customButtonIcon,
     double? customButtonIconSize,
     double? customButtonIconPadding,
+    EdgeInsetsGeometry? customButtonMargin,
     this.customButtonAction,
     this.useCustomButton = true,
     this.autoValidate = true,
@@ -187,7 +189,9 @@ class CustomTextField extends StatefulWidget {
                     spellCheckService: DefaultSpellCheckService(),
                   )),
         customButtonIconSize = customButtonIconSize ?? 24,
-        customButtonIconPadding = customButtonIconPadding ?? 8;
+        customButtonIconPadding = customButtonIconPadding ?? 8,
+        customButtonMargin =
+            customButtonMargin ?? const EdgeInsetsDirectional.only(end: 8);
 
   @override
   State createState() => CustomTextFieldState();
@@ -217,14 +221,17 @@ class CustomTextFieldState<S extends CustomTextField> extends State<S> {
       errorText: controller.error,
       suffixIcon: widget.decoration.suffixIcon != null || !showCustomButton
           ? widget.decoration.suffixIcon
-          : widget.customButtonView ??
-              IconButton(
-                icon: customButtonIcon,
-                iconSize: widget.customButtonIconSize,
-                padding: EdgeInsets.all(widget.customButtonIconPadding),
-                onPressed:
-                    (widget.enabled ?? true) ? onCustomButtonPressed : null,
-              ),
+          : Padding(
+              padding: widget.customButtonMargin,
+              child: widget.customButtonView ??
+                  IconButton(
+                    icon: customButtonIcon,
+                    iconSize: widget.customButtonIconSize,
+                    padding: EdgeInsets.all(widget.customButtonIconPadding),
+                    onPressed:
+                        (widget.enabled ?? true) ? onCustomButtonPressed : null,
+                  ),
+            ),
       suffixText: null,
     );
   }
