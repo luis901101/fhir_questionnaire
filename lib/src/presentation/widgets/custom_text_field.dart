@@ -254,13 +254,15 @@ class CustomTextFieldState<S extends CustomTextField> extends State<S> {
   bool get showCustomButton => widget.useCustomButton && hasText;
 
   void onControllerTextChanged() {
-    onChanged(controller.text);
+    if (controller.text.isNotEmpty) {
+      startedTyping = true;
+    }
+    if (startedTyping) {
+      onChanged(controller.text);
+    }
   }
 
   void onChanged(String value) {
-    if (value.isNotEmpty) {
-      startedTyping = true;
-    }
     bool refreshState = autoValidate && onValidate(value);
     if (hadText != value.isNotEmpty) {
       refreshState |= true;
@@ -286,10 +288,7 @@ class CustomTextFieldState<S extends CustomTextField> extends State<S> {
     } else {
       final wasValid = !controller.hasError;
       final lastError = controller.error;
-      var isValid = true;
-      if (startedTyping) {
-        isValid = controller.validate(notify: false);
-      }
+      final isValid = controller.validate(notify: false);
       final currentError = controller.error;
       if (isValid) {
         controller.clearError();
