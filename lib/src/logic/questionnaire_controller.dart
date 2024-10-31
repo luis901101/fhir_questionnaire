@@ -114,6 +114,7 @@ class QuestionnaireController {
     QuestionnaireItemEnableWhenController? enableWhenController,
     Future<Attachment?> Function()? onAttachmentLoaded,
     String? groupId,
+    List<QuestionnaireItemBundle>? alreadyBuiltItemBundles,
   }) {
     QuestionnaireItemView? itemView;
     List<QuestionnaireItemBundle>? children;
@@ -126,6 +127,7 @@ class QuestionnaireController {
       item.item,
       onAttachmentLoaded: onAttachmentLoaded,
       groupId: groupIdForChildren,
+      alreadyBuiltItemBundles: alreadyBuiltItemBundles,
     );
 
     itemView = onBuildItemView?.call(
@@ -234,17 +236,26 @@ class QuestionnaireController {
     List<QuestionnaireItem>? questionnaireItems, {
     required Future<Attachment?> Function()? onAttachmentLoaded,
     String? groupId,
+    List<QuestionnaireItemBundle>? alreadyBuiltItemBundles,
   }) {
     List<QuestionnaireItemBundle> itemBundles = [];
     try {
       for (final QuestionnaireItem item in questionnaireItems ?? []) {
         QuestionnaireItemEnableWhenController? enableWhenController =
-            getEnableWhenController(item: item, itemBundles: itemBundles);
+            getEnableWhenController(item: item, itemBundles: [
+          ...(alreadyBuiltItemBundles ?? []),
+          ...itemBundles,
+        ]);
+
         final itemBundle = buildQuestionnaireItemBundle(
           item: item,
           enableWhenController: enableWhenController,
           onAttachmentLoaded: onAttachmentLoaded,
           groupId: groupId,
+          alreadyBuiltItemBundles: [
+            ...(alreadyBuiltItemBundles ?? []),
+            ...itemBundles,
+          ],
         );
         if (itemBundle != null) {
           itemBundles.add(itemBundle);
@@ -665,7 +676,7 @@ class QuestionnaireController {
         break;
 
       case QuestionnaireItemType.group:
-      // The answers of a group are the answers of the children
+        // The answers of a group are the answers of the children
         break;
       default:
     }
