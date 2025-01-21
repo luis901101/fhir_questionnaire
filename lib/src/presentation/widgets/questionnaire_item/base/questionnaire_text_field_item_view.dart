@@ -44,7 +44,7 @@ abstract class QuestionnaireTextFieldItemViewState<
 
     controller.validations.addAll([
       if ((maxLength ?? 0) > 0)
-        ValidationUtils.maxLengthValidation(maxLength: maxLength!),
+        ValidationUtils.maxLengthValidation(maxLength: maxLength!, context: context),
     ]);
   }
 
@@ -61,7 +61,7 @@ abstract class QuestionnaireTextFieldItemViewState<
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (item.title.isNotEmpty)
+        if (item.title(context).isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(
               left: 8.0,
@@ -69,7 +69,7 @@ abstract class QuestionnaireTextFieldItemViewState<
               bottom: 4.0,
             ),
             child: Text(
-              item.title!,
+              item.title(context)!,
               style: Theme.of(context).textTheme.titleSmall,
             ),
           ),

@@ -1,33 +1,55 @@
-import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_base_localization.dart';
-import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_en_localization.dart';
-import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_es_localization.dart';
+import 'package:collection/collection.dart';
+import 'package:fhir_questionnaire/fhir_questionnaire.dart';
+import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_localization_data.dart';
+import 'package:flutter/material.dart';
 
-class QuestionnaireLocalization {
-  static final instance = QuestionnaireLocalization();
-  QuestionnaireBaseLocalization localization = QuestionnaireEnLocalization();
-  QuestionnaireBaseLocalization _defaultLocalization =
-      QuestionnaireEnLocalization();
-  final Map<String, QuestionnaireBaseLocalization> _localizationsMap = {
-    'en': QuestionnaireEnLocalization(),
-    'es': QuestionnaireEsLocalization(),
-  };
-  QuestionnaireLocalization();
+class QuestionnaireLocalization extends InheritedWidget {
+  final QuestionnaireLocalizationData data;
+  static QuestionnaireLocalizationData? _currentInstance;
+  static QuestionnaireLocalizationData get current {
+    if (_currentInstance == null) {
+      throw Exception(
+        'The QuestionnaireLocalizationData has not been set yet '
+        'It will be done after an instance of QuestionnaireLocalization widget has been instantiated',
+      );
+    }
 
-  void init({
-    QuestionnaireBaseLocalization? defaultLocalization,
-    List<QuestionnaireBaseLocalization>? localizations,
-    String? locale,
+    return _currentInstance!;
+  }
+
+  QuestionnaireLocalization({
+    super.key,
+    required this.data,
+    required super.child,
   }) {
-    if (defaultLocalization != null) {
-      _defaultLocalization = defaultLocalization;
+    _currentInstance = data;
+  }
+
+  static QuestionnaireLocalizationData of(final BuildContext context) {
+    final result = context
+        .dependOnInheritedWidgetOfExactType<QuestionnaireLocalization>()
+        ?.data;
+    if (result == null) {
+      throw Exception(
+        'Could not find an instance of QuestionnaireLocalizationData when called '
+        'QuestionnaireLocalization.of(context) in the widget tree. '
+        'One can be inserted into the widget tree using QuestionnaireLocalization widget',
+      );
     }
-    if (localizations != null) {
-      for (final localization in localizations) {
-        _localizationsMap[localization.locale] = localization;
-      }
-    }
-    if (locale != null) {
-      localization = _localizationsMap[locale] ?? _defaultLocalization;
-    }
+
+    return result;
+  }
+
+  @override
+  bool updateShouldNotify(final QuestionnaireLocalization oldWidget) {
+    return oldWidget.data.localization.locale != data.localization.locale ||
+        !const DeepCollectionEquality().equals(
+          data.fallbackLocalization,
+          oldWidget.data.fallbackLocalization,
+        ) ||
+        !const DeepCollectionEquality().equals(
+          data.localization,
+          oldWidget.data.localization,
+        );
   }
 }

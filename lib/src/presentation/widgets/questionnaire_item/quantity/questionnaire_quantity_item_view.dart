@@ -71,7 +71,7 @@ class QuestionnaireQuantityItemViewState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (item.title.isNotEmpty)
+        if (item.title(context).isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(
               left: 8.0,
@@ -79,7 +79,7 @@ class QuestionnaireQuantityItemViewState
               bottom: 4.0,
             ),
             child: Text(
-              item.title!,
+              item.title(context)!,
               style: Theme.of(context).textTheme.titleSmall,
             ),
           ),

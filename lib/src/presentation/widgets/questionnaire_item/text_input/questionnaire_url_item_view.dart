@@ -19,7 +19,9 @@ class QuestionnaireUrlItemViewState
   @override
   void initState() {
     super.initState();
-    controller.validations.add(ValidationUtils.urlValidation());
+    controller.validations.add(ValidationUtils.urlValidation(
+      context: context,
+    ));
   }
 
   @override

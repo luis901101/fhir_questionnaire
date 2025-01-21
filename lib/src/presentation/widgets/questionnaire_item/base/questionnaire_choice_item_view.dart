@@ -36,21 +36,21 @@ abstract class QuestionnaireChoiceItemViewState<
 
   bool get isOpen => widget.isOpen;
   String valueNameResolver(QuestionnaireAnswerOption value) =>
-      value.valueCoding?.title ??
-      value.valueString ??
+      value.valueCoding?.title(context) ??
+      value.valueStringLocalized(context) ??
       value.valueInteger?.toString() ??
       '';
 
   QuestionnaireAnswerOption onOpenAnswerAdded(String value,
       {bool? hideKeyboard}) {
     hideKeyboard ??= true;
-    final anwser = QuestionnaireAnswerOption(valueString: value);
-    values.add(anwser);
+    final answer = QuestionnaireAnswerOption(valueString: value);
+    values.add(answer);
     if (hideKeyboard) {
       InputMethodUtils.hideInputMethod(force: true);
     }
     controller.clearError();
-    return anwser;
+    return answer;
   }
 
   Widget choiceView(BuildContext context);
@@ -61,7 +61,7 @@ abstract class QuestionnaireChoiceItemViewState<
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (item.title.isNotEmpty)
+        if (item.title(context).isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(
               left: 8.0,
@@ -69,7 +69,7 @@ abstract class QuestionnaireChoiceItemViewState<
               bottom: 4.0,
             ),
             child: Text(
-              item.title!,
+              item.title(context)!,
               style: Theme.of(context).textTheme.titleSmall,
             ),
           ),
@@ -97,7 +97,8 @@ abstract class QuestionnaireChoiceItemViewState<
               bottom: 4.0,
             ),
             child: Text(
-              QuestionnaireLocalization.instance.localization.textOtherOption,
+              QuestionnaireLocalization
+                  .of(context).localization.textOtherOption,
               style: Theme.of(context).textTheme.titleSmall,
             ),
           ),

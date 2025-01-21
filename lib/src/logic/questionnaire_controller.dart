@@ -271,7 +271,9 @@ class QuestionnaireController {
       answers.add(QuestionnaireResponseAnswer(
         valueCoding: data.valueCoding,
         valueString: data.valueString,
+        valueStringElement: data.valueStringElement,
         valueInteger: data.valueInteger,
+        valueIntegerElement: data.valueIntegerElement,
       ));
     } else if (data is List<QuestionnaireAnswerOption>) {
       for (final answerOption in data) {
@@ -562,10 +564,8 @@ class QuestionnaireController {
   }
 
   QuestionnaireResponseItem? generateItemResponse(
-      QuestionnaireItemBundle itemBundle) {
-    final itemResponseOverride = onGenerateItemResponse?.call(itemBundle: itemBundle);
-    if (itemResponseOverride != null) return itemResponseOverride;
-
+    QuestionnaireItemBundle itemBundle,
+  ) {
     List<QuestionnaireResponseItem>? childItems;
     List<QuestionnaireResponseAnswer>? answers;
     final itemType = QuestionnaireItemType.valueOf(itemBundle.item.type.value);
@@ -666,7 +666,9 @@ class QuestionnaireController {
     return QuestionnaireResponseItem(
       linkId: itemBundle.item.linkId,
       definition: itemBundle.item.definition,
+      definitionElement: itemBundle.item.definitionElement,
       text: itemBundle.item.text,
+      textElement: itemBundle.item.textElement,
       answer: answers.isEmpty ? null : answers,
       item: childItems,
       extension_: itemBundle.item.extension_,

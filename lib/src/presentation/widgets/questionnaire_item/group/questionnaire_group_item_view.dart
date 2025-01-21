@@ -52,7 +52,7 @@ class QuestionnaireGroupItemViewState
                   children: children!.map((itemView) => itemView).toList(),
                 ),
         ),
-        if (item.title.isNotEmpty)
+        if (item.title(context).isNotEmpty)
           Positioned(
               left: 16,
               right: 16,
