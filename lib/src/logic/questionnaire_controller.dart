@@ -564,8 +564,10 @@ class QuestionnaireController {
   }
 
   QuestionnaireResponseItem? generateItemResponse(
-    QuestionnaireItemBundle itemBundle,
-  ) {
+      QuestionnaireItemBundle itemBundle) {
+    final itemResponseOverride = onGenerateItemResponse?.call(itemBundle: itemBundle);
+    if (itemResponseOverride != null) return itemResponseOverride;
+
     List<QuestionnaireResponseItem>? childItems;
     List<QuestionnaireResponseAnswer>? answers;
     final itemType = QuestionnaireItemType.valueOf(itemBundle.item.type.value);
