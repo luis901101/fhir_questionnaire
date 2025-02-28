@@ -84,7 +84,7 @@ class QuestionnaireController {
     required List<QuestionnaireItemBundle> itemBundles,
   }) {
     itemBundles = _flattenItemBundles(itemBundles);
-    
+
     QuestionnaireItemEnableWhenController? controller;
     if (item.enableWhen.isNotEmpty) {
       List<QuestionnaireItemEnableWhenBundle> list = [];
@@ -109,7 +109,6 @@ class QuestionnaireController {
       }
     }
 
-    print('SSS ${item.prefix}: enableWhenController: $controller');
     return controller;
   }
 

@@ -65,7 +65,7 @@ class QuestionnaireItemEnableWhenController {
                 answerOption.valueTime?.asDateTime ??
                 answerOption.valueDate?.asDateTime ??
                 answerOption.valueCoding?.code?.value)
-            .whereNotNull();
+            .nonNulls;
 
         controllerValues = values.toList() as List<dynamic>;
       } else {
@@ -75,7 +75,7 @@ class QuestionnaireItemEnableWhenController {
 
       List<num>? controllerValuesAsNum = controllerValues
           .map((e) => NumUtils.tryParse(e?.toString()))
-          .whereNotNull()
+          .nonNulls
           .toList();
       num? expectedValueAsNum = NumUtils.tryParse(expectedValue?.toString());
 

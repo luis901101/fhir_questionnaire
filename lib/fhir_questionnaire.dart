@@ -1,4 +1,4 @@
-library fhir_questionnaire;
+library;
 
 export 'package:fhir_questionnaire/src/logic/utils/questionnaire_utils.dart';
 export 'package:fhir_questionnaire/src/logic/utils/num_utils.dart';

@@ -20,5 +20,6 @@ class QuestionnaireItemBundle {
 
   /// Returns linkId of the questionnaire [item] prefixed by its parent item
   /// link ids, showing a unique id for this questionnaire [item].
-  String get uid => groupId.isNotEmpty ? '$groupId/${item.linkId}' : item.linkId;
+  String get uid =>
+      groupId.isNotEmpty ? '$groupId/${item.linkId}' : item.linkId;
 }
