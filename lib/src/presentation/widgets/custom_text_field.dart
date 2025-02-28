@@ -257,13 +257,11 @@ class CustomTextFieldState<S extends CustomTextField> extends State<S> {
     if (controller.text.isNotEmpty) {
       startedTyping = true;
     }
-    if (startedTyping) {
-      onChanged(controller.text);
-    }
+    onChanged(controller.text);
   }
 
   void onChanged(String value) {
-    bool refreshState = autoValidate && onValidate(value);
+    bool refreshState = startedTyping && autoValidate && onValidate(value);
     if (hadText != value.isNotEmpty) {
       refreshState |= true;
     }
