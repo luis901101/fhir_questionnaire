@@ -19,8 +19,12 @@ class QuestionnaireDecimalItemViewState
   @override
   void initState() {
     super.initState();
-    controller.validations.addAll(
-        [ValidationUtils.positiveNumberValidation(required: isRequired)]);
+    controller.validations.addAll([
+      ValidationUtils.positiveNumberValidation(
+        required: isRequired,
+        context: context,
+      ),
+    ]);
   }
 
   @override

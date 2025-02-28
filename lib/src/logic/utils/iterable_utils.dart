@@ -155,3 +155,4 @@ extension MapNullExtension on Map? {
   bool get isEmpty => this == null || (this as Map).isEmpty;
   bool get isNotEmpty => !isEmpty;
 }
+

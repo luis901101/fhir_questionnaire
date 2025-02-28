@@ -47,7 +47,7 @@ class QuestionnaireBooleanItemViewState
       value: value,
       onChanged:
           isReadOnly ? null : (value) => setState(() => this.value = value),
-      title: item.title.isEmpty ? null : Text(item.title!),
+      title: item.title(context).isEmpty ? null : Text(item.title(context)!),
       contentPadding: const EdgeInsets.only(left: 8),
     );
   }

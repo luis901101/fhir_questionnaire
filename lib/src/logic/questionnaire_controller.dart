@@ -294,7 +294,9 @@ class QuestionnaireController {
       answers.add(QuestionnaireResponseAnswer(
         valueCoding: data.valueCoding,
         valueString: data.valueString,
+        valueStringElement: data.valueStringElement,
         valueInteger: data.valueInteger,
+        valueIntegerElement: data.valueIntegerElement,
       ));
     } else if (data is List<QuestionnaireAnswerOption>) {
       for (final answerOption in data) {
@@ -688,7 +690,9 @@ class QuestionnaireController {
     var item = QuestionnaireResponseItem(
       linkId: itemBundle.item.linkId,
       definition: itemBundle.item.definition,
+      definitionElement: itemBundle.item.definitionElement,
       text: itemBundle.item.text,
+      textElement: itemBundle.item.textElement,
       answer: answers.isEmpty ? null : answers,
       item: childItems,
       extension_: itemBundle.item.extension_,

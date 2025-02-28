@@ -54,7 +54,7 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
       controller.addListener(onControllerErrorChanged);
     }
     controller.validations.addAll([
-      if (isRequired) ValidationUtils.requiredFieldValidation,
+      if (isRequired) ValidationUtils.requiredFieldValidation(),
     ]);
     isEnabled =
         enableWhenController?.init(onEnabledChangedListener: onEnabled) ?? true;

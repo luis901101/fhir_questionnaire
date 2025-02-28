@@ -21,7 +21,7 @@ class QuestionnaireView extends StatefulWidget {
   /// Indicates what should be the fallback localization if loalce is not
   /// supported.
   /// Defaults to English
-  final QuestionnaireBaseLocalization? defaultLocalization;
+  final QuestionnaireBaseLocalization? fallbackLocalization;
 
   /// Indicates the definition of extra supported localizations.
   /// By default Spanish and English are supported, but you can set
@@ -40,7 +40,7 @@ class QuestionnaireView extends StatefulWidget {
     this.controller,
     this.onAttachmentLoaded,
     this.isLoading = false,
-    this.defaultLocalization,
+    this.fallbackLocalization,
     this.localizations,
     this.locale,
   });
@@ -66,6 +66,8 @@ class QuestionnaireViewState extends State<QuestionnaireView>
 
   bool _isLoading = true;
 
+  late final QuestionnaireLocalizationData _questionnaireLocalizationData;
+
   void loading(bool value) {
     if (_isLoading != value) setState(() => _isLoading = value);
   }
@@ -79,19 +81,56 @@ class QuestionnaireViewState extends State<QuestionnaireView>
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback(onCreated);
     bottomPadding = FlutterViewUtils.get().padding.bottom;
+    late String locale;
+
+    try {
+      locale = widget.locale ??
+          FlutterViewUtils.get().platformDispatcher.locale.languageCode;
+    } catch (_) {
+      locale = 'en';
+    }
+
+    _questionnaireLocalizationData = QuestionnaireLocalizationData(
+      fallbackLocalization:
+          widget.fallbackLocalization ?? QuestionnaireEnLocalization(),
+      localizations: widget.localizations ??
+          [
+            QuestionnaireEnLocalization(),
+            QuestionnaireEsLocalization(),
+          ],
+      locale: locale,
+    );
+
     if (!widget.isLoading) {
-      String? locale;
+      buildQuestionnaireItems();
+      checkScrollOnInit();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant QuestionnaireView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.fallbackLocalization != oldWidget.fallbackLocalization ||
+        widget.locale != oldWidget.locale ||
+        widget.localizations != oldWidget.localizations) {
+      late String locale;
       try {
         locale = widget.locale ??
             FlutterViewUtils.get().platformDispatcher.locale.languageCode;
-      } catch (_) {}
-      QuestionnaireLocalization.instance.init(
-        defaultLocalization: widget.defaultLocalization,
-        localizations: widget.localizations,
+      } catch (_) {
+        locale = widget.localizations?.firstOrNull?.locale ?? 'en';
+      }
+
+      _questionnaireLocalizationData = QuestionnaireLocalizationData(
+        fallbackLocalization:
+            widget.fallbackLocalization ?? QuestionnaireEnLocalization(),
+        localizations: widget.localizations ??
+            [
+              QuestionnaireEnLocalization(),
+              QuestionnaireEsLocalization(),
+            ],
         locale: locale,
       );
-      buildQuestionnaireItems();
-      checkScrollOnInit();
     }
   }
 
@@ -154,68 +193,75 @@ class QuestionnaireViewState extends State<QuestionnaireView>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: ValueListenableBuilder(
-        valueListenable: showFAB,
-        builder: (context, value, child) {
-          return AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            child: !showFAB.value ? const SizedBox() : child,
-          );
-        },
-        child: FractionallySizedBox(
-          key: ValueKey('showFAB: ${showFAB.value}'),
-          widthFactor: 0.8,
-          child: Padding(
-            padding: EdgeInsets.only(bottom: bottomPadding > 0 ? 0 : 16),
-            child: FloatingActionButton.extended(
-              shape: const StadiumBorder(),
-              onPressed: isLoading ? null : onSubmit,
-              label: Text(
-                  QuestionnaireLocalization.instance.localization.btnSubmit),
+    return QuestionnaireLocalization(
+      data: _questionnaireLocalizationData,
+      child: Builder(builder: (context) {
+        return Scaffold(
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+          floatingActionButton: ValueListenableBuilder(
+            valueListenable: showFAB,
+            builder: (context, value, child) {
+              return AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: !showFAB.value ? const SizedBox() : child,
+              );
+            },
+            child: FractionallySizedBox(
+              key: ValueKey('showFAB: ${showFAB.value}'),
+              widthFactor: 0.8,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: bottomPadding > 0 ? 0 : 16),
+                child: FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
+                  onPressed: isLoading ? null : onSubmit,
+                  label: Text(QuestionnaireLocalization.of(context)
+                      .localization
+                      .btnSubmit),
+                ),
+              ),
             ),
           ),
-        ),
-      ),
-      body: UnfocusView(
-        child: isLoading
-            ? const Padding(
-                padding: EdgeInsets.all(16),
-                child: QuestionnaireLoadingView(),
-              )
-            : Scrollbar(
-                child: ListView.builder(
-                    primary: true,
-                    addAutomaticKeepAlives: true,
-                    padding: const EdgeInsets.only(
-                        top: 16, left: 16, right: 16, bottom: fabSize + 64),
-                    shrinkWrap: true,
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.onDrag,
-                    itemBuilder: (context, index) {
-                      if (index == 0 && questionnaire.title.isNotEmpty) {
-                        return Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: 24.0,
-                          ),
-                          child: Text(
-                            questionnaire.title!,
-                            style: theme.textTheme.titleLarge
-                                ?.copyWith(color: theme.colorScheme.primary),
-                            textAlign: TextAlign.center,
-                          ),
-                        );
-                      }
-                      return itemBundles[
-                              index - (questionnaire.title.isNotEmpty ? 1 : 0)]
-                          .view;
-                    },
-                    // separatorBuilder: (context, index) =>
-                    //     const SizedBox(height: 24.0),
-                    itemCount: listViewCount),
-              ),
-      ),
+          body: UnfocusView(
+            child: isLoading
+                ? const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: QuestionnaireLoadingView(),
+                  )
+                : Scrollbar(
+                    child: ListView.builder(
+                        primary: true,
+                        addAutomaticKeepAlives: true,
+                        padding: const EdgeInsets.only(
+                            top: 16, left: 16, right: 16, bottom: fabSize + 64),
+                        shrinkWrap: true,
+                        keyboardDismissBehavior:
+                            ScrollViewKeyboardDismissBehavior.onDrag,
+                        itemBuilder: (context, index) {
+                          if (index == 0 && questionnaire.title.isNotEmpty) {
+                            return Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: 24.0,
+                              ),
+                              child: Text(
+                                questionnaire.title!,
+                                style: theme.textTheme.titleLarge?.copyWith(
+                                    color: theme.colorScheme.primary),
+                                textAlign: TextAlign.center,
+                              ),
+                            );
+                          }
+                          return itemBundles[index -
+                                  (questionnaire.title.isNotEmpty ? 1 : 0)]
+                              .view;
+                        },
+                        // separatorBuilder: (context, index) =>
+                        //     const SizedBox(height: 24.0),
+                        itemCount: listViewCount),
+                  ),
+          ),
+        );
+      }),
     );
   }
 

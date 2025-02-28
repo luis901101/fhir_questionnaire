@@ -78,11 +78,11 @@ class QuestionnaireDateTimeItemViewState
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (item.title.isNotEmpty)
+        if (item.title(context).isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 4.0),
             child: Text(
-              item.title!,
+              item.title(context)!,
               style: theme.textTheme.titleSmall,
             ),
           ),
@@ -96,8 +96,9 @@ class QuestionnaireDateTimeItemViewState
                   return ElevatedButton.icon(
                       icon: const Icon(Icons.calendar_month),
                       label: Text(dateTime?.formattedDate() ??
-                          QuestionnaireLocalization
-                              .instance.localization.textDate),
+                          QuestionnaireLocalization.of(context)
+                              .localization
+                              .textDate),
                       style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
                       onPressed: openDatePicker);
                 }),
@@ -113,8 +114,9 @@ class QuestionnaireDateTimeItemViewState
                   return ElevatedButton.icon(
                       icon: const Icon(Icons.access_time_rounded),
                       label: Text(dateTime?.formattedTime() ??
-                          QuestionnaireLocalization
-                              .instance.localization.textTime),
+                          QuestionnaireLocalization.of(context)
+                              .localization
+                              .textTime),
                       style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
                       onPressed: openTimePicker);
                 }),
