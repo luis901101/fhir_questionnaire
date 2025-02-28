@@ -53,7 +53,6 @@ abstract class QuestionnaireMultiChoiceItemViewState<
     }
 
     setState(() {
-      controller.value = selectedValues;
       controller.clearError(notify: true);
     });
   }
