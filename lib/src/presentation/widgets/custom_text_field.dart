@@ -196,6 +196,7 @@ class CustomTextField extends StatefulWidget {
 class CustomTextFieldState<S extends CustomTextField> extends State<S> {
   late final CustomTextEditingController controller;
   String lastText = '';
+  bool startedTyping = false;
 
   CustomTextFieldState();
 
@@ -253,7 +254,12 @@ class CustomTextFieldState<S extends CustomTextField> extends State<S> {
   bool get showCustomButton => widget.useCustomButton && hasText;
 
   void onControllerTextChanged() {
-    onChanged(controller.text);
+    if (controller.text.isNotEmpty) {
+      startedTyping = true;
+    }
+    if (startedTyping) {
+      onChanged(controller.text);
+    }
   }
 
   void onChanged(String value) {
