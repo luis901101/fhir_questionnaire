@@ -91,13 +91,16 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
         ? const SizedBox.shrink()
         : AnimatedSize(
             duration: const Duration(milliseconds: 300),
-            child: SizedBox(
-              height: isEnabled ? null : 0,
-              child: SizeRenderer(
-                onSizeRendered: onSizeRendered,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 24.0),
-                  child: buildBody(context),
+            child: ClipRect(
+              clipBehavior: Clip.hardEdge,
+              child: SizedBox(
+                height: isEnabled ? null : 0,
+                child: SizeRenderer(
+                  onSizeRendered: onSizeRendered,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 24.0),
+                    child: buildBody(context),
+                  ),
                 ),
               ),
             ),

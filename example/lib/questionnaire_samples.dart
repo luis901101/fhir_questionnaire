@@ -2469,4 +2469,882 @@ extension QuestionnaireSamples on Questionnaire {
           ]
         }
   ''';
+  static String get fdrCommuns => '''
+  {
+  "resourceType": "Questionnaire",
+  "title": "Facteurs de risques communs",
+  "status": "draft",
+  "item": [
+    {
+      "type": "choice",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "drop-down",
+                "display": "Drop down"
+              }
+            ]
+          }
+        }
+      ],
+      "linkId": "5674304189455",
+      "text": "Origine du patient",
+      "required": true,
+      "repeats": false,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "display": "Européen / Nord-Américain"
+          }
+        },
+        {
+          "valueCoding": {
+            "display": "Japonais"
+          }
+        },
+        {
+          "valueCoding": {
+            "display": "Finlandais"
+          }
+        },
+        {
+          "valueCoding": {
+            "display": "Autre"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "29f63888-11e7-4aeb-b454-6a8e060a3e52",
+      "type": "decimal",
+      "text": "taille cm",
+      "required": false
+    },
+    {
+      "linkId": "ccdf1a0b-ea35-4eef-9279-3ec34e36677c",
+      "type": "decimal",
+      "text": "poids Kg",
+      "required": false
+    },
+    {
+      "type": "boolean",
+      "linkId": "5870138793339",
+      "text": "Obésité"
+    },
+    {
+      "type": "boolean",
+      "linkId": "4257690781066",
+      "text": "Sédentarité"
+    },
+    {
+      "type": "boolean",
+      "linkId": "9733868952092",
+      "text": "Contraception orale "
+    },
+    {
+      "type": "group",
+      "linkId": "484238521278",
+      "text": "Tabac",
+      "item": [
+        {
+          "type": "boolean",
+          "linkId": "101164469062",
+          "text": "actif ou passé"
+        },
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "drop-down",
+                    "display": "Drop down"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "367898136001",
+          "enableWhen": [
+            {
+              "question": "101164469062",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ],
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Tabagisme actif"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Tabagisme sevré depuis + de 3 ans"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Tabagisme sevré au moment de l'incident"
+              }
+            }
+          ]
+        },
+        {
+          "type": "integer",
+          "linkId": "187631376555",
+          "text": "Nombre de paquets / ans",
+          "enableWhen": [
+            {
+              "question": "101164469062",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "linkId": "7746070282139",
+      "text": "Alcool",
+      "item": [
+        {
+          "type": "boolean",
+          "linkId": "749802088942",
+          "text": "chronique"
+        },
+        {
+          "type": "boolean",
+          "linkId": "688902126785",
+          "text": "Sevré",
+          "enableWhen": [
+            {
+              "question": "749802088942",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "type": "integer",
+          "linkId": "790511635595",
+          "text": "Nombre de verres / jours",
+          "enableWhen": [
+            {
+              "question": "688902126785",
+              "operator": "=",
+              "answerBoolean": false
+            },
+            {
+              "question": "749802088942",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ],
+          "enableBehavior": "all"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "linkId": "8487110872266",
+      "text": "Dyslipidémie et Diabète",
+      "item": [
+        {
+          "type": "boolean",
+          "linkId": "1391730154214",
+          "text": "Hypercholestérolémie"
+        },
+        {
+          "type": "boolean",
+          "linkId": "35403850135",
+          "text": "Diabète insulino Dépendant"
+        },
+        {
+          "type": "boolean",
+          "linkId": "1214047899327",
+          "text": "Diabète non insulino Dépendant"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "linkId": "4191009498316",
+      "text": "HTA",
+      "item": [
+        {
+          "type": "boolean",
+          "linkId": "5747971388810",
+          "text": "Hypertension artérielle"
+        },
+        {
+          "type": "boolean",
+          "linkId": "9622897201905",
+          "text": "Traitements anti-hypertenseurs"
+        },
+        {
+          "type": "boolean",
+          "linkId": "4be61289-2fd8-43dc-ba25-f0b2c124a86d",
+          "text": "Inhibiteurs calciques",
+          "enableWhen": [
+            {
+              "question": "9622897201905",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "type": "boolean",
+          "linkId": "dad45290-de75-4e51-9607-b11dd51440d8",
+          "text": "Béta bloquants",
+          "enableWhen": [
+            {
+              "question": "9622897201905",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "type": "boolean",
+          "linkId": "ad6f3e47-076f-41c5-c8cb-008a02fb9b6c",
+          "text": "Diurétiques",
+          "enableWhen": [
+            {
+              "question": "9622897201905",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "type": "boolean",
+          "linkId": "78574cad-0cf2-4c88-8a39-ddb04f8aba88",
+          "text": "IEC ",
+          "enableWhen": [
+            {
+              "question": "9622897201905",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "type": "boolean",
+          "linkId": "1c220ce5-7ab6-43c8-efa3-2de430156ee0",
+          "text": "ARA2",
+          "enableWhen": [
+            {
+              "question": "9622897201905",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "type": "boolean",
+          "linkId": "43e7c462-d03c-48ce-9195-cde7170f0e07",
+          "text": "Anti-hypertenseurs centraux",
+          "enableWhen": [
+            {
+              "question": "9622897201905",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "linkId": "f1666c7a-9968-496b-8a3c-aa0079f8ac47",
+          "type": "string",
+          "text": "Autres",
+          "required": false,
+          "enableWhen": [
+            {
+              "question": "9622897201905",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "0af457a4-afa9-4413-89d3-3aa290f16306",
+      "type": "group",
+      "text": "Gestion de la coagulation",
+      "required": false,
+      "item": [
+        {
+          "type": "boolean",
+          "linkId": "8667186506686",
+          "text": "Trouble de la coagulation "
+        },
+        {
+          "type": "boolean",
+          "linkId": "6737d4dc-9009-4037-f371-778174cc6200",
+          "text": "Traitements anti-coagulants"
+        },
+        {
+          "type": "boolean",
+          "linkId": "70c6c68c-c2de-4d2e-a3a8-7e550eb14295",
+          "text": "AVK",
+          "enableWhen": [
+            {
+              "question": "6737d4dc-9009-4037-f371-778174cc6200",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "type": "boolean",
+          "linkId": "d5d71493-5af2-451e-8fcb-d04d22cf306c",
+          "text": "AOD",
+          "enableWhen": [
+            {
+              "question": "6737d4dc-9009-4037-f371-778174cc6200",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "type": "boolean",
+          "linkId": "2badac2c-584b-4419-bf4e-29e3aab5b073",
+          "text": "Héparine",
+          "enableWhen": [
+            {
+              "question": "6737d4dc-9009-4037-f371-778174cc6200",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "linkId": "4f33e316-fe1d-4f8f-86e9-d6be24bf160f",
+          "type": "string",
+          "text": "Posologie",
+          "required": false,
+          "enableWhen": [
+            {
+              "question": "6737d4dc-9009-4037-f371-778174cc6200",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "linkId": "5858932492599",
+      "text": "Pathologie cardio vasculaire ",
+      "item": [
+        {
+          "type": "boolean",
+          "linkId": "338399835362",
+          "text": "Antécédent d'AVC hémorragique"
+        },
+        {
+          "type": "boolean",
+          "linkId": "510968399171",
+          "text": "Antécédent d'AVC ischémique ou d'AIT"
+        },
+        {
+          "type": "boolean",
+          "linkId": "916970049081",
+          "text": "Sténose carotidienne"
+        },
+        {
+          "type": "boolean",
+          "linkId": "254208235989",
+          "text": "Anévrisme de l'aorte abdominale"
+        },
+        {
+          "type": "boolean",
+          "linkId": "644394216722",
+          "text": "AOMI"
+        },
+        {
+          "type": "boolean",
+          "linkId": "4926287209739",
+          "text": "Angioplastie",
+          "enableWhen": [
+            {
+              "question": "644394216722",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "type": "boolean",
+          "linkId": "245694795304",
+          "text": "Stenting",
+          "enableWhen": [
+            {
+              "question": "644394216722",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "type": "boolean",
+          "linkId": "869674658561",
+          "text": "Pontage femoral",
+          "enableWhen": [
+            {
+              "question": "644394216722",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "linkId": "1e490bfa-2c9c-47ad-a672-9118e2757a94",
+          "type": "choice",
+          "text": "Latéralité",
+          "required": false,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "id": "75c25c93-b082-4ad2-965a-99039b0bea1e",
+                "code": "droit",
+                "system": "urn:uuid:4dae5314-a3cf-471d-f399-3eb3ef4c161f",
+                "display": "Droit"
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "c1f350be-9cd2-41ef-cb36-498e6c8cdf93",
+                "code": "gauche",
+                "system": "urn:uuid:4dae5314-a3cf-471d-f399-3eb3ef4c161f",
+                "display": "Gauche"
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "e8433735-8f96-43b4-f678-03a37cc01453",
+                "code": "bilateral",
+                "system": "urn:uuid:4dae5314-a3cf-471d-f399-3eb3ef4c161f",
+                "display": "Bilateral"
+              }
+            }
+          ],
+          "enableWhen": [
+            {
+              "question": "869674658561",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "type": "boolean",
+          "linkId": "218274238727",
+          "text": "Coronaropathie"
+        },
+        {
+          "type": "boolean",
+          "linkId": "8631246892524",
+          "text": "Pontage coronarien",
+          "enableWhen": [
+            {
+              "question": "218274238727",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "type": "boolean",
+          "linkId": "b8607d0f-1c28-4ba9-da85-97819afddc6b",
+          "text": "Stenting",
+          "enableWhen": [
+            {
+              "question": "218274238727",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "type": "boolean",
+          "linkId": "a4b40406-4600-4ce7-f20d-5bf590fd9385",
+          "text": "Angioplastie",
+          "enableWhen": [
+            {
+              "question": "218274238727",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "type": "boolean",
+          "linkId": "63edf78b-ed2c-48a9-909e-9e9a21d715df",
+          "text": "Trouble du rythme"
+        },
+        {
+          "type": "boolean",
+          "linkId": "36739ff4-772a-4054-8377-4649ba1160e4",
+          "text": "Cardioversion électrique",
+          "enableWhen": [
+            {
+              "question": "63edf78b-ed2c-48a9-909e-9e9a21d715df",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "type": "boolean",
+          "linkId": "be5a5af4-ad22-4d0f-8158-b4227aa27357",
+          "text": "Ablation par cathéter",
+          "enableWhen": [
+            {
+              "question": "63edf78b-ed2c-48a9-909e-9e9a21d715df",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "801cd473-ae2f-491a-8819-30aca6cd3cc5",
+      "type": "group",
+      "text": "Gestion des anti-agrégants",
+      "required": false,
+      "item": [
+        {
+          "type": "boolean",
+          "linkId": "68755fca-94a7-497c-89de-39e82cc70682",
+          "text": "Traitements anti-agrégants"
+        },
+        {
+          "type": "boolean",
+          "linkId": "4a571e09-5d0c-4901-9ac9-cd7829b4036a",
+          "text": "Aspirine",
+          "enableWhen": [
+            {
+              "question": "68755fca-94a7-497c-89de-39e82cc70682",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "type": "boolean",
+          "linkId": "0f6e957e-879e-45b1-adb5-7f53f5a85c2f",
+          "text": "Plavix",
+          "enableWhen": [
+            {
+              "question": "68755fca-94a7-497c-89de-39e82cc70682",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "type": "boolean",
+          "linkId": "7cfb2bd4-c8e7-4382-897f-ca73e40efc6a",
+          "text": "Brilique",
+          "enableWhen": [
+            {
+              "question": "68755fca-94a7-497c-89de-39e82cc70682",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "type": "boolean",
+          "linkId": "c25a94c0-2507-4085-a0ef-ed3157425e99",
+          "text": "Cangrelor",
+          "enableWhen": [
+            {
+              "question": "68755fca-94a7-497c-89de-39e82cc70682",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "type": "boolean",
+          "linkId": "25ef1a8f-1b91-4239-a455-678fdf675872",
+          "text": "Prasugrel",
+          "enableWhen": [
+            {
+              "question": "68755fca-94a7-497c-89de-39e82cc70682",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "linkId": "df65da82-f4a1-4693-8d07-8a46664ee3a1",
+          "type": "string",
+          "text": "Posologie",
+          "required": false,
+          "enableWhen": [
+            {
+              "question": "68755fca-94a7-497c-89de-39e82cc70682",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "de2c8558-92fd-45ce-b52b-a3dc6a7fe320",
+      "type": "group",
+      "text": "Gestion des anti-angineux",
+      "required": false,
+      "item": [
+        {
+          "type": "boolean",
+          "linkId": "4866166883283",
+          "text": "Sous médication anti-angineuse"
+        },
+        {
+          "type": "boolean",
+          "linkId": "1f86fdca-c5f8-48d4-82a4-ed621d83dd19",
+          "text": "Trinitine",
+          "enableWhen": [
+            {
+              "question": "4866166883283",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "linkId": "ce63f605-b7df-48f2-8032-c3e14b7e7bf4",
+          "type": "string",
+          "text": "Autre",
+          "required": false,
+          "enableWhen": [
+            {
+              "question": "4866166883283",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "linkId": "d9e28aea-09eb-4923-ee26-354d0f9be5cd",
+          "type": "string",
+          "text": "Posologie",
+          "required": false,
+          "enableWhen": [
+            {
+              "question": "4866166883283",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "boolean",
+      "linkId": "61716947507",
+      "text": "Antécédant de traumatisme crânien "
+    },
+    {
+      "type": "boolean",
+      "linkId": "fce05ce4-bf9e-49f1-8642-c18fb482e701",
+      "text": "Chirurgie recente craniale ou cerebrale"
+    },
+    {
+      "type": "boolean",
+      "linkId": "fcbc5c72-e036-4db7-81ea-c7674c998689",
+      "text": "Antécédant de traumatisme nasale"
+    },
+    {
+      "type": "boolean",
+      "linkId": "6147493018859",
+      "text": "Antécédant de thrombose veineuse cérébrale"
+    },
+    {
+      "type": "boolean",
+      "linkId": "4626427211110",
+      "text": "Sténose veineuse cérébrale"
+    },
+    {
+      "linkId": "0f2b629b-7e47-4784-8f6f-71af188d3f50",
+      "type": "group",
+      "text": "Antécédants familiaux en rapport avec le motif de passage",
+      "required": false,
+      "item": [
+        {
+          "type": "boolean",
+          "linkId": "340424568542",
+          "text": "1er degré (père/mère, frère/sœur, enfants)"
+        },
+        {
+          "type": "integer",
+          "linkId": "234668637437",
+          "text": "Nombre",
+          "enableWhen": [
+            {
+              "question": "340424568542",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "type": "boolean",
+          "linkId": "3999783084778",
+          "text": "2d degré (oncles/tantes, cousins, Gd-parents) "
+        },
+        {
+          "type": "integer",
+          "linkId": "264025292554",
+          "text": "Nombre",
+          "enableWhen": [
+            {
+              "question": "3999783084778",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "91882144-0930-4f41-86f5-ea9a3a8258d7",
+      "type": "group",
+      "text": "Contexte génétique",
+      "required": false,
+      "item": [
+        {
+          "type": "boolean",
+          "linkId": "104422542240",
+          "text": "Syndrome vasculaire d'Ehlers-Danlos"
+        },
+        {
+          "type": "boolean",
+          "linkId": "7519712968523",
+          "text": "Syndrome de Marfan"
+        },
+        {
+          "type": "boolean",
+          "linkId": "5193436007814",
+          "text": "Syndrome de Loeys-Dietz"
+        },
+        {
+          "type": "boolean",
+          "linkId": "9004503279748",
+          "text": "Syndrome de Turner"
+        },
+        {
+          "type": "boolean",
+          "linkId": "74271973-0df2-4060-8698-a37fae9a7667",
+          "text": "Syndrome de Rendu-Osler-Weber (Télangiectasie Hémorragique Héréditaire)"
+        },
+        {
+          "type": "boolean",
+          "linkId": "4954583577619",
+          "text": "Dysplasie Fibromusculaire (FMD)"
+        },
+        {
+          "type": "boolean",
+          "linkId": "498660082672",
+          "text": "Drépanocytose"
+        },
+        {
+          "type": "boolean",
+          "linkId": "f25b293a-b797-4171-8b8e-04f82cc3294f",
+          "text": "Hémophilie"
+        },
+        {
+          "type": "boolean",
+          "linkId": "911750704106",
+          "text": "Maladie constitutionnelle de la paroi vasculaire"
+        },
+        {
+          "type": "boolean",
+          "linkId": "d37787d0-bc07-473a-8637-f4c5c2aa8827",
+          "text": "Polykystose Rénale Autosomique Dominante"
+        },
+        {
+          "linkId": "a939515e-cbdc-4741-8367-a380c06f643b",
+          "type": "string",
+          "text": "maladie de Behcet",
+          "required": false
+        },
+        {
+          "linkId": "b6f73583-9da8-45bf-8df8-d03e50ba9090",
+          "type": "string",
+          "text": "Autre",
+          "required": false
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "linkId": "4541200765302",
+      "text": "Autres antécédants ",
+      "item": [
+        {
+          "type": "boolean",
+          "linkId": "050be447-0e03-4763-eebf-eccc644a5030",
+          "text": "Syndrome de Wyburn-Mason/ Bonnet-Dechaume-Blanc"
+        },
+        {
+          "type": "boolean",
+          "linkId": "3973624496820",
+          "text": "Maladie parodontale gingivale, dentaire"
+        },
+        {
+          "type": "boolean",
+          "linkId": "7761058841639",
+          "text": "Cancer solide"
+        },
+        {
+          "type": "boolean",
+          "linkId": "3529174317714",
+          "text": "Hémopathie maligne"
+        },
+        {
+          "type": "boolean",
+          "linkId": "2182645325877",
+          "text": "Maladie du système ou auto-immune"
+        },
+        {
+          "type": "boolean",
+          "linkId": "81411164-830b-4e71-f996-67bbb615737b",
+          "text": "Endocardite infectieuse"
+        },
+        {
+          "linkId": "4fa834ea-cd9e-46dc-8fe5-1677e76e65e0",
+          "type": "string",
+          "text": "Autre",
+          "required": false
+        },
+        {
+          "linkId": "52f74860-d225-4b86-9dc5-a54ce0279423",
+          "type": "string",
+          "text": "HTIC",
+          "required": false
+        }
+      ]
+    }
+  ]
+}
+  ''';
 }

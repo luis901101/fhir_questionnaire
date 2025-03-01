@@ -64,10 +64,10 @@ class QuestionnaireAttachmentItemViewState
         AnimatedSize(
           duration: const Duration(milliseconds: 300),
           alignment: Alignment.center,
-          child: SizedBox(
-            height: value == null ? 0 : null,
-            child: Visibility(
-              visible: value != null,
+          child: ClipRect(
+            clipBehavior: Clip.hardEdge,
+            child: SizedBox(
+              height: value == null ? 0 : null,
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Center(
@@ -126,6 +126,7 @@ class QuestionnaireAttachmentItemViewState
                       style: ElevatedButton.styleFrom(
                         backgroundColor: theme.colorScheme.error,
                         foregroundColor: theme.colorScheme.onError,
+                        iconColor: theme.colorScheme.onError,
                       ),
                       icon: const Icon(Icons.delete_forever_rounded),
                       label: Text(QuestionnaireLocalization
