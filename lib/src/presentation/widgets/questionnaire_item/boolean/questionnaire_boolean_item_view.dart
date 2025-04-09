@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 /// Created by luis901101 on 3/20/24.
 class QuestionnaireBooleanItemView extends QuestionnaireItemView {
@@ -47,7 +48,10 @@ class QuestionnaireBooleanItemViewState
       value: value,
       onChanged:
           isReadOnly ? null : (value) => setState(() => this.value = value),
-      title: item.title.isEmpty ? null : Text(item.title!),
+      title: item.title.isEmpty
+          ? null
+          : Text(
+              item.extension_?.translation(Intl.defaultLocale) ?? item.title!),
       contentPadding: const EdgeInsets.only(left: 8),
     );
   }

@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 /// Created by luis901101 on 3/22/24.
 class QuestionnaireAttachmentItemView extends QuestionnaireItemView {
@@ -46,6 +47,7 @@ class QuestionnaireAttachmentItemViewState
   Widget buildBody(BuildContext context) {
     final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -57,7 +59,7 @@ class QuestionnaireAttachmentItemViewState
               bottom: 4.0,
             ),
             child: Text(
-              item.title!,
+              item.extension_?.translation(Intl.defaultLocale) ?? item.title!,
               style: Theme.of(context).textTheme.titleSmall,
             ),
           ),

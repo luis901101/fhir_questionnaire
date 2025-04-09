@@ -1,5 +1,6 @@
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 /// Created by luis901101 on 06/24/24.
 class QuestionnaireGroupItemView extends QuestionnaireItemView {
@@ -65,7 +66,7 @@ class QuestionnaireGroupItemViewState
                   child: SizeRenderer(
                     onSizeRendered: onGroupTitleSizeRendered,
                     child: Text(
-                      '${item.title}',
+                      '${item.extension_?.translation(Intl.defaultLocale) ?? item.title}',
                       style: theme.textTheme.titleMedium,
                     ),
                   ),
