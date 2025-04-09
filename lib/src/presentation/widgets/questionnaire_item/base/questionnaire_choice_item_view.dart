@@ -1,7 +1,6 @@
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 /// Created by luis901101 on 3/9/24.
 abstract class QuestionnaireChoiceItemView extends QuestionnaireItemView {
@@ -37,7 +36,7 @@ abstract class QuestionnaireChoiceItemViewState<
 
   bool get isOpen => widget.isOpen;
   String valueNameResolver(QuestionnaireAnswerOption value) =>
-      value.extension_?.translation(Intl.defaultLocale) ??
+      value.extension_?.localize() ??
       value.valueCoding?.title ??
       value.valueString ??
       value.valueInteger?.toString() ??
@@ -71,7 +70,7 @@ abstract class QuestionnaireChoiceItemViewState<
               bottom: 4.0,
             ),
             child: Text(
-              item.extension_?.translation(Intl.defaultLocale) ?? item.title!,
+              item.title!,
               style: Theme.of(context).textTheme.titleSmall,
             ),
           ),

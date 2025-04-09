@@ -1,6 +1,5 @@
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 /// Created by luis901101 on 3/21/24.
 class QuestionnaireDisplayItemView extends QuestionnaireItemView {
@@ -22,7 +21,7 @@ class QuestionnaireDisplayItemViewState
   Widget buildBody(BuildContext context) {
     final theme = Theme.of(context);
     return Text(
-      '${item.extension_?.translation(Intl.defaultLocale) ?? item.title}',
+      '${item.title}',
       style: theme.textTheme.titleMedium,
     );
   }

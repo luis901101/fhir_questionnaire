@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 enum DateTimeType {
   date,
@@ -83,7 +82,7 @@ class QuestionnaireDateTimeItemViewState
           Padding(
             padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 4.0),
             child: Text(
-              item.extension_?.translation(Intl.defaultLocale) ?? item.title!,
+              item.title!,
               style: theme.textTheme.titleSmall,
             ),
           ),

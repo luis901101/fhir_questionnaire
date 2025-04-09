@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 /// Created by luis901101 on 3/5/24.
 abstract class QuestionnaireTextFieldItemView extends QuestionnaireItemView {
@@ -70,7 +69,7 @@ abstract class QuestionnaireTextFieldItemViewState<
               bottom: 4.0,
             ),
             child: Text(
-              item.extension_?.translation(Intl.defaultLocale) ?? item.title!,
+              item.title!,
               style: Theme.of(context).textTheme.titleSmall,
             ),
           ),

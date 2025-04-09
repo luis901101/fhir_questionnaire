@@ -1,4 +1,5 @@
 import 'package:fhir/r4.dart';
+import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 
 extension CodeableConceptUtils on CodeableConcept {
   String? get title => text ?? coding?.firstOrNull?.title;
@@ -23,7 +24,7 @@ extension FhirDateTimeUtils on FhirDateTime {
 }
 
 extension QuestionnaireItemUtils on QuestionnaireItem {
-  String? get title => text ?? code?.firstOrNull?.title;
+  String? get title => extension_?.localize() ?? text;
 }
 
 extension QuestionnaireUtils on Questionnaire {
