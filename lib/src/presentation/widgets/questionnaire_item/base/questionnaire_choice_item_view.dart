@@ -35,12 +35,6 @@ abstract class QuestionnaireChoiceItemViewState<
   bool get wantKeepAlive => isOpen;
 
   bool get isOpen => widget.isOpen;
-  String valueNameResolver(QuestionnaireAnswerOption value) =>
-      value.extension_?.localize() ??
-      value.valueCoding?.title ??
-      value.valueString ??
-      value.valueInteger?.toString() ??
-      '';
 
   QuestionnaireAnswerOption onOpenAnswerAdded(String value,
       {bool? hideKeyboard}) {

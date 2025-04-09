@@ -1,5 +1,5 @@
 import 'package:fhir/r4.dart';
-import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_single_choice_item_view.dart';
+import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
 
 /// Created by luis901101 on 3/9/24.
@@ -27,7 +27,7 @@ class QuestionnaireRadioButtonChoiceItemViewState
           .map((entry) => RadioListTile<QuestionnaireAnswerOption>(
                 controlAffinity: ListTileControlAffinity.leading,
                 contentPadding: EdgeInsets.zero,
-                title: Text(valueNameResolver(entry)),
+                title: Text(entry.title ?? ''),
                 value: entry,
                 groupValue: selectedValue,
                 onChanged: onSelectedValueChanged,

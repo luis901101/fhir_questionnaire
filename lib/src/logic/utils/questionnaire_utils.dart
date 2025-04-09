@@ -31,3 +31,12 @@ extension QuestionnaireUtils on Questionnaire {
   FhirCanonical get asFhirCanonical =>
       FhirCanonical('${R4ResourceType.Questionnaire.name}/$fhirId');
 }
+
+extension QuestionnaireAnswerOptiontils on QuestionnaireAnswerOption {
+  String? get title =>
+      extension_?.localize() ??
+      valueCoding?.extension_?.localize() ??
+      valueCoding?.title ??
+      valueString ??
+      valueInteger?.toString();
+}
