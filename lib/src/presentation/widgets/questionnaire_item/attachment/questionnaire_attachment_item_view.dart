@@ -46,7 +46,6 @@ class QuestionnaireAttachmentItemViewState
   Widget buildBody(BuildContext context) {
     final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
