@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
-import 'package:fhir/r4.dart';
+import 'package:fhir_r4/fhir_r4.dart';
 import 'package:flutter/cupertino.dart';
 
 class QuestionnaireItemEnableWhenController {
@@ -12,8 +12,9 @@ class QuestionnaireItemEnableWhenController {
     required List<QuestionnaireItemEnableWhenBundle>? enableWhenBundleList,
     required FhirCode? behavior,
   })  : _enableWhenBundleList = enableWhenBundleList ?? [],
-        _behavior = QuestionnaireEnableWhenBehavior.valueOf(behavior?.value) ??
-            QuestionnaireEnableWhenBehavior.defaultValue;
+        _behavior =
+            QuestionnaireEnableWhenBehavior.valueOf(behavior?.valueString) ??
+                QuestionnaireEnableWhenBehavior.defaultValue;
 
   bool init({required ValueChanged<bool> onEnabledChangedListener}) {
     _onEnabledChanged = onEnabledChangedListener;
@@ -35,22 +36,22 @@ class QuestionnaireItemEnableWhenController {
     for (final enableWhenBundle in _enableWhenBundleList) {
       final controller = enableWhenBundle.controller;
       dynamic expectedValue = enableWhenBundle.expectedAnswer.answerString ??
-          enableWhenBundle.expectedAnswer.answerInteger?.value ??
-          enableWhenBundle.expectedAnswer.answerDecimal?.value ??
-          enableWhenBundle.expectedAnswer.answerBoolean?.value ??
-          enableWhenBundle.expectedAnswer.answerQuantity?.value?.value ??
+          enableWhenBundle.expectedAnswer.answerInteger?.valueInt ??
+          enableWhenBundle.expectedAnswer.answerDecimal?.valueDouble ??
+          enableWhenBundle.expectedAnswer.answerBoolean?.valueBoolean ??
+          enableWhenBundle.expectedAnswer.answerQuantity?.value?.valueDouble ??
           enableWhenBundle.expectedAnswer.answerTime?.asDateTime ??
-          enableWhenBundle.expectedAnswer.answerDate?.asDateTime ??
-          enableWhenBundle.expectedAnswer.answerDateTime?.asDateTime ??
-          enableWhenBundle.expectedAnswer.answerCoding?.code?.value;
+          enableWhenBundle.expectedAnswer.answerDate?.valueDateTime ??
+          enableWhenBundle.expectedAnswer.answerDateTime?.valueDateTime ??
+          enableWhenBundle.expectedAnswer.answerCoding?.code?.valueString;
       List<dynamic> controllerValues = [];
       if (controller.rawValue is QuestionnaireAnswerOption) {
         final answerOption = controller.rawValue as QuestionnaireAnswerOption;
         final controllerValueOption = answerOption.valueString ??
-            answerOption.valueInteger?.value ??
+            answerOption.valueInteger?.valueInt ??
             answerOption.valueTime?.asDateTime ??
-            answerOption.valueDate?.asDateTime ??
-            answerOption.valueCoding?.code?.value;
+            answerOption.valueDate?.valueDateTime ??
+            answerOption.valueCoding?.code?.valueString;
         if (controllerValueOption != null) {
           controllerValues = [controllerValueOption];
         }
@@ -61,10 +62,10 @@ class QuestionnaireItemEnableWhenController {
         final values = answerOptions
             .map((answerOption) =>
                 answerOption.valueString ??
-                answerOption.valueInteger?.value ??
+                answerOption.valueInteger?.valueInt ??
                 answerOption.valueTime?.asDateTime ??
-                answerOption.valueDate?.asDateTime ??
-                answerOption.valueCoding?.code?.value)
+                answerOption.valueDate?.valueDateTime ??
+                answerOption.valueCoding?.code?.valueString)
             .nonNulls;
 
         controllerValues = values.toList() as List<dynamic>;
@@ -86,7 +87,8 @@ class QuestionnaireItemEnableWhenController {
       switch (enableWhenBundle.operator) {
         case QuestionnaireEnableWhenOperator.exists:
           final bool existAnswer =
-              enableWhenBundle.expectedAnswer.answerBoolean?.value ?? false;
+              enableWhenBundle.expectedAnswer.answerBoolean?.valueBoolean ??
+                  false;
           enabled = _behavior.check(
               enabled,
               (TextUtils.isNotEmpty(controller.rawValue?.toString()) &&

@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
+import 'package:fhir_r4/fhir_r4.dart';
 import 'package:flutter/material.dart';
 
 enum DateTimeType {
@@ -8,11 +9,11 @@ enum DateTimeType {
   dateTime;
 
   static DateTimeType fromQuestionnaireItemType(
-          QuestionnaireItemType? itemType) =>
+          QuestionnaireItemTypeEnum? itemType) =>
       switch (itemType) {
-        QuestionnaireItemType.date => date,
-        QuestionnaireItemType.time => time,
-        QuestionnaireItemType.dateTime || _ => dateTime,
+        QuestionnaireItemTypeEnum.date => date,
+        QuestionnaireItemTypeEnum.time => time,
+        QuestionnaireItemTypeEnum.dateTime || _ => dateTime,
       };
   bool get requiresDate => this == date || this == dateTime;
   bool get requiresTime => this == time || this == dateTime;
@@ -55,7 +56,7 @@ class QuestionnaireDateTimeItemViewState
         DateTimeType.date => item.initial
             ?.firstWhereOrNull((item) => item.valueDate != null)
             ?.valueDate
-            ?.asDateTime,
+            ?.valueDateTime,
         DateTimeType.time => item.initial
             ?.firstWhereOrNull((item) => item.valueTime != null)
             ?.valueTime
@@ -63,7 +64,7 @@ class QuestionnaireDateTimeItemViewState
         DateTimeType.dateTime => item.initial
             ?.firstWhereOrNull((item) => item.valueDateTime != null)
             ?.valueDateTime
-            ?.asDateTime,
+            ?.valueDateTime,
       };
       if (initial != null) {
         dateTime = initial;

@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:fhir/r4.dart';
+import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
 
@@ -72,7 +72,7 @@ class QuestionnaireAttachmentItemViewState
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Center(
                   child: Icon(
-                    (value?.contentType?.value?.endsWith('jpeg') ?? false)
+                    (value?.contentType?.valueString?.endsWith('jpeg') ?? false)
                         ? Icons.image
                         : Icons.file_copy,
                     color: theme.disabledColor,

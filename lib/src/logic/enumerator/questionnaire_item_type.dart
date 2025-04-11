@@ -1,89 +1,21 @@
-import 'package:collection/collection.dart';
-import 'package:fhir/r4.dart';
+import 'package:fhir_r4/fhir_r4.dart';
 
-/// Docs: https://hl7.org/fhir/R4/valueset-item-type.html
-enum QuestionnaireItemType {
-  /// An item with no direct answer but should have at least one child item.
-  group('group'),
-
-  /// Text for display that will not capture an answer or have child items.
-  display('display'),
-
-  /// An item that defines a specific answer to be captured, and which may have child items. (the answer provided in the QuestionnaireResponse should be of the defined datatype).
-  question('question'),
-
-  /// Question with a yes/no answer (valueBoolean).
-  boolean('boolean'),
-
-  /// Question with is a real number answer (valueDecimal).
-  decimal('decimal'),
-
-  /// Question with an integer answer (valueInteger).
-  integer('integer'),
-
-  /// Question with a date answer (valueDate).
-  date('date'),
-
-  /// Time	Question with a date and time answer (valueDateTime).
-  dateTime('dateTime'),
-
-  /// Question with a time (hour:minute:second) answer independent of date. (valueTime).
-  time('time'),
-
-  /// Question with a short (few words to short sentence) free-text entry answer (valueString).
-  string('string'),
-
-  /// Question with a long (potentially multi-paragraph) free-text entry answer (valueString).
-  text('text'),
-
-  /// Question with a URL (website, FTP site, etc.) answer (valueUri).
-  url('url'),
-
-  /// Question with a Coding drawn from a list of possible answers (specified in either the answerOption property, or via the valueset referenced in the answerValueSet property) as an answer (valueCoding).
-  choice('choice'),
-
-  /// choice	Open Choice	Answer is a Coding drawn from a list of possible answers (as with the choice type) or a free-text entry in a string (valueCoding or valueString).
-  openChoice('open-choice'),
-
-  /// Question with binary content such as an image, PDF, etc. as an answer (valueAttachment).
-  attachment('attachment'),
-
-  /// Question with a reference to another resource (practitioner, organization, etc.) as an answer (valueReference).
-  reference('reference'),
-
-  /// Question with a combination of a numeric value and unit, potentially with a comparator (<, >, etc.) as an answer. (valueQuantity) There is an extension 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit' that can be used to define what unit should be captured (or the unit that has a ucum conversion from the provided unit).
-  quantity('quantity'),
-  ;
-
-  final String code;
-  const QuestionnaireItemType(this.code);
-  static const defaultValue = string;
-
-  bool get isGroup => this == group;
-  bool get isDisplay => this == display;
-  bool get isQuestion => this == question;
-  bool get isBoolean => this == boolean;
-  bool get isDecimal => this == decimal;
-  bool get isInteger => this == integer;
-  bool get isDate => this == date;
-  bool get isDateTime => this == dateTime;
-  bool get isTime => this == time;
-  bool get isString => this == string;
-  bool get isText => this == text;
-  bool get isUrl => this == url;
-  bool get isChoice => this == choice;
-  bool get isOpenChoice => this == openChoice;
-  bool get isAttachment => this == attachment;
-  bool get isReference => this == reference;
-  bool get isQuantity => this == quantity;
-
-  @override
-  String toString() => code;
-  FhirCode get asFhirCode => FhirCode(code);
-  static QuestionnaireItemType? valueOf(String? code) =>
-      QuestionnaireItemType.values
-          .firstWhereOrNull((value) => value.code == code);
-  String get locale => name;
-
-  static List<String> get locales => values.map((e) => e.locale).toList();
+extension QuestionnaireItemTypeEnumX on QuestionnaireItemTypeEnum {
+  bool get isGroup => this == QuestionnaireItemTypeEnum.group;
+  bool get isDisplay => this == QuestionnaireItemTypeEnum.display_;
+  bool get isQuestion => this == QuestionnaireItemTypeEnum.question;
+  bool get isBoolean => this == QuestionnaireItemTypeEnum.boolean;
+  bool get isDecimal => this == QuestionnaireItemTypeEnum.decimal;
+  bool get isInteger => this == QuestionnaireItemTypeEnum.integer;
+  bool get isDate => this == QuestionnaireItemTypeEnum.date;
+  bool get isDateTime => this == QuestionnaireItemTypeEnum.dateTime;
+  bool get isTime => this == QuestionnaireItemTypeEnum.time;
+  bool get isString => this == QuestionnaireItemTypeEnum.string;
+  bool get isText => this == QuestionnaireItemTypeEnum.text;
+  bool get isUrl => this == QuestionnaireItemTypeEnum.url;
+  bool get isChoice => this == QuestionnaireItemTypeEnum.choice;
+  bool get isOpenChoice => this == QuestionnaireItemTypeEnum.openChoice;
+  bool get isAttachment => this == QuestionnaireItemTypeEnum.attachment;
+  bool get isReference => this == QuestionnaireItemTypeEnum.reference;
+  bool get isQuantity => this == QuestionnaireItemTypeEnum.quantity;
 }

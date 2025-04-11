@@ -1,4 +1,4 @@
-import 'package:fhir/r4.dart';
+import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
@@ -35,13 +35,14 @@ abstract class QuestionnaireSingleChoiceItemViewState<
 
       if (initial?.valueCoding != null) {
         controller.value = QuestionnaireAnswerOption(
-          valueCoding: initial?.valueCoding!,
+          valueX: initial!.valueCoding!,
         );
       }
     }
   }
 
-  String? get selectedValueCode => selectedValue?.valueCoding?.code?.value;
+  String? get selectedValueCode =>
+      selectedValue?.valueCoding?.code?.valueString;
   QuestionnaireAnswerOption? get selectedValue => controller.value;
   set selectedValue(QuestionnaireAnswerOption? value) =>
       controller.value = value;

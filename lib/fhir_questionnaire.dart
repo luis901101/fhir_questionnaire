@@ -8,7 +8,6 @@ export 'package:fhir_questionnaire/src/logic/utils/date_utils.dart';
 export 'package:fhir_questionnaire/src/logic/questionnaire_controller.dart';
 export 'package:fhir_questionnaire/src/logic/enumerator/questionnaire_enable_when_operator.dart';
 export 'package:fhir_questionnaire/src/logic/enumerator/questionnaire_item_extension_code.dart';
-export 'package:fhir_questionnaire/src/logic/enumerator/questionnaire_response_status.dart';
 export 'package:fhir_questionnaire/src/logic/enumerator/questionnaire_item_type.dart';
 export 'package:fhir_questionnaire/src/logic/enumerator/questionnaire_custom_quantity_comparator.dart';
 export 'package:fhir_questionnaire/src/logic/enumerator/questionnaire_enable_when_behavior.dart';
