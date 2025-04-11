@@ -4,7 +4,7 @@ import 'package:fhir_questionnaire/src/model/questionnaire_item_enable_when_cont
 import 'package:fhir_questionnaire/src/presentation/utils/validation_utils.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/size_renderer.dart';
 import 'package:flutter/material.dart';
-import 'package:fhir/r4.dart';
+import 'package:fhir_r4/fhir_r4.dart';
 
 /// Created by luis901101 on 3/5/24.
 abstract class QuestionnaireItemView extends StatefulWidget {
@@ -30,9 +30,9 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
   QuestionnaireItem get item => widget.item;
   List<QuestionnaireItemView>? get children => widget.children;
 
-  bool get isRequired => item.required_?.value ?? false;
-  bool get isReadOnly => item.readOnly?.value ?? false;
-  int? get maxLength => item.maxLength?.value;
+  bool get isRequired => item.required_?.valueBoolean ?? false;
+  bool get isReadOnly => item.readOnly?.valueBoolean ?? false;
+  int? get maxLength => item.maxLength?.valueInt;
   @override
   bool get wantKeepAlive => false;
 

@@ -1,4 +1,4 @@
-import 'package:fhir/r4.dart';
+import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_single_choice_item_view.dart';
 import 'package:flutter/material.dart';
 

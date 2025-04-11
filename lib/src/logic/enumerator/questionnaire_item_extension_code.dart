@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:fhir/r4.dart';
+import 'package:fhir_r4/fhir_r4.dart';
 
 /// Docs: https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html
 enum QuestionnaireItemExtensionCode {

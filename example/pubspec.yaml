@@ -33,7 +33,7 @@ dependencies:
     sdk: flutter
   fhir_questionnaire:
     path: ../
-  fhir: ^0.12.0
+  fhir_r4: ^0.4.1
   image_picker: ^1.1.2
   file_picker: ^8.0.7
   crypto: ^3.0.3

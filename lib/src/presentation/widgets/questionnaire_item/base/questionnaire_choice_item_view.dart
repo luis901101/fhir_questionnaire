@@ -1,4 +1,4 @@
-import 'package:fhir/r4.dart';
+import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
@@ -38,18 +38,18 @@ abstract class QuestionnaireChoiceItemViewState<
   bool get isOpen => widget.isOpen;
   String valueNameResolver(QuestionnaireAnswerOption value) =>
       value.valueCoding?.title ??
-      value.valueString ??
-      value.valueInteger?.toString() ??
+      value.valueString?.valueString ??
+      value.valueInteger?.valueString ??
       '';
 
   QuestionnaireAnswerOption onOpenAnswerAdded(String value,
       {bool? hideKeyboard}) {
     hideKeyboard ??= true;
     QuestionnaireAnswerOption newAnwser;
-    final existingAnswer =
-        values.firstWhereOrNull((answer) => answer.valueString == value);
+    final existingAnswer = values
+        .firstWhereOrNull((answer) => answer.valueString?.valueString == value);
     if (existingAnswer == null) {
-      newAnwser = QuestionnaireAnswerOption(valueString: value);
+      newAnwser = QuestionnaireAnswerOption(valueX: value.toFhirString);
       values.add(newAnwser);
     } else {
       newAnwser = existingAnswer;
