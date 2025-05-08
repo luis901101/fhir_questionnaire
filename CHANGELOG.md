@@ -17,6 +17,9 @@ Types of changes
 ### Changed
 - **Breaking Change**: changed `String? locale` to `Locale? locale` in `QuestionnaireView` and `QuestionnaireBaseLocalization` to allow better localization support.
 
+### Fixed
+- Fixed bug on choice items to properly validate `readOnly` property [ISSUE-20](https://github.com/luis901101/fhir_questionnaire/issues/20)
+
 ## 4.0.0
 ### Changed
 - **Breaking Change**: `onGenerateItemResponse` callback changed to also provide the generated `QuestionnaireResponseItem` as an argument of this callback. This way when this callback is being implemented it is also possible to just modify the `QuestionnaireResponseItem` and return it. Thanks [easazade](https://github.com/easazade) [PR-12](https://github.com/luis901101/fhir_questionnaire/pull/12)

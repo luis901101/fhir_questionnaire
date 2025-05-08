@@ -30,7 +30,7 @@ class QuestionnaireRadioButtonChoiceItemViewState
                 title: Text(valueNameResolver(entry)),
                 value: entry,
                 groupValue: selectedValue,
-                onChanged: onSelectedValueChanged,
+                onChanged: isReadOnly ? null : onSelectedValueChanged,
               ))
           .toList(),
     );
