@@ -29,7 +29,7 @@ class QuestionnaireView extends StatefulWidget {
   final List<QuestionnaireBaseLocalization>? localizations;
 
   /// The expected locale to show, by default Platform locale is used.
-  final String? locale;
+  final Locale? locale;
 
   /// The QuestionnaireController to use for item view and response generation.
   final QuestionnaireController? controller;
@@ -80,10 +80,10 @@ class QuestionnaireViewState extends State<QuestionnaireView>
     WidgetsBinding.instance.addPostFrameCallback(onCreated);
     bottomPadding = FlutterViewUtils.get().padding.bottom;
     if (!widget.isLoading) {
-      String? locale;
+      Locale? locale;
       try {
-        locale = widget.locale ??
-            FlutterViewUtils.get().platformDispatcher.locale.languageCode;
+        locale =
+            widget.locale ?? FlutterViewUtils.get().platformDispatcher.locale;
       } catch (_) {}
       QuestionnaireLocalization.instance.init(
         defaultLocalization: widget.defaultLocalization,

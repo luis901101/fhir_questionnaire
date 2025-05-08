@@ -24,7 +24,8 @@ extension FhirDateTimeUtils on FhirDateTime {
 }
 
 extension QuestionnaireItemUtils on QuestionnaireItem {
-  String? get title => extension_?.localize() ?? text;
+  String? get title =>
+      extension_?.localize() ?? text ?? code?.firstOrNull?.title;
 }
 
 extension QuestionnaireUtils on Questionnaire {

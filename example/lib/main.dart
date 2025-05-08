@@ -47,11 +47,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<({String name, String? value})> locales = [
+  final List<({String name, Locale? value})> locales = [
     (name: 'System default', value: null),
-    (name: 'English', value: 'en'),
-    (name: 'Spanish', value: 'es'),
-    (name: 'French', value: 'fr'),
+    (name: 'English', value: const Locale('en', 'US')),
+    (name: 'Spanish', value: const Locale('es', 'ES')),
+    (name: 'French', value: const Locale('fr', 'FR')),
   ];
   final List<({String name, int value})> questionnaires = [
     (name: 'Generic', value: 0),
@@ -107,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
       )
     ),
   ];
-  String? selectedLocale;
+  Locale? selectedLocale;
   int selectedQuestionnaire = 0;
   InputDecorationTheme? selectedInputDecorationTheme;
   final extraLocalizations = [QuestionnaireFrLocalization()];
@@ -140,12 +140,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     }
                   }),
               const SizedBox(height: 16.0),
-              DropdownButtonFormField<String?>(
+              DropdownButtonFormField<Locale?>(
                   decoration: const InputDecoration(
                       label: Text('Select the Questionnaire locale')),
                   value: selectedLocale,
                   items: locales
-                      .map((e) => DropdownMenuItem<String>(
+                      .map((e) => DropdownMenuItem<Locale>(
                             value: e.value,
                             child: Text(e.name),
                           ))
@@ -208,7 +208,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 class QuestionnairePage extends StatefulWidget {
   final Questionnaire questionnaire;
-  final String? locale;
+  final Locale? locale;
   final List<QuestionnaireBaseLocalization>? localizations;
   const QuestionnairePage({
     super.key,
@@ -268,7 +268,7 @@ class QuestionnairePageState extends State<QuestionnairePage> {
 
 /// French localizations
 class QuestionnaireFrLocalization extends QuestionnaireBaseLocalization {
-  QuestionnaireFrLocalization() : super('fr');
+  QuestionnaireFrLocalization() : super(const Locale('fr', 'FR'));
 
   @override
   String get btnSubmit => 'Soumettre';

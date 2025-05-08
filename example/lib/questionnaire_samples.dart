@@ -15,7 +15,48 @@ extension QuestionnaireSamples on Questionnaire {
     {
       "linkId": "intro",
       "text": "Welcome to the Health and Wellness Survey! Please read the instructions carefully before proceeding.",
-      "type": "display"
+      "type": "display",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/translation",
+          "extension": [
+            {
+              "url": "lang",
+              "valueCode": "es"
+            },
+            {
+              "url": "content",
+              "valueString": "¡Bienvenidos a la Encuesta de Salud y Bienestar! Por favor, lea detenidamente las instrucciones antes de continuar."
+            }
+          ]
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/translation",
+          "extension": [
+            {
+              "url": "lang",
+              "valueCode": "fr"
+            },
+            {
+              "url": "content",
+              "valueString": "Bienvenue à l’enquête sur la santé et le bien-être ! Veuillez lire attentivement les instructions avant de continuer."
+            }
+          ]
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/translation",
+          "extension": [
+            {
+              "url": "lang",
+              "valueCode": "en"
+            },
+            {
+              "url": "content",
+              "valueString": "Welcome to the Health and Wellness Survey! Please read the instructions carefully before proceeding."
+            }
+          ]
+        }
+      ]
     },
     {
       "linkId": "501",
@@ -381,7 +422,7 @@ extension QuestionnaireSamples on Questionnaire {
     },
     {
       "linkId": "7",
-      "text": "Enter your body height in cm",
+      "text": "Your body height in cm (Read-Only)",
       "type": "decimal",
       "readOnly": true,
       "initial": [

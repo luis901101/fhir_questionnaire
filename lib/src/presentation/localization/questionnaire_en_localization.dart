@@ -1,8 +1,10 @@
+import 'dart:ui';
+
 import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_base_localization.dart';
 
 /// English localizations
 class QuestionnaireEnLocalization extends QuestionnaireBaseLocalization {
-  QuestionnaireEnLocalization() : super('en');
+  QuestionnaireEnLocalization() : super(const Locale('en', 'US'));
 
   @override
   String get btnSubmit => 'Submit';
