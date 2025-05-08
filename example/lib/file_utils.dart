@@ -16,7 +16,8 @@ class FileUtils {
     return bytes;
   }
 
-  static Future<void> deleteFilePath(String filePath) async {
+  static Future<void> deleteFilePath(String? filePath) async {
+    if (filePath == null || filePath.isEmpty) return;
     try {
       if (kDebugMode) {
         print('---Deleted file: $filePath');
