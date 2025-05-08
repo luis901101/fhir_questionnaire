@@ -8,6 +8,7 @@ import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:json_field_editor/json_field_editor.dart';
 
 void main() {
   runApp(const MyApp());
@@ -53,13 +54,13 @@ class _MyHomePageState extends State<MyHomePage> {
     (name: 'Spanish', value: const Locale('es', 'ES')),
     (name: 'French', value: const Locale('fr', 'FR')),
   ];
-  final List<({String name, int value})> questionnaires = [
-    (name: 'Generic', value: 0),
-    (name: 'PRAPARE', value: 1),
-    (name: 'PHQ-9', value: 2),
-    (name: 'GAD-7', value: 3),
-    (name: 'BMI', value: 4),
-    (name: 'FDR Communs', value: 5),
+  final List<({String name, String value})> questionnaires = [
+    (name: 'Generic', value: QuestionnaireSamples.sampleGeneric),
+    (name: 'PRAPARE', value: QuestionnaireSamples.samplePrapare),
+    (name: 'PHQ-9', value: QuestionnaireSamples.samplePHQ9),
+    (name: 'GAD-7', value: QuestionnaireSamples.sampleGAD7),
+    (name: 'BMI', value: QuestionnaireSamples.sampleBMI),
+    (name: 'FDR Communs', value: QuestionnaireSamples.fdrCommuns),
   ];
   final List<({String name, InputDecorationTheme? value})>
       inputDecorationThemes = [
@@ -107,12 +108,26 @@ class _MyHomePageState extends State<MyHomePage> {
       )
     ),
   ];
+  static bool isValidJson(String? jsonString) {
+    if (jsonString == null) {
+      return false;
+    }
+    try {
+      json.decode(jsonString);
+      return true;
+    } on FormatException catch (_) {
+      return false;
+    }
+  }
+
   Locale? selectedLocale;
-  int selectedQuestionnaire = 0;
+  String selectedQuestionnaire = QuestionnaireSamples.sampleGeneric;
   InputDecorationTheme? selectedInputDecorationTheme;
   final extraLocalizations = [QuestionnaireFrLocalization()];
+  ThemeData theme = ThemeData();
   @override
   Widget build(BuildContext context) {
+    theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -124,12 +139,12 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              DropdownButtonFormField<int>(
+              DropdownButtonFormField<String>(
                   decoration: const InputDecoration(
                       label: Text('Select a Questionnaire sample')),
                   value: selectedQuestionnaire,
                   items: questionnaires
-                      .map((e) => DropdownMenuItem<int>(
+                      .map((e) => DropdownMenuItem<String>(
                             value: e.value,
                             child: Text(e.name),
                           ))
@@ -139,6 +154,164 @@ class _MyHomePageState extends State<MyHomePage> {
                       selectedQuestionnaire = value;
                     }
                   }),
+              const SizedBox(height: 8.0),
+              TextButton.icon(
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        String? nameError;
+                        String? jsonError;
+                        final nameController = JsonTextFieldController();
+                        final jsonController = JsonTextFieldController();
+                        return Dialog(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: StatefulBuilder(
+                                builder: (context, dialogSetState) => Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          'Add a Questionnaire from JSON',
+                                          textAlign: TextAlign.center,
+                                          style: theme.textTheme.titleLarge,
+                                        ),
+                                        const SizedBox(height: 8),
+                                        TextField(
+                                          controller: nameController,
+                                          decoration: InputDecoration(
+                                            labelText: 'Questionnaire Name',
+                                            errorText: nameError,
+                                            contentPadding: EdgeInsets.only(
+                                                left: 16, top: 12, bottom: 12),
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(28)),
+                                            ),
+                                            filled: true,
+                                          ),
+                                        ),
+                                        ConstrainedBox(
+                                          constraints: BoxConstraints(
+                                              maxHeight: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.6),
+                                          child: SingleChildScrollView(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 16),
+                                              child: JsonField(
+                                                controller: jsonController,
+                                                isFormatting: true,
+                                                showErrorMessage: true,
+                                                maxLines: null,
+                                                decoration: InputDecoration(
+                                                  labelText:
+                                                      'Questionnaire JSON',
+                                                  errorText: jsonError,
+                                                  contentPadding:
+                                                      EdgeInsets.only(
+                                                          left: 16,
+                                                          top: 12,
+                                                          bottom: 12),
+                                                  border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                28)),
+                                                  ),
+                                                  filled: true,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 16),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                onPressed: () => jsonController
+                                                    .formatJson(sortJson: true),
+                                                child:
+                                                    const Text('Format JSON'),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  nameError = jsonError = null;
+                                                  if (nameController
+                                                      .text.isEmpty) {
+                                                    nameError =
+                                                        'Name is required';
+                                                  }
+                                                  if (nameError == null &&
+                                                      questionnaires.any(
+                                                          (item) =>
+                                                              item.name ==
+                                                              nameController
+                                                                  .text)) {
+                                                    nameError =
+                                                        'A Questionnaire with this name already exists';
+                                                  }
+                                                  if (jsonController
+                                                      .text.isEmpty) {
+                                                    jsonError =
+                                                        'JSON is required';
+                                                  }
+                                                  if (jsonError == null &&
+                                                      !isValidJson(
+                                                          jsonController
+                                                              .text)) {
+                                                    jsonError = 'Invalid JSON';
+                                                  }
+                                                  if (jsonError == null &&
+                                                      questionnaires.any(
+                                                          (item) =>
+                                                              item.value ==
+                                                              jsonController
+                                                                  .text)) {
+                                                    jsonError =
+                                                        'A Questionnaire with this JSON already exists';
+                                                  }
+                                                  if (nameError != null ||
+                                                      jsonError != null) {
+                                                    dialogSetState(() {});
+                                                    return;
+                                                  }
+                                                  questionnaires.add((
+                                                    name: nameController.text,
+                                                    value: jsonController.text
+                                                  ));
+                                                  selectedQuestionnaire =
+                                                      jsonController.text;
+                                                  setState(() {});
+                                                  Navigator.pop(context);
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      theme.colorScheme.primary,
+                                                  foregroundColor: theme
+                                                      .colorScheme.onPrimary,
+                                                ),
+                                                child: const Text('Add'),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    )),
+                          ),
+                        );
+                      });
+                },
+                icon: const Icon(Icons.add),
+                label: const Text('Add a Questionnaire from JSON'),
+              ),
               const SizedBox(height: 16.0),
               DropdownButtonFormField<Locale?>(
                   decoration: const InputDecoration(
@@ -196,14 +369,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Questionnaire get questionnaire =>
-      Questionnaire.fromJsonString(switch (selectedQuestionnaire) {
-        1 => QuestionnaireSamples.samplePrapare,
-        2 => QuestionnaireSamples.samplePHQ9,
-        3 => QuestionnaireSamples.sampleGAD7,
-        4 => QuestionnaireSamples.sampleBMI,
-        5 => QuestionnaireSamples.fdrCommuns,
-        0 || _ => QuestionnaireSamples.sampleGeneric,
-      });
+      Questionnaire.fromJsonString(selectedQuestionnaire);
 }
 
 class QuestionnairePage extends StatefulWidget {
@@ -223,6 +389,7 @@ class QuestionnairePage extends StatefulWidget {
 
 class QuestionnairePageState extends State<QuestionnairePage> {
   bool loading = true;
+  ThemeData theme = ThemeData();
 
   @override
   void initState() {
@@ -233,6 +400,7 @@ class QuestionnairePageState extends State<QuestionnairePage> {
 
   @override
   Widget build(BuildContext context) {
+    theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Questionnaire'),
@@ -255,14 +423,60 @@ class QuestionnairePageState extends State<QuestionnairePage> {
 
   void onSubmit(QuestionnaireResponse questionnaireResponse) async {
     Navigator.pop(context);
-    var prettyString = const JsonEncoder.withIndent('  ')
+    String json = jsonEncode(questionnaireResponse.toJson());
+    var prettyJson = const JsonEncoder.withIndent('  ')
         .convert(questionnaireResponse.toJson());
-
     debugPrint('''
       ========================================================================
-      $prettyString
+      $prettyJson
       ========================================================================
       ''');
+    showDialog(
+        context: context,
+        builder: (context) => Dialog(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Questionnaire Response',
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 8),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.height * 0.7),
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: JsonField(
+                            controller: JsonTextFieldController()..text = json,
+                            isFormatting: true,
+                            showErrorMessage: true,
+                            doInitFormatting: true,
+                            readOnly: true,
+                            showCursor: true,
+                            enableInteractiveSelection: true,
+                            maxLines: null,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.only(
+                                  left: 16, top: 12, bottom: 12),
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(28)),
+                              ),
+                              filled: true,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ));
   }
 }
 

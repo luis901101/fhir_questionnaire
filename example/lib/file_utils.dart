@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 
 class FileUtils {
-  /// Returns List<int> bytes from file
+  /// Returns List[int] bytes from file
   /// Throws a [FileSystemException] if the operation fails.
   static Future<List<int>?> readBytesFromFile({
     File? file,

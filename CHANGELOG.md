@@ -16,6 +16,7 @@ Types of changes
 
 ### Changed
 - **Breaking Change**: changed `String? locale` to `Locale? locale` in `QuestionnaireView` and `QuestionnaireBaseLocalization` to allow better localization support.
+- Sample project updated to allow adding Questionnaire from JSON and see QuestionnaireResponse as JSON.
 
 ### Fixed
 - Fixed bug on choice items to properly validate `readOnly` property [ISSUE-20](https://github.com/luis901101/fhir_questionnaire/issues/20)
