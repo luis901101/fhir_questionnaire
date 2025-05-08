@@ -422,7 +422,6 @@ class QuestionnairePageState extends State<QuestionnairePage> {
   }
 
   void onSubmit(QuestionnaireResponse questionnaireResponse) async {
-    Navigator.pop(context);
     String json = jsonEncode(questionnaireResponse.toJson());
     var prettyJson = const JsonEncoder.withIndent('  ')
         .convert(questionnaireResponse.toJson());
