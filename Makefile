@@ -18,7 +18,7 @@ generate-web:
 	cd example && flutter clean
 	flutter pub get
 	cd example && flutter build web --release
-	cd example && cp -r build/web/* docs/web
+	cd example && cp -r build/web/* ../docs
 
 .PHONY: generate-exports
 generate-exports:
