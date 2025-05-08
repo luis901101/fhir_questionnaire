@@ -65,6 +65,7 @@ QuestionnaireView(
 3. Check the example project which shows all the features in action.
 
 ## Demo
+### [Try the demo app here](https://luis901101.github.io/fhir_questionnaire/).
 <div>
  <a href="https://raw.githubusercontent.com/luis901101/fhir_questionnaire/main/example/docs/gif/demo.gif">
 <img src="https://raw.githubusercontent.com/luis901101/fhir_questionnaire/main/example/docs/gif/demo.gif" width="230"/>
