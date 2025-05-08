@@ -11,7 +11,7 @@ Types of changes
 
 ## 5.0.0
 ### Added
-- Added support for **Translation** extension according to [FHIR Extension Translation](http://hl7.org/fhir/StructureDefinition/translation) definition. Thanks [sh1l0n](https://github.com/sh1l0n) [PR-18](https://github.com/luis901101/fhir_questionnaire/pull/18)
+- Added support for **Translation** extension according to [FHIR Extension Translation](http://hl7.org/fhir/StructureDefinition/translation) definition. Thanks [sh1l0n](https://github.com/sh1l0n) for [PR-18](https://github.com/luis901101/fhir_questionnaire/pull/18)
 - Added translation extension example to sampleGeneric Questionnaire. 
 
 ### Changed
@@ -22,14 +22,14 @@ Types of changes
 
 ## 4.0.0
 ### Changed
-- **Breaking Change**: `onGenerateItemResponse` callback changed to also provide the generated `QuestionnaireResponseItem` as an argument of this callback. This way when this callback is being implemented it is also possible to just modify the `QuestionnaireResponseItem` and return it. Thanks [easazade](https://github.com/easazade) [PR-12](https://github.com/luis901101/fhir_questionnaire/pull/12)
-- **Breaking Change**: `onBuildItemBundle` changed to `onBuildItemView` since almost always it is just desired an item view to be customized for a type of `questionnaireItem`. Thanks [easazade](https://github.com/easazade) [PR-12](https://github.com/luis901101/fhir_questionnaire/pull/12)
+- **Breaking Change**: `onGenerateItemResponse` callback changed to also provide the generated `QuestionnaireResponseItem` as an argument of this callback. This way when this callback is being implemented it is also possible to just modify the `QuestionnaireResponseItem` and return it. Thanks [easazade](https://github.com/easazade) for [PR-12](https://github.com/luis901101/fhir_questionnaire/pull/12)
+- **Breaking Change**: `onBuildItemBundle` changed to `onBuildItemView` since almost always it is just desired an item view to be customized for a type of `questionnaireItem`. Thanks [easazade](https://github.com/easazade) for [PR-12](https://github.com/luis901101/fhir_questionnaire/pull/12)
  
 ### Fixed
-- Fixed rendering nested questionnaire items. Thanks [easazade](https://github.com/easazade) [PR-12](https://github.com/luis901101/fhir_questionnaire/pull/12)
-- Fixes the enableWhen not working when the enable.question was not in the same group. Thanks [easazade](https://github.com/easazade) [PR-12](https://github.com/luis901101/fhir_questionnaire/pull/12)
-- Fix enable-when not working when target question is a checkbox. Thanks [easazade](https://github.com/easazade) [PR-13](https://github.com/luis901101/fhir_questionnaire/pull/13)
-- Fix text field starting to validate input before user types anything. Thanks [easazade](https://github.com/easazade) [PR-14](https://github.com/luis901101/fhir_questionnaire/pull/14)
+- Fixed rendering nested questionnaire items. Thanks [easazade](https://github.com/easazade) for [PR-12](https://github.com/luis901101/fhir_questionnaire/pull/12)
+- Fixes the enableWhen not working when the enable.question was not in the same group. Thanks [easazade](https://github.com/easazade) for [PR-12](https://github.com/luis901101/fhir_questionnaire/pull/12)
+- Fix enable-when not working when target question is a checkbox. Thanks [easazade](https://github.com/easazade) for [PR-13](https://github.com/luis901101/fhir_questionnaire/pull/13)
+- Fix text field starting to validate input before user types anything. Thanks [easazade](https://github.com/easazade) for [PR-14](https://github.com/luis901101/fhir_questionnaire/pull/14)
 - Fixed UI bug on hidden components using `enableWhen` [ISSUE-16](https://github.com/luis901101/fhir_questionnaire/issues/16)
 - Validation added to ensure an open answer manually added is unique in the list of available answer options.
 

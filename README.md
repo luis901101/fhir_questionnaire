@@ -31,6 +31,7 @@ So far this package only supports [FHIR R4 Item Types](https://hl7.org/fhir/R4/v
 1. [enableWhen](http://hl7.org/fhir/R4/questionnaire-definitions.html#Questionnaire.item.enableWhen) supported
 2. [enableBehavior](http://hl7.org/fhir/R4/questionnaire-definitions.html#Questionnaire.item.enableBehavior) supported.
 3. [Calculated Expression](http://hl7.org/fhir/uv/sdc/STU3/StructureDefinition-sdc-questionnaire-calculatedExpression.html) supported
+4. [Extension Translation](http://hl7.org/fhir/StructureDefinition/translation) supported.
 
 
 ## How to use
@@ -50,7 +51,7 @@ QuestionnaireView(
 
 ## QuestionnaireView
 1. **Questionnaire questionnaire:** `QuestionnaireView` requires an object of type **Questionnaire** this is the definition of the Questionnaire and will be used to build the Form UI and generate the Questions and Answers.
-2. **String? locale**: Optionally you can specify the language like "es" or "en" or "fr", etc. you want to use for validation messages and Submit button, by default the system language will be used.
+2. **Locale? locale**: Optionally you can specify the language like "es" or "en" or "fr", etc. you want to use for validation messages and Submit button, by default the system language will be used.
 3. **List<QuestionnaireBaseLocalization>? localizations**: this is a list allows you to add extra language translations to the Questionnaire, currently the package supports only English and Spanish, so you can add other Languages, you just need to create a class for each new Language you want to support and extend **QuestionnaireBaseLocalization**.
 4. **QuestionnaireBaseLocalization? defaultLocalization**: Indicates what should be the fallback localization if the specified language or the system language is not supported, by default English is the fallback.
 5. **bool isLoading**: use this to indicate there is an ongoing operation, for instance if you need to make an API request to load your **Questionnaire** you can set `isLoading = true` so the `QuestionnaireView` will show a Shimmer loading effect view.
