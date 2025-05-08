@@ -1,6 +1,7 @@
-library;
+library fhir_questionnaire;
 
 export 'package:fhir_questionnaire/src/logic/utils/questionnaire_utils.dart';
+export 'package:fhir_questionnaire/src/logic/utils/fhir_extension_utils.dart';
 export 'package:fhir_questionnaire/src/logic/utils/num_utils.dart';
 export 'package:fhir_questionnaire/src/logic/utils/text_utils.dart';
 export 'package:fhir_questionnaire/src/logic/utils/iterable_utils.dart';
@@ -51,4 +52,3 @@ export 'package:fhir_questionnaire/src/presentation/localization/questionnaire_l
 export 'package:fhir_questionnaire/src/presentation/localization/questionnaire_es_localization.dart';
 export 'package:fhir_questionnaire/src/presentation/localization/questionnaire_en_localization.dart';
 export 'package:fhir_questionnaire/src/presentation/localization/questionnaire_base_localization.dart';
-export 'package:fhir_questionnaire/src/logic/utils/fhir_extension_utils.dart';

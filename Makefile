@@ -13,6 +13,13 @@ check-publish:
 publish:
 	dart pub publish
 
+generate-web:
+	flutter clean
+	cd example && flutter clean
+	flutter pub get
+	cd example && flutter build web --release
+	cd example && cp -r build/web/* docs/web
+
 .PHONY: generate-exports
 generate-exports:
 	@./generate-exports
