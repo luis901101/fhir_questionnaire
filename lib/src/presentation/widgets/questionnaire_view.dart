@@ -1,4 +1,4 @@
-import 'package:fhir/r4.dart';
+import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
 
@@ -134,7 +134,7 @@ class QuestionnaireViewState extends State<QuestionnaireView>
     try {
       questionnaireTitleHeight = ViewUtils.getTextHeightAfterRender(
         context: context,
-        text: questionnaire.title!,
+        text: questionnaire.title!.valueString,
         padding:
             const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 24.0),
         textStyle: Theme.of(context).textTheme.titleLarge,
@@ -149,7 +149,7 @@ class QuestionnaireViewState extends State<QuestionnaireView>
   }
 
   int get listViewCount =>
-      itemBundles.length + (questionnaire.title.isNotEmpty ? 1 : 0);
+      itemBundles.length + (questionnaire.title?.isNotEmpty ?? false ? 1 : 0);
 
   @override
   Widget build(BuildContext context) {
@@ -171,6 +171,8 @@ class QuestionnaireViewState extends State<QuestionnaireView>
             padding: EdgeInsets.only(bottom: bottomPadding > 0 ? 0 : 16),
             child: FloatingActionButton.extended(
               shape: const StadiumBorder(),
+              // TODO(luis901101): not sure how you think it best to handle now
+              // that onSubmit is async
               onPressed: isLoading ? null : onSubmit,
               label: Text(
                   QuestionnaireLocalization.instance.localization.btnSubmit),
@@ -194,21 +196,24 @@ class QuestionnaireViewState extends State<QuestionnaireView>
                     keyboardDismissBehavior:
                         ScrollViewKeyboardDismissBehavior.onDrag,
                     itemBuilder: (context, index) {
-                      if (index == 0 && questionnaire.title.isNotEmpty) {
+                      if (index == 0 &&
+                          (questionnaire.title?.isNotEmpty ?? false)) {
                         return Padding(
                           padding: const EdgeInsets.only(
                             bottom: 24.0,
                           ),
                           child: Text(
-                            questionnaire.title!,
+                            questionnaire.title!.valueString!,
                             style: theme.textTheme.titleLarge
                                 ?.copyWith(color: theme.colorScheme.primary),
                             textAlign: TextAlign.center,
                           ),
                         );
                       }
-                      return itemBundles[
-                              index - (questionnaire.title.isNotEmpty ? 1 : 0)]
+                      return itemBundles[index -
+                              (questionnaire.title?.isNotEmpty ?? false
+                                  ? 1
+                                  : 0)]
                           .view;
                     },
                     // separatorBuilder: (context, index) =>
@@ -253,9 +258,9 @@ class QuestionnaireViewState extends State<QuestionnaireView>
         () => controller.focusNode?.requestFocus()));
   }
 
-  void onSubmit() {
+  Future<void> onSubmit() async {
     if (validate()) {
-      final questionnaireResponse = controller.generateResponse(
+      final questionnaireResponse = await controller.generateResponse(
           questionnaire: questionnaire, itemBundles: itemBundles);
       widget.onSubmit(questionnaireResponse);
     }

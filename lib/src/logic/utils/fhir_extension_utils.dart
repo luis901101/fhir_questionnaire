@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:collection/collection.dart';
-import 'package:fhir/r4.dart';
+import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 
 extension FhirExtensionUtils on Iterable<FhirExtension> {
@@ -49,11 +49,13 @@ extension FhirExtensionUtils on Iterable<FhirExtension> {
           ext.url ==
               FhirUri('http://hl7.org/fhir/StructureDefinition/translation') &&
           ext.extension_?.firstWhereOrNull((e) =>
-                  e.url == FhirUri('lang') && e.valueCode?.value == langTag ||
-                  e.valueCode?.value == langCode) !=
+                  e.url == FhirUri('lang') &&
+                      e.valueCode?.valueString == langTag ||
+                  e.valueCode?.valueString == langCode) !=
               null,
     )?.extension_?.firstWhereOrNull((e) => e.url == FhirUri('content'));
 
-    return translation?.valueString ?? translation?.valueMarkdown?.toString();
+    return translation?.valueString?.valueString ??
+        translation?.valueMarkdown?.valueString;
   }
 }

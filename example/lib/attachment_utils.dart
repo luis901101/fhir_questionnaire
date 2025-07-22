@@ -6,7 +6,7 @@ import 'package:example/picker_utils.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:fhir/r4.dart';
+import 'package:fhir_r4/fhir_r4.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:crypto/crypto.dart';
 
@@ -39,7 +39,7 @@ class AttachmentUtils {
       hash: FhirBase64Binary(hash),
       size: FhirUnsignedInt(size),
       contentType: FhirCode(contentType),
-      creation: FhirDateTime(DateTime.now()),
+      creation: FhirDateTime.fromDateTime(DateTime.now()),
     );
   }
 

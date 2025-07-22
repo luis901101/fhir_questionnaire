@@ -1,16 +1,15 @@
-import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
+import 'package:fhir_r4/fhir_r4.dart';
 
 extension CodeableConceptUtils on CodeableConcept {
-  String? get title => text ?? coding?.firstOrNull?.title;
+  String? get title => text?.valueString ?? coding?.firstOrNull?.title;
 }
 
 extension CodingUtils on Coding {
-  String? get title => display ?? code?.value ?? system?.value?.toString();
-}
-
-extension FhirDateUtils on FhirDate {
-  DateTime get asDateTime => DateTime(year, month, day);
+  String? get title =>
+      display?.valueString ??
+      code?.valueString ??
+      system?.valueString?.toString();
 }
 
 extension FhirTimeUtils on FhirTime {
@@ -18,19 +17,13 @@ extension FhirTimeUtils on FhirTime {
       DateTime.now().copyWith(hour: hour, minute: minute);
 }
 
-extension FhirDateTimeUtils on FhirDateTime {
-  DateTime get asDateTime =>
-      DateTime(year, month, day, hour, minute, second, millisecond);
-}
-
 extension QuestionnaireItemUtils on QuestionnaireItem {
-  String? get title =>
-      extension_?.localize() ?? text ?? code?.firstOrNull?.title;
+  String? get title => text?.valueString ?? code?.firstOrNull?.title;
 }
 
 extension QuestionnaireUtils on Questionnaire {
   FhirCanonical get asFhirCanonical =>
-      FhirCanonical('${R4ResourceType.Questionnaire.name}/$fhirId');
+      FhirCanonical('${R4ResourceType.Questionnaire.name}/$id');
 }
 
 extension QuestionnaireAnswerOptiontils on QuestionnaireAnswerOption {
@@ -38,6 +31,6 @@ extension QuestionnaireAnswerOptiontils on QuestionnaireAnswerOption {
       extension_?.localize() ??
       valueCoding?.extension_?.localize() ??
       valueCoding?.title ??
-      valueString ??
+      valueString?.valueString ??
       valueInteger?.toString();
 }
