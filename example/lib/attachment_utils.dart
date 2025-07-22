@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:example/file_utils.dart';
 import 'package:example/picker_utils.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fhir_r4/fhir_r4.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,11 +12,21 @@ import 'package:crypto/crypto.dart';
 
 class AttachmentUtils {
   static Future<Attachment?> _onPicked(
-      {required List<String> filesPath, required String contentType}) async {
-    final filePath = filesPath.firstOrNull;
-    if (filePath == null || filePath.isEmpty) return null;
-    final bytes = await FileUtils.readBytesFromFile(filePath: filePath);
-    FileUtils.deleteFilePath(filePath);
+      {required List<PlatformFile> files, required String contentType}) async {
+    final file = files.firstOrNull;
+    if (file == null) return null;
+
+    List<int>? bytes;
+    if (kIsWeb) {
+      // Use FilePicker for web
+      bytes = file.bytes;
+    } else {
+      // Use FileUtils for non-web platforms
+      bytes =
+          file.bytes ?? await FileUtils.readBytesFromFile(filePath: file.path);
+      FileUtils.deleteFilePath(file.path);
+    }
+
     if (bytes == null || bytes.isEmpty) return null;
     final size = bytes.length;
     final data = base64Encode(bytes);
@@ -49,7 +60,7 @@ class AttachmentUtils {
                   title: const Text('Take photo'),
                   onTap: () async {
                     final result = await _onPicked(
-                        filesPath: await (PickerUtils.handlePickerResponse(
+                        files: await (PickerUtils.handlePickerResponse(
                             PickerUtils.takeFromCamera(
                                 cameraDevice: CameraDevice.front),
                             context: context,
@@ -65,8 +76,11 @@ class AttachmentUtils {
                   title: const Text('Pick from gallery'),
                   onTap: () async {
                     final result = await _onPicked(
-                        filesPath: await (PickerUtils.handlePickerResponse(
-                            PickerUtils.pickFromGallery(multiple: false),
+                        files: await (PickerUtils.handlePickerResponse(
+                            PickerUtils.pickFromGalleryEnhanced(
+                              multiple: false,
+                              type: FileType.image,
+                            ),
                             context: context,
                             closeBottomSheetAutomatically: false)),
                         contentType: 'image/jpeg');
@@ -80,7 +94,7 @@ class AttachmentUtils {
                   title: const Text('Pick PDF'),
                   onTap: () async {
                     final result = await _onPicked(
-                        filesPath: await (PickerUtils.handlePickerResponse(
+                        files: await (PickerUtils.handlePickerResponse(
                             PickerUtils.pickFromGalleryEnhanced(
                                 multiple: false,
                                 type: FileType.custom,

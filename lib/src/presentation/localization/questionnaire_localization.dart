@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_base_localization.dart';
 import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_en_localization.dart';
 import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_es_localization.dart';
@@ -16,18 +18,21 @@ class QuestionnaireLocalization {
   void init({
     QuestionnaireBaseLocalization? defaultLocalization,
     List<QuestionnaireBaseLocalization>? localizations,
-    String? locale,
+    Locale? locale,
   }) {
     if (defaultLocalization != null) {
       _defaultLocalization = defaultLocalization;
     }
     if (localizations != null) {
       for (final localization in localizations) {
-        _localizationsMap[localization.locale] = localization;
+        _localizationsMap[localization.locale.toLanguageTag()] = localization;
+        _localizationsMap[localization.locale.languageCode] = localization;
       }
     }
     if (locale != null) {
-      localization = _localizationsMap[locale] ?? _defaultLocalization;
+      localization = _localizationsMap[locale.toLanguageTag()] ??
+          _localizationsMap[locale.languageCode] ??
+          _defaultLocalization;
     }
   }
 }

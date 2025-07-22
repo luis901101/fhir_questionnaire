@@ -1,4 +1,4 @@
-import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_multi_choice_item_view.dart';
+import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
 
 /// Created by luis901101 on 3/9/24.
@@ -26,6 +26,7 @@ class QuestionnaireCheckBoxChoiceItemViewState
           .map((entry) => CheckboxListTile(
                 controlAffinity: ListTileControlAffinity.leading,
                 contentPadding: EdgeInsets.zero,
+                enabled: !isReadOnly,
                 title: Text(valueNameResolver(entry)),
                 value: isSelected(entry),
                 onChanged: (selected) =>

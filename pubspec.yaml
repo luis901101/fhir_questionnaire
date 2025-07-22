@@ -1,6 +1,6 @@
 name: fhir_questionnaire
 description: "A library to render FHIR Questionnaires and generate a QuestionnaireResponse"
-version: 4.0.0
+version: 5.0.0
 repository: https://github.com/luis901101/fhir_questionnaire
 issue_tracker: https://github.com/luis901101/fhir_questionnaire/issues
 topics:
@@ -18,8 +18,8 @@ dependencies:
     sdk: flutter
   collection: ^1.19.1
   shimmer: ^3.0.0
-  fhir_r4: ^0.4.1
-  fhir_r4_path: ^0.4.0
+  fhir_r4: ^0.4.2
+  fhir_r4_path: ^0.4.3
   intl: ^0.19.0
   validators: ^3.0.0
 

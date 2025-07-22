@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:example/resource.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,11 +16,11 @@ class PickerUtils {
   static const String cameraAccessDenied = 'camera_access_denied';
   static const String galleryAccessDenied = 'photo_access_denied';
 
-  static Future<List<String>> handlePickerResponse(
-      Future<Resource<List<String>>> getCall,
+  static Future<List<PlatformFile>> handlePickerResponse(
+      Future<Resource<List<PlatformFile>>> getCall,
       {bool closeBottomSheetAutomatically = true,
       required BuildContext context}) async {
-    Resource<List<String>> resource = await getCall;
+    Resource<List<PlatformFile>> resource = await getCall;
     switch (resource.status) {
       case ResourceStatus.success:
         if ((resource.data?.isNotEmpty ?? false) &&
@@ -44,20 +43,19 @@ class PickerUtils {
     return [];
   }
 
-  static Future<Resource<List<String>>> _pickFrom({
+  static Future<Resource<List<PlatformFile>>> _pickFrom({
     ImageSource source = ImageSource.camera,
     CameraDevice cameraDevice = CameraDevice.rear,
     bool multiple = true,
     bool pickImage = true,
     Duration? maxDuration,
   }) async {
-    Resource<List<String>> resource = Resource.success([]);
+    Resource<List<PlatformFile>> resource = Resource.success([]);
 
-    XFile? pickedFile;
-    List<XFile>? pickedFiles;
+    List<PlatformFile> pickedFiles = [];
     try {
       Future<void> pickMultiple() async {
-        pickedFiles = pickImage
+        final pickedXFiles = pickImage
             ? await ImagePicker().pickMultiImage(
                 maxWidth: 1080
                     .toDouble(), //Inverted dimensions to prioritize portrait
@@ -70,10 +68,14 @@ class PickerUtils {
                 maxHeight: 1920,
                 imageQuality: 100,
               );
+        for (final xFile in pickedXFiles) {
+          pickedFiles
+              .add(PlatformFile(path: xFile.path, name: xFile.name, size: 0));
+        }
       }
 
       Future<void> pickSingle() async {
-        pickedFile = pickImage
+        final pickedXFile = pickImage
             ? await ImagePicker().pickImage(
                 source: source,
                 preferredCameraDevice: cameraDevice,
@@ -87,7 +89,12 @@ class PickerUtils {
                 preferredCameraDevice: cameraDevice,
                 maxDuration: maxDuration,
               );
-        if (pickedFile != null) pickedFiles = [pickedFile!];
+        if (pickedXFile != null) {
+          pickedFiles = [
+            PlatformFile(
+                path: pickedXFile.path, name: pickedXFile.name, size: 0)
+          ];
+        }
       }
 
       if (pickImage && multiple) {
@@ -96,16 +103,15 @@ class PickerUtils {
         await pickSingle();
       }
 
-      List<String> filePaths = [];
-      String? path;
-      pickedFiles?.forEach((item) => filePaths.add(item.path));
-      if (filePaths.isEmpty) {
-        path = await _retrieveLostData();
-        if (path != null) filePaths.add(path);
+      if (pickedFiles.isEmpty) {
+        final path = await _retrieveLostData();
+        if (path != null) {
+          pickedFiles.add(PlatformFile(path: path, name: '', size: 0));
+        }
       }
-      resource = Resource<List<String>>.success(filePaths);
+      resource = Resource<List<PlatformFile>>.success(pickedFiles);
     } on PlatformException catch (e) {
-      resource = Resource<List<String>>.error([], e.message,
+      resource = Resource<List<PlatformFile>>.error([], e.message,
           exception: e, extras: e.details);
       switch (e.code) {
         case cameraAccessDenied:
@@ -117,12 +123,13 @@ class PickerUtils {
           break;
       }
     } catch (e) {
-      resource = Resource<List<String>>.error([], e.toString(), exception: e);
+      resource =
+          Resource<List<PlatformFile>>.error([], e.toString(), exception: e);
     }
     return resource;
   }
 
-  static Future<Resource<List<String>>> _pickFromEnhanced({
+  static Future<Resource<List<PlatformFile>>> _pickFromEnhanced({
     ImageSource source = ImageSource.camera,
     CameraDevice cameraDevice = CameraDevice.rear,
     bool multiple = true,
@@ -130,10 +137,9 @@ class PickerUtils {
     List<String>? allowedExtensions,
     Duration? maxDuration,
   }) async {
-    Resource<List<String>> resource = Resource.success([]);
+    Resource<List<PlatformFile>> resource = Resource.success([]);
 
-    XFile? pickedFile;
-    List<XFile>? pickedFiles;
+    List<PlatformFile> pickedFiles = [];
     try {
       Future<void> pickFromGallery() async {
         final result = await FilePicker.platform.pickFiles(
@@ -142,14 +148,12 @@ class PickerUtils {
           allowMultiple: multiple,
         );
         if (result != null) {
-          pickedFiles = result.paths
-              .mapWhere((path) => XFile(path!), (path) => path != null)
-              .toList();
+          pickedFiles = result.files;
         }
       }
 
       Future<void> pickFromCamera() async {
-        pickedFile = type == FileType.image
+        final pickedXFile = type == FileType.image
             ? await ImagePicker().pickImage(
                 source: source,
                 preferredCameraDevice: cameraDevice,
@@ -163,7 +167,12 @@ class PickerUtils {
                 preferredCameraDevice: cameraDevice,
                 maxDuration: maxDuration,
               );
-        if (pickedFile != null) pickedFiles = [pickedFile!];
+        if (pickedXFile != null) {
+          pickedFiles = [
+            PlatformFile(
+                path: pickedXFile.path, name: pickedXFile.name, size: 0)
+          ];
+        }
       }
 
       if (source == ImageSource.gallery) {
@@ -172,16 +181,15 @@ class PickerUtils {
         await pickFromCamera();
       }
 
-      List<String> filePaths = [];
-      String? path;
-      pickedFiles?.forEach((item) => filePaths.add(item.path));
-      if (filePaths.isEmpty) {
-        path = await _retrieveLostData();
-        if (path != null) filePaths.add(path);
+      if (pickedFiles.isEmpty) {
+        final path = await _retrieveLostData();
+        if (path != null) {
+          pickedFiles.add(PlatformFile(path: path, name: '', size: 0));
+        }
       }
-      resource = Resource<List<String>>.success(filePaths);
+      resource = Resource<List<PlatformFile>>.success(pickedFiles);
     } on PlatformException catch (e) {
-      resource = Resource<List<String>>.error([], e.message,
+      resource = Resource<List<PlatformFile>>.error([], e.message,
           exception: e, extras: e.details);
       switch (e.code) {
         case cameraAccessDenied:
@@ -193,12 +201,13 @@ class PickerUtils {
           break;
       }
     } catch (e) {
-      resource = Resource<List<String>>.error([], e.toString(), exception: e);
+      resource =
+          Resource<List<PlatformFile>>.error([], e.toString(), exception: e);
     }
     return resource;
   }
 
-  static Future<Resource<List<String>>> pickFromGallery({
+  static Future<Resource<List<PlatformFile>>> pickFromGallery({
     bool multiple = true,
     bool pickImage = true,
     Duration? maxDuration,
@@ -210,7 +219,7 @@ class PickerUtils {
         maxDuration: maxDuration,
       );
 
-  static Future<Resource<List<String>>> pickFromGalleryEnhanced({
+  static Future<Resource<List<PlatformFile>>> pickFromGalleryEnhanced({
     bool multiple = true,
     required FileType type,
     List<String>? allowedExtensions,
@@ -224,7 +233,7 @@ class PickerUtils {
         maxDuration: maxDuration,
       );
 
-  static Future<Resource<List<String>>> takeFromCamera({
+  static Future<Resource<List<PlatformFile>>> takeFromCamera({
     CameraDevice cameraDevice = CameraDevice.rear,
     bool pickImage = true,
     Duration? maxDuration,

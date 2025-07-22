@@ -1,6 +1,5 @@
 import 'package:fhir_r4/fhir_r4.dart';
-import 'package:fhir_questionnaire/src/presentation/widgets/custom_drop_down_button_form_field.dart';
-import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_single_choice_item_view.dart';
+import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
 
 /// Created by luis901101 on 3/9/24.
@@ -27,6 +26,7 @@ class QuestionnaireDropDownChoiceItemViewState
     return CustomDropDownButtonFormField.buildDropDown<
         QuestionnaireAnswerOption>(
       controller: controller,
+      disabled: isReadOnly,
       values: values,
       onChanged: onSelectedValueChanged,
       nameResolver: valueNameResolver,
