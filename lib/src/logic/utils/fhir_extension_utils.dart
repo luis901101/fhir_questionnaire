@@ -1,6 +1,11 @@
 import 'package:collection/collection.dart';
 import 'package:fhir/r4.dart';
 import 'package:intl/intl.dart';
+import 'dart:ui';
+
+import 'package:collection/collection.dart';
+import 'package:fhir/r4.dart';
+import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 
 extension FhirExtensionUtils on Iterable<FhirExtension> {
   /// Attempts to localize the content of FHIR extensions based on the provided locale.
@@ -13,7 +18,7 @@ extension FhirExtensionUtils on Iterable<FhirExtension> {
   /// If a matching translation is found, it returns the `valueString` or `valueMarkdown`
   /// of the nested extension with a URL of `content`.
   ///
-  /// - [locale]: The locale to search for. Defaults to `Intl.defaultLocale` if not provided.
+  /// - [locale]: The locale to search for. Defaults to `QuestionnaireLocalization.instance.localization.locale` if not provided.
   ///
   /// Returns the localized content as a `String`, or `null` if no matching translation is found.
   ///
@@ -38,14 +43,17 @@ extension FhirExtensionUtils on Iterable<FhirExtension> {
   /// final localizedContent = extensions.localize('en');
   /// print(localizedContent); // Output: Hello, World!
   /// ```
-  String? localize([final String? locale]) {
+  String? localize([Locale? locale]) {
+    locale ??= QuestionnaireLocalization.instance.localization.locale;
+    String langTag = locale.toLanguageTag();
+    String langCode = locale.languageCode;
     final translation = firstWhereOrNull(
       (ext) =>
           ext.url ==
               FhirUri('http://hl7.org/fhir/StructureDefinition/translation') &&
           ext.extension_?.firstWhereOrNull((e) =>
-                  e.url == FhirUri('lang') &&
-                  e.valueCode?.value == (locale ?? Intl.defaultLocale)) !=
+                  e.url == FhirUri('lang') && e.valueCode?.value == langTag ||
+                  e.valueCode?.value == langCode) !=
               null,
     )?.extension_?.firstWhereOrNull((e) => e.url == FhirUri('content'));
 

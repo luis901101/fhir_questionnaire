@@ -26,6 +26,7 @@ class QuestionnaireDropDownChoiceItemViewState
     return CustomDropDownButtonFormField.buildDropDown<
         QuestionnaireAnswerOption>(
       controller: controller,
+      disabled: isReadOnly,
       values: values,
       onChanged: onSelectedValueChanged,
       nameResolver: (answer) => answer.title ?? '',

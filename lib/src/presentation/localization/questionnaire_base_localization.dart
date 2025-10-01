@@ -1,5 +1,7 @@
+import 'dart:ui';
+
 abstract class QuestionnaireBaseLocalization {
-  final String locale;
+  final Locale locale;
 
   QuestionnaireBaseLocalization(this.locale);
 

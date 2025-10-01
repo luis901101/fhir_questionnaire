@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 
 class FileUtils {
-  /// Returns List<int> bytes from file
+  /// Returns List[int] bytes from file
   /// Throws a [FileSystemException] if the operation fails.
   static Future<List<int>?> readBytesFromFile({
     File? file,
@@ -16,7 +16,8 @@ class FileUtils {
     return bytes;
   }
 
-  static Future<void> deleteFilePath(String filePath) async {
+  static Future<void> deleteFilePath(String? filePath) async {
+    if (filePath == null || filePath.isEmpty) return;
     try {
       if (kDebugMode) {
         print('---Deleted file: $filePath');

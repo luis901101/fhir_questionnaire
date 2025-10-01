@@ -26,7 +26,8 @@ class QuestionnaireCheckBoxChoiceItemViewState
           .map((entry) => CheckboxListTile(
                 controlAffinity: ListTileControlAffinity.leading,
                 contentPadding: EdgeInsets.zero,
-                title: Text(entry.title ?? ''),
+                enabled: !isReadOnly,
+                title: Text(valueNameResolver(entry)),
                 value: isSelected(entry),
                 onChanged: (selected) =>
                     onSelectedValuesChanged(selected, entry),

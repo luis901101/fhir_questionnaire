@@ -1,6 +1,7 @@
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
 
 /// Created by luis901101 on 3/9/24.
 abstract class QuestionnaireChoiceItemView extends QuestionnaireItemView {
@@ -36,16 +37,27 @@ abstract class QuestionnaireChoiceItemViewState<
 
   bool get isOpen => widget.isOpen;
 
+  String valueNameResolver(QuestionnaireAnswerOption value) =>
+      value.title ?? '';
+
   QuestionnaireAnswerOption onOpenAnswerAdded(String value,
       {bool? hideKeyboard}) {
     hideKeyboard ??= true;
-    final anwser = QuestionnaireAnswerOption(valueString: value);
-    values.add(anwser);
+    QuestionnaireAnswerOption newAnwser;
+    final existingAnswer =
+        values.firstWhereOrNull((answer) => answer.valueString == value);
+    if (existingAnswer == null) {
+      newAnwser = QuestionnaireAnswerOption(valueString: value);
+      values.add(newAnwser);
+    } else {
+      newAnwser = existingAnswer;
+    }
+
     if (hideKeyboard) {
       InputMethodUtils.hideInputMethod(force: true);
     }
     controller.clearError();
-    return anwser;
+    return newAnwser;
   }
 
   Widget choiceView(BuildContext context);

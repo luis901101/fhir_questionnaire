@@ -65,7 +65,7 @@ class CustomTextField extends StatefulWidget {
   final String? restorationId;
   final TapRegionCallback? onTapOutside;
   final Clip clipBehavior;
-  final bool scribbleEnabled;
+  final bool stylusHandwritingEnabled;
   final bool enableIMEPersonalizedLearning;
   final EditableTextContextMenuBuilder? contextMenuBuilder;
   final SpellCheckConfiguration? spellCheckConfiguration;
@@ -135,7 +135,8 @@ class CustomTextField extends StatefulWidget {
     this.autofillHints,
     this.clipBehavior = Clip.hardEdge,
     this.restorationId,
-    this.scribbleEnabled = true,
+    this.stylusHandwritingEnabled =
+        EditableText.defaultStylusHandwritingEnabled,
     this.enableIMEPersonalizedLearning = true,
     this.contextMenuBuilder = _defaultContextMenuBuilder,
     SpellCheckConfiguration? spellCheckConfiguration,
@@ -196,6 +197,7 @@ class CustomTextField extends StatefulWidget {
 class CustomTextFieldState<S extends CustomTextField> extends State<S> {
   late final CustomTextEditingController controller;
   String lastText = '';
+  bool startedTyping = false;
 
   CustomTextFieldState();
 
@@ -253,11 +255,14 @@ class CustomTextFieldState<S extends CustomTextField> extends State<S> {
   bool get showCustomButton => widget.useCustomButton && hasText;
 
   void onControllerTextChanged() {
+    if (controller.text.isNotEmpty) {
+      startedTyping = true;
+    }
     onChanged(controller.text);
   }
 
   void onChanged(String value) {
-    bool refreshState = autoValidate && onValidate(value);
+    bool refreshState = startedTyping && autoValidate && onValidate(value);
     if (hadText != value.isNotEmpty) {
       refreshState |= true;
     }
@@ -351,7 +356,7 @@ class CustomTextFieldState<S extends CustomTextField> extends State<S> {
       autofillHints: widget.autofillHints,
       clipBehavior: widget.clipBehavior,
       restorationId: widget.restorationId,
-      scribbleEnabled: widget.scribbleEnabled,
+      stylusHandwritingEnabled: widget.stylusHandwritingEnabled,
       enableIMEPersonalizedLearning: widget.enableIMEPersonalizedLearning,
       contextMenuBuilder: widget.contextMenuBuilder,
       spellCheckConfiguration: widget.spellCheckConfiguration,
