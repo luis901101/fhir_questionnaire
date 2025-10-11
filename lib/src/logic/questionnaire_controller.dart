@@ -731,4 +731,137 @@ class QuestionnaireController {
 
     return flattenedList;
   }
+
+  QuestionnaireResponseItem? findResponseForItem(
+    QuestionnaireItem questionItem,
+    List<QuestionnaireResponseItem> responseItems,
+  ) {
+    for (final responseItem in responseItems) {
+      if (questionItem.linkId == responseItem.linkId) {
+        return responseItem;
+      }
+      if (responseItem.item.isNotEmpty) {
+        final found = findResponseForItem(questionItem, responseItem.item!);
+        if (found != null) return found;
+      }
+    }
+
+    return null;
+  }
+
+  QuestionnaireItem fillItemWithInitial(
+    QuestionnaireItem questionItem,
+    List<QuestionnaireResponseAnswer> answers,
+  ) {
+    List<QuestionnaireInitial> initials = questionItem.initial?.toList() ?? [];
+    List<QuestionnaireAnswerOption> options =
+        questionItem.answerOption?.toList() ?? [];
+    for (final answer in answers) {
+      if (answer.valueBoolean != null) {
+        initials.add(QuestionnaireInitial(valueBoolean: answer.valueBoolean));
+      } else if (answer.valueDecimal != null) {
+        initials.add(QuestionnaireInitial(valueDecimal: answer.valueDecimal));
+      } else if (answer.valueInteger != null) {
+        initials.add(QuestionnaireInitial(valueInteger: answer.valueInteger));
+        if (questionItem.type == QuestionnaireItemType.openChoice.asFhirCode) {
+          if (!options.any((e) => e.valueInteger == answer.valueInteger)) {
+            options.add(
+              QuestionnaireAnswerOption(valueInteger: answer.valueInteger),
+            );
+          }
+        }
+      } else if (answer.valueDate != null) {
+        initials.add(QuestionnaireInitial(valueDate: answer.valueDate));
+        if (questionItem.type == QuestionnaireItemType.openChoice.asFhirCode) {
+          if (!options.any((e) => e.valueDate == answer.valueDate)) {
+            options.add(QuestionnaireAnswerOption(valueDate: answer.valueDate));
+          }
+        }
+      } else if (answer.valueDateTime != null) {
+        initials.add(QuestionnaireInitial(valueDateTime: answer.valueDateTime));
+      } else if (answer.valueTime != null) {
+        initials.add(QuestionnaireInitial(valueTime: answer.valueTime));
+        if (questionItem.type == QuestionnaireItemType.openChoice.asFhirCode) {
+          if (!options.any((e) => e.valueTime == answer.valueTime)) {
+            options.add(QuestionnaireAnswerOption(valueTime: answer.valueTime));
+          }
+        }
+      } else if (answer.valueString != null) {
+        initials.add(QuestionnaireInitial(valueString: answer.valueString));
+        if (questionItem.type == QuestionnaireItemType.openChoice.asFhirCode) {
+          if (!options.any((e) => e.valueString == answer.valueString)) {
+            options.add(
+              QuestionnaireAnswerOption(valueString: answer.valueString),
+            );
+          }
+        }
+      } else if (answer.valueUri != null) {
+        initials.add(QuestionnaireInitial(valueUri: answer.valueUri));
+      } else if (answer.valueAttachment != null) {
+        initials.add(
+          QuestionnaireInitial(valueAttachment: answer.valueAttachment),
+        );
+      } else if (answer.valueCoding != null) {
+        initials.add(QuestionnaireInitial(valueCoding: answer.valueCoding));
+        if (questionItem.type == QuestionnaireItemType.openChoice.asFhirCode) {
+          if (!options.any((e) => e.valueCoding == answer.valueCoding)) {
+            options.add(
+              QuestionnaireAnswerOption(valueCoding: answer.valueCoding),
+            );
+          }
+        }
+      } else if (answer.valueQuantity != null) {
+        initials.add(QuestionnaireInitial(valueQuantity: answer.valueQuantity));
+      } else if (answer.valueReference != null) {
+        initials.add(
+          QuestionnaireInitial(valueReference: answer.valueReference),
+        );
+        if (questionItem.type == QuestionnaireItemType.openChoice.asFhirCode) {
+          if (!options.any((e) => e.valueReference == answer.valueReference)) {
+            options.add(
+              QuestionnaireAnswerOption(valueReference: answer.valueReference),
+            );
+          }
+        }
+      }
+    }
+
+    return questionItem.copyWith(initial: initials, answerOption: options);
+  }
+
+  List<QuestionnaireItem> fillItemsWithResponse(
+    List<QuestionnaireItem> questionItems,
+    List<QuestionnaireResponseItem> responseItems,
+  ) {
+    List<QuestionnaireItem> result = [];
+    for (QuestionnaireItem questionItem in questionItems) {
+      final responseItem = findResponseForItem(questionItem, responseItems);
+      if (responseItem != null && responseItem.answer.isNotEmpty) {
+        questionItem = fillItemWithInitial(
+          questionItem,
+          responseItem.answer ?? [],
+        );
+      }
+      if (questionItem.item != null && questionItem.item!.isNotEmpty) {
+        questionItem = questionItem.copyWith(
+          item: fillItemsWithResponse(questionItem.item!, responseItems),
+        );
+      }
+      result.add(questionItem);
+    }
+
+    return result;
+  }
+
+  Future<Questionnaire> fillWithResponse(
+    Questionnaire questionnaire,
+    QuestionnaireResponse response,
+  ) async {
+    return questionnaire.copyWith(
+      item: fillItemsWithResponse(
+        questionnaire.item ?? <QuestionnaireItem>[],
+        response.item ?? <QuestionnaireResponseItem>[],
+      ),
+    );
+  }
 }

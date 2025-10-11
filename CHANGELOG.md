@@ -9,6 +9,10 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## 5.1.0
+### Added
+- Added support to populate questionnaire answers with response.
+
 ## 5.0.0
 ### Added
 - Added support for **Translation** extension according to [FHIR Extension Translation](http://hl7.org/fhir/StructureDefinition/translation) definition. Thanks [sh1l0n](https://github.com/sh1l0n) for [PR-18](https://github.com/luis901101/fhir_questionnaire/pull/18)

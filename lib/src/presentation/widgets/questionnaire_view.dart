@@ -95,7 +95,7 @@ class QuestionnaireViewState extends State<QuestionnaireView>
     }
   }
 
-  void onCreated(_) {
+  void onCreated(Duration _) {
     if (!widget.isLoading) {
       calculateQuestionnaireTitleHeight();
     }
