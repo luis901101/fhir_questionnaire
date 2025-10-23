@@ -1,5 +1,3 @@
-library fhir_questionnaire;
-
 export 'package:fhir_questionnaire/src/logic/utils/questionnaire_utils.dart';
 export 'package:fhir_questionnaire/src/logic/utils/fhir_extension_utils.dart';
 export 'package:fhir_questionnaire/src/logic/utils/num_utils.dart';

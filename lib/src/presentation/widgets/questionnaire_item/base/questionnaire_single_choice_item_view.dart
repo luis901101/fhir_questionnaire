@@ -1,7 +1,6 @@
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
-import 'package:collection/collection.dart';
 
 /// Created by luis901101 on 3/9/24.
 abstract class QuestionnaireSingleChoiceItemView
@@ -30,13 +29,23 @@ abstract class QuestionnaireSingleChoiceItemViewState<
   void initState() {
     super.initState();
     if (controller.value == null) {
-      final initial =
-          item.initial?.firstWhereOrNull((item) => item.valueCoding != null);
+      QuestionnaireAnswerOption? initial;
+      for (final value in item.initial ?? <QuestionnaireInitial>[]) {
+        if (value.valueCoding != null) {
+          initial = QuestionnaireAnswerOption(
+            valueCoding: value.valueCoding!,
+          );
+          break;
+        } else if (value.valueString != null) {
+          initial = QuestionnaireAnswerOption(
+            valueString: value.valueString,
+          );
+          break;
+        }
+      }
 
-      if (initial?.valueCoding != null) {
-        controller.value = QuestionnaireAnswerOption(
-          valueCoding: initial?.valueCoding!,
-        );
+      if (initial != null) {
+        controller.value = initial;
       }
     }
   }

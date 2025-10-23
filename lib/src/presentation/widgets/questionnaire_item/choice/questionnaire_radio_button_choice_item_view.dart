@@ -21,18 +21,21 @@ class QuestionnaireRadioButtonChoiceItemViewState
         QuestionnaireRadioButtonChoiceItemView> {
   @override
   Widget choiceView(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: values
-          .map((entry) => RadioListTile<QuestionnaireAnswerOption>(
-                controlAffinity: ListTileControlAffinity.leading,
-                contentPadding: EdgeInsets.zero,
-                title: Text(valueNameResolver(entry)),
-                value: entry,
-                groupValue: selectedValue,
-                onChanged: isReadOnly ? null : onSelectedValueChanged,
-              ))
-          .toList(),
+    return RadioGroup(
+      groupValue: selectedValue,
+      onChanged: onSelectedValueChanged,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: values
+            .map((entry) => RadioListTile<QuestionnaireAnswerOption>(
+                  controlAffinity: ListTileControlAffinity.leading,
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(valueNameResolver(entry)),
+                  enabled: !isReadOnly,
+                  value: entry,
+                ))
+            .toList(),
+      ),
     );
   }
 }

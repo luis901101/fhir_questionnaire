@@ -142,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
               DropdownButtonFormField<String>(
                   decoration: const InputDecoration(
                       label: Text('Select a Questionnaire sample')),
-                  value: selectedQuestionnaire,
+                  initialValue: selectedQuestionnaire,
                   items: questionnaires
                       .map((e) => DropdownMenuItem<String>(
                             value: e.value,
@@ -316,7 +316,7 @@ class _MyHomePageState extends State<MyHomePage> {
               DropdownButtonFormField<Locale?>(
                   decoration: const InputDecoration(
                       label: Text('Select the Questionnaire locale')),
-                  value: selectedLocale,
+                  initialValue: selectedLocale,
                   items: locales
                       .map((e) => DropdownMenuItem<Locale>(
                             value: e.value,
@@ -330,7 +330,7 @@ class _MyHomePageState extends State<MyHomePage> {
               DropdownButtonFormField<InputDecorationTheme?>(
                   decoration: const InputDecoration(
                       label: Text('Select input decoration theme ')),
-                  value: selectedInputDecorationTheme,
+                  initialValue: selectedInputDecorationTheme,
                   items: inputDecorationThemes
                       .map((e) => DropdownMenuItem<InputDecorationTheme>(
                             value: e.value,

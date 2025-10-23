@@ -3,8 +3,8 @@
 packageName=$(grep '^name:' pubspec.yaml | awk '{print $2}');
 
 cd lib
-echo "library ${packageName};" > package_temp.dart
-echo "" >> package_temp.dart
+#echo "library ${packageName};" > package_temp.dart
+#echo "" >> package_temp.dart
 
 cd src
 while IFS= read -r line; do

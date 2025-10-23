@@ -133,7 +133,7 @@ class _CustomDropDownButtonFormFieldState<T>
     widget.controller?.addListener(controllerListener);
   }
 
-  controllerListener() {
+  void controllerListener() {
     if (mounted) setState(() {});
   }
 
@@ -146,7 +146,7 @@ class _CustomDropDownButtonFormFieldState<T>
     return DropdownButtonFormField<T?>(
       items: widget.items,
       selectedItemBuilder: widget.selectedItemBuilder,
-      value: /*widget.disabled ? null :*/ value,
+      initialValue: /*widget.disabled ? null :*/ value,
       hint: widget.hint,
       disabledHint: widget.disabledHint,
       onChanged: /*widget.disabled ? null :*/ onChanged,
