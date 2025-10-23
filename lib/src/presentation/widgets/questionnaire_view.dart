@@ -85,7 +85,7 @@ class QuestionnaireViewState extends State<QuestionnaireView>
         locale =
             widget.locale ?? FlutterViewUtils.get().platformDispatcher.locale;
       } catch (_) {}
-      QuestionnaireLocalization.instance.init(
+      QuestionnaireLocalization.instance.load(
         defaultLocalization: widget.defaultLocalization,
         localizations: widget.localizations,
         locale: locale,

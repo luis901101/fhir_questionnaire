@@ -15,7 +15,7 @@ extension FhirExtensionUtils on Iterable<FhirExtension> {
   /// If a matching translation is found, it returns the `valueString` or `valueMarkdown`
   /// of the nested extension with a URL of `content`.
   ///
-  /// - [locale]: The locale to search for. Defaults to `QuestionnaireLocalization.instance.localization.locale` if not provided.
+  /// - [locale]: The locale to search for. Defaults to `QuestionnaireLocalization.instance.locale` if not provided.
   ///
   /// Returns the localized content as a `String`, or `null` if no matching translation is found.
   ///
@@ -41,7 +41,7 @@ extension FhirExtensionUtils on Iterable<FhirExtension> {
   /// print(localizedContent); // Output: Hello, World!
   /// ```
   String? localize([Locale? locale]) {
-    locale ??= QuestionnaireLocalization.instance.localization.locale;
+    locale ??= QuestionnaireLocalization.instance.locale;
     String langTag = locale.toLanguageTag();
     String langCode = locale.languageCode;
     final translation = firstWhereOrNull(
