@@ -511,8 +511,17 @@ class QuestionnaireFrLocalization extends QuestionnaireBaseLocalization {
   String exceptionValueOutOfRange(dynamic minValue, dynamic maxValue) =>
       'La valeur doit être comprise entre $minValue et $maxValue.';
   @override
+  String exceptionValueMinRange(dynamic minValue) =>
+      'La valeur doit être au minimum $minValue.';
+  @override
+  String exceptionValueMaxRange(dynamic maxValue) =>
+      'La valeur doit être au maximum $maxValue.';
+  @override
   String exceptionTextLength(dynamic minLength, dynamic maxLength) =>
       'Le texte doit contenir au moins des caractères $minLength et au maximum $maxLength.';
+  @override
+  String exceptionTextMinLength(dynamic minLength) =>
+      'Le texte doit contenir au maximum des caractères $minLength.';
   @override
   String exceptionTextMaxLength(dynamic maxLength) =>
       'Le texte doit contenir au maximum des caractères $maxLength.';

@@ -46,6 +46,7 @@ export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/b
 export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_text_field_item_view.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_multi_choice_item_view.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/custom_text_field.dart';
+export 'package:fhir_questionnaire/src/presentation/widgets/helper_button.dart';
 export 'package:fhir_questionnaire/src/presentation/localization/questionnaire_localization.dart';
 export 'package:fhir_questionnaire/src/presentation/localization/questionnaire_es_localization.dart';
 export 'package:fhir_questionnaire/src/presentation/localization/questionnaire_en_localization.dart';

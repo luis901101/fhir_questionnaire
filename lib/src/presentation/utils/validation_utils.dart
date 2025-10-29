@@ -1,8 +1,6 @@
 import 'package:fhir/r4.dart';
-import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_localization.dart';
+import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
-import 'package:fhir_questionnaire/src/logic/utils/num_utils.dart';
-import 'package:fhir_questionnaire/src/logic/utils/text_utils.dart';
 
 class ValidationUtils {
   static ValidationController get requiredFieldValidation =>
@@ -30,12 +28,26 @@ class ValidationUtils {
             return (value ?? -1) >= 0;
           });
 
-  static ValidationController integerRangeValidationController(
-          {required int minValue, required int maxValue}) =>
-      IntegerRangeValidationController(
+  static ValidationController rangeValidationController(
+          {required dynamic minValue, required dynamic maxValue}) =>
+      RangeValidationController(
         message: QuestionnaireLocalization.instance.localization
-            .exceptionValueOutOfRange(minValue, maxValue),
+            .exceptionValueOutOfRange(minValue is DateTime ? minValue.formattedDate() : minValue, maxValue is DateTime ? maxValue.formattedDate() : maxValue),
         minValue: minValue,
+        maxValue: maxValue,
+      );
+
+  static ValidationController minRangeValidationController(dynamic minValue) =>
+      MinRangeValidationController(
+        message: QuestionnaireLocalization.instance.localization
+            .exceptionValueMinRange(minValue),
+        minValue: minValue,
+      );
+
+  static ValidationController maxRangeValidationController(dynamic maxValue) =>
+      MaxRangeValidationController(
+        message: QuestionnaireLocalization.instance.localization
+            .exceptionValueMaxRange(maxValue),
         maxValue: maxValue,
       );
 
@@ -69,6 +81,25 @@ class ValidationUtils {
             if (!required && length == 0) return true;
             return length >= minLength &&
                 (maxLength == null || length <= maxLength);
+          });
+
+  static ValidationController minLengthValidation({
+    required int minLength,
+    String? message,
+    bool required = false,
+    bool considerExtendedCharacters = true,
+  }) =>
+      ValidationController(
+          message: message ??
+              QuestionnaireLocalization.instance.localization
+                  .exceptionTextMinLength(minLength),
+          isValid: ({controller}) {
+            String textValue = controller?.rawValue?.toString().trim() ?? '';
+            int length = considerExtendedCharacters
+                ? textValue.characters.length
+                : textValue.length;
+            if (!required && length == 0) return true;
+            return length >= minLength;
           });
 
   static ValidationController maxLengthValidation({

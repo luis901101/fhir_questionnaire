@@ -2,7 +2,7 @@ import 'package:fhir/r4.dart';
 
 extension QuestionnaireSamples on Questionnaire {
   static String get sampleGeneric => '''
-  {
+{
   "resourceType": "Questionnaire",
   "id": "example-all-item-types",
   "version": "1",
@@ -61,7 +61,35 @@ extension QuestionnaireSamples on Questionnaire {
     {
       "linkId": "501",
       "text": "Have you experienced any symptoms of a common cold in the last 14 days?",
-      "type": "boolean"
+      "type": "boolean",
+      "item": [
+        {
+          "linkId": "501.help",
+          "type": "display",
+          "text": "Help here, the same as hint, enabled for Yes, disabled for No.",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-display-category",
+                    "code": "help",
+                    "display": "Help"
+                  }
+                ],
+                "text": "Help"
+              }
+            }
+          ]
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/entryFormat",
+          "valueString": "Simply enable the switch for Yes, disable for No."
+        }
+      ]
     },
     {
       "linkId": "502",
@@ -71,7 +99,29 @@ extension QuestionnaireSamples on Questionnaire {
     {
       "linkId": "401",
       "text": "What is the URL of your personal website?",
-      "type": "url"
+      "type": "url",
+      "item": [
+        {
+          "linkId": "401.help",
+          "type": "display",
+          "text": "Make sure you enter a valid url.",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-display-category",
+                    "code": "help",
+                    "display": "Help"
+                  }
+                ],
+                "text": "Help"
+              }
+            }
+          ]
+        }
+      ]
     },
     {
       "linkId": "402",
@@ -84,10 +134,137 @@ extension QuestionnaireSamples on Questionnaire {
       ]
     },
     {
+      "linkId": "1.1",
+      "text": "Self-limited problems",
+      "type": "integer",
+      "maxLength": 2,
+      "item": [
+        {
+          "linkId": "1.1.help",
+          "type": "display",
+          "text": "Value must be between 1 and 10, otherwise validation error occurs.",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "help",
+                    "display": "Help"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "flyover",
+                    "display": "Fly-over"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-display-category",
+                    "code": "help",
+                    "display": "Help"
+                  }
+                ],
+                "text": "Help"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/translation",
+              "extension": [
+                {
+                  "url": "lang",
+                  "valueCode": "es"
+                },
+                {
+                  "url": "content",
+                  "valueString": "Introduzca cuántos problemas menores/autolimitados se abordaron. Cada uno cuenta como 1 punto."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+          "valueInteger": 1
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+          "valueInteger": 10
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/minLength",
+          "valueInteger": 1
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/entryFormat",
+          "valueString": "e.g., 1 (minor issue such as a cold or rash)"
+        }
+      ]
+    },
+    {
       "linkId": "300",
       "text": "Body Info",
       "type": "group",
       "item": [
+        {
+          "linkId": "300.help",
+          "type": "display",
+          "text": "Your body info for BMI calculation.",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "help",
+                    "display": "Help"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "flyover",
+                    "display": "Fly-over"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-display-category",
+                    "code": "help",
+                    "display": "Help"
+                  }
+                ],
+                "text": "Help"
+              }
+            }
+          ]
+        },
         {
           "linkId": "301",
           "text": "What is your height?",
@@ -146,7 +323,21 @@ extension QuestionnaireSamples on Questionnaire {
     {
       "linkId": "2",
       "text": "What is your date of birth?",
-      "type": "date"
+      "type": "date",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+          "valueDate": "1990-01-01"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+          "valueDate": "2025-10-28"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/entryFormat",
+          "valueString": "Use a real birth date"
+        }
+      ]
     },
     {
       "linkId": "2.1",

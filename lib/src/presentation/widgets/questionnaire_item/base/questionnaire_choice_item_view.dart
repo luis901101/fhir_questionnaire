@@ -62,38 +62,15 @@ abstract class QuestionnaireChoiceItemViewState<
   Widget choiceView(BuildContext context);
 
   @override
+  Widget? buildErrorManuallyView(BuildContext context) => null;
+
+  @override
   Widget buildBody(BuildContext context) {
-    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (item.title.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 8.0,
-              right: 8.0,
-              bottom: 4.0,
-            ),
-            child: Text(
-              item.title!,
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-          ),
         choiceView(context),
-        if (handleControllerErrorManually && controller.hasError)
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 8.0,
-              right: 8.0,
-              top: 4.0,
-            ),
-            child: Text(
-              '${controller.error}',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.error,
-              ),
-            ),
-          ),
+        ?super.buildErrorManuallyView(context),
         if (isOpen) ...[
           const SizedBox(height: 8.0),
           Padding(

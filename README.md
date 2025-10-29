@@ -31,7 +31,13 @@ So far this package only supports [FHIR R4 Item Types](https://hl7.org/fhir/R4/v
 1. [enableWhen](http://hl7.org/fhir/R4/questionnaire-definitions.html#Questionnaire.item.enableWhen) supported
 2. [enableBehavior](http://hl7.org/fhir/R4/questionnaire-definitions.html#Questionnaire.item.enableBehavior) supported.
 3. [Calculated Expression](http://hl7.org/fhir/uv/sdc/STU3/StructureDefinition-sdc-questionnaire-calculatedExpression.html) supported
-4. [Extension Translation](http://hl7.org/fhir/StructureDefinition/translation) supported.
+4. Extension for [translation](http://hl7.org/fhir/R4/extension-translation.html) supported.
+5. Extension for [questionnaire-hidden](http://hl7.org/fhir/R4/extension-questionnaire-hidden.html) supported.
+6. Extension for [minLength](http://hl7.org/fhir/R4/extension-minlength.html) extension.
+7. Extesion for [minValue](http://hl7.org/fhir/R4/extension-minvalue.html) extension.
+8. Extesion for [maxValue](http://hl7.org/fhir/R4/extension-maxvalue.html) extension. 
+9. Extesion for hint texts using [entryFormat](http://hl7.org/fhir/R4/extension-entryformat.html) extension.
+10. Extension for helper text or helper button using [questionnaire-displayCategory](https://hl7.org/fhir/R4/extension-questionnaire-displaycategory.html) and [questionnaire-itemControl](https://hl7.org/fhir/R4/extension-questionnaire-itemcontrol.html) with the codes `help` and `flyover`.
 
 
 ## How to use

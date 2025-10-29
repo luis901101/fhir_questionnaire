@@ -19,10 +19,16 @@ class QuestionnaireGroupItemViewState
   @override
   bool get handleControllerErrorManually => false;
 
+  @override
+  Widget? buildTitleView(BuildContext context, {bool forGroup = false}) => null;
+  @override
+  Widget? buildHintTextView(BuildContext context) => null;
+  @override
+  Widget? buildHelperTextView(BuildContext context) => null;
+
   double? groupTitleHeight;
   @override
   Widget buildBody(BuildContext context) {
-    final theme = Theme.of(context);
     double borderRadius = 0;
     if (theme.inputDecorationTheme.border is OutlineInputBorder) {
       borderRadius = (theme.inputDecorationTheme.border as OutlineInputBorder)
@@ -49,26 +55,23 @@ class QuestionnaireGroupItemViewState
               : Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: children!.map((itemView) => itemView).toList(),
+                  children: [
+                    ?super.buildHintTextView(context),
+                    ?super.buildHelperTextView(context),
+                    ...children!.map((itemView) => itemView)
+                  ],
                 ),
         ),
-        if (item.title.isNotEmpty)
+        if (item.title.isNotEmpty || isRequired || (helperTextAsButton && helperText.isNotEmpty))
           Positioned(
               left: 16,
               right: 16,
               top: 0,
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Container(
-                  color: theme.colorScheme.surface,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: SizeRenderer(
-                    onSizeRendered: onGroupTitleSizeRendered,
-                    child: Text(
-                      '${item.title}',
-                      style: theme.textTheme.titleMedium,
-                    ),
-                  ),
+                child: SizeRenderer(
+                  onSizeRendered: onGroupTitleSizeRendered,
+                  child: super.buildTitleView(context, forGroup: true)!,
                 ),
               )),
       ],

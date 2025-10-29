@@ -1,6 +1,5 @@
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_text_field_item_view.dart';
 import 'package:flutter/material.dart';
-import 'package:fhir_questionnaire/src/presentation/utils/validation_utils.dart';
 
 /// Created by luis901101 on 3/5/24.
 class QuestionnaireIntegerItemView extends QuestionnaireTextFieldItemView {
@@ -17,11 +16,6 @@ class QuestionnaireIntegerItemView extends QuestionnaireTextFieldItemView {
 class QuestionnaireIntegerItemViewState
     extends QuestionnaireTextFieldItemViewState<QuestionnaireIntegerItemView> {
   @override
-  void initState() {
-    super.initState();
-    controller.validations.addAll(
-        [ValidationUtils.positiveNumberValidation(required: isRequired)]);
-  }
 
   @override
   TextInputType? get keyboardType =>

@@ -404,20 +404,67 @@ class IntegerRangeValidationController extends ValidationController {
             });
 }
 
-class DecimalRangeValidationController extends ValidationController {
-  DecimalRangeValidationController(
-      {num? minValue,
-      num? maxValue,
-      String message = 'Number must fall in the specified range',
+class RangeValidationController extends ValidationController {
+  RangeValidationController(
+      {dynamic minValue,
+        dynamic maxValue,
+      String message = 'Value must fall in the specified range',
       bool required = false})
       : super(
             message: message,
             isValid: ({controller}) {
-              String? textValue = controller?.rawValue?.toString();
+              dynamic rawValue = controller?.rawValue;
+              String? textValue = rawValue?.toString();
               if (!required && TextUtils.isEmpty(textValue)) return true;
+              if(rawValue is DateTime) {
+                DateTime minDateTime = minValue is DateTime ? minValue : DateTime.now();
+                DateTime maxDateTime = maxValue is DateTime ? maxValue : DateTime.now();
+                return (rawValue.isAtSameMomentAs(minDateTime) || rawValue.isAfter(minDateTime)) &&
+                    (rawValue.isAtSameMomentAs(maxDateTime) || rawValue.isBefore(maxDateTime));
+              }
               num? value = num.tryParse(textValue!);
               return (value ?? 0) >= (minValue ?? 0) &&
                   (value ?? 0) <= (maxValue ?? 0);
+            });
+}
+
+class MinRangeValidationController extends ValidationController {
+  MinRangeValidationController(
+      {dynamic minValue,
+      String message = 'Number must be at least the minimum value',
+      bool required = false})
+      : super(
+            message: message,
+            isValid: ({controller}) {
+              dynamic rawValue = controller?.rawValue;
+              String? textValue = rawValue?.toString();
+              if (!required && TextUtils.isEmpty(textValue)) return true;
+              if(rawValue is DateTime) {
+                DateTime minDateTime = minValue is DateTime ? minValue : DateTime.now();
+                return (rawValue.isAtSameMomentAs(minDateTime) || rawValue.isAfter(minDateTime));
+              }
+              num? value = num.tryParse(textValue!);
+              return (value ?? 0) >= (minValue ?? 0);
+            });
+}
+
+class MaxRangeValidationController extends ValidationController {
+  MaxRangeValidationController(
+      {dynamic maxValue,
+      String message = 'Number must be at most the maximum value',
+      bool required = false})
+      : super(
+            message: message,
+            isValid: ({controller}) {
+              dynamic rawValue = controller?.rawValue;
+              String? textValue = rawValue?.toString();
+              if (!required && TextUtils.isEmpty(textValue)) return true;
+              if(rawValue is DateTime) {
+                DateTime maxDateTime = maxValue is DateTime ? maxValue : DateTime.now();
+                return (rawValue.isAtSameMomentAs(maxDateTime) || rawValue.isBefore(maxDateTime));
+              }
+              num? value = num.tryParse(textValue!);
+              return (value ?? 0) <= (maxValue ?? 0);
             });
 }
 

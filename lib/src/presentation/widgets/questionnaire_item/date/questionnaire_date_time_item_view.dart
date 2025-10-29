@@ -73,54 +73,39 @@ class QuestionnaireDateTimeItemViewState
 
   @override
   Widget buildBody(BuildContext context) {
-    final theme = Theme.of(context);
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (item.title.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 4.0),
-            child: Text(
-              item.title!,
-              style: theme.textTheme.titleSmall,
-            ),
+        if (type.requiresDate)
+          Expanded(
+            flex: 60,
+            child: StatefulBuilder(builder: (context, setState) {
+              return ElevatedButton.icon(
+                  icon: const Icon(Icons.calendar_month),
+                  label: Text(dateTime?.formattedDate() ??
+                      QuestionnaireLocalization
+                          .instance.localization.textDate),
+                  style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
+                  onPressed: openDatePicker);
+            }),
           ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (type.requiresDate)
-              Expanded(
-                flex: 60,
-                child: StatefulBuilder(builder: (context, setState) {
-                  return ElevatedButton.icon(
-                      icon: const Icon(Icons.calendar_month),
-                      label: Text(dateTime?.formattedDate() ??
-                          QuestionnaireLocalization
-                              .instance.localization.textDate),
-                      style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
-                      onPressed: openDatePicker);
-                }),
-              ),
-            if (type.isDateTime)
-              const Spacer(
-                flex: 2,
-              ),
-            if (type.requiresTime)
-              Expanded(
-                flex: 40,
-                child: StatefulBuilder(builder: (context, setState) {
-                  return ElevatedButton.icon(
-                      icon: const Icon(Icons.access_time_rounded),
-                      label: Text(dateTime?.formattedTime() ??
-                          QuestionnaireLocalization
-                              .instance.localization.textTime),
-                      style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
-                      onPressed: openTimePicker);
-                }),
-              ),
-          ],
-        ),
+        if (type.isDateTime)
+          const Spacer(
+            flex: 2,
+          ),
+        if (type.requiresTime)
+          Expanded(
+            flex: 40,
+            child: StatefulBuilder(builder: (context, setState) {
+              return ElevatedButton.icon(
+                  icon: const Icon(Icons.access_time_rounded),
+                  label: Text(dateTime?.formattedTime() ??
+                      QuestionnaireLocalization
+                          .instance.localization.textTime),
+                  style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
+                  onPressed: openTimePicker);
+            }),
+          ),
       ],
     );
   }
@@ -139,6 +124,7 @@ class QuestionnaireDateTimeItemViewState
             day: newDate.day,
           ) ??
           newDate;
+      controller.validate();
       setState(() {});
       if (type.requiresTime) {
         openTimePicker();
@@ -156,6 +142,7 @@ class QuestionnaireDateTimeItemViewState
         hour: newTime.hour,
         minute: newTime.minute,
       );
+      controller.validate();
       setState(() {});
     }
   }

@@ -17,6 +17,9 @@ abstract class QuestionnaireBaseLocalization {
   String get exceptionValueMustBeAPositiveNumber;
   String get exceptionInvalidUrl;
   String exceptionValueOutOfRange(dynamic minValue, dynamic maxValue);
+  String exceptionValueMinRange(dynamic minValue);
+  String exceptionValueMaxRange(dynamic maxValue);
   String exceptionTextLength(dynamic minLength, dynamic maxLength);
+  String exceptionTextMinLength(dynamic minLength);
   String exceptionTextMaxLength(dynamic maxLength);
 }

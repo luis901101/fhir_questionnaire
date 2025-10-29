@@ -62,112 +62,94 @@ class QuestionnaireQuantityItemViewState
 
   @override
   Widget buildBody(BuildContext context) {
-    final theme = Theme.of(context);
     final noInputBorder =
         theme.inputDecorationTheme.border is! OutlineInputBorder ||
             (theme.inputDecorationTheme.border?.borderSide.style ==
                     BorderStyle.none &&
                 theme.inputDecorationTheme.border?.borderSide.width == 0);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (item.title.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 8.0,
-              right: 8.0,
-              bottom: 4.0,
+    return CustomTextField(
+      controller: valueEditingController,
+      focusNode: controller.focusNode,
+      enabled: !isReadOnly,
+      maxLength: maxLength,
+      textInputAction: TextInputAction.next,
+      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+      onSubmitted: (text) {
+        valueEditingController.focusNode?.unfocus();
+        unitEditingController.focusNode?.requestFocus();
+      },
+      onChanged: (text) {
+        value = value.copyWith(
+          value: DoubleUtils.tryParse(text)?.asFhirDecimal,
+        );
+      },
+      decoration: InputDecoration(
+        prefixIcon: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              width: 70,
+              child: CustomDropDownButtonFormField.buildDropDown<
+                      QuestionnaireCustomQuantityComparator>(
+                  controller: comparatorController,
+                  disabled: isReadOnly,
+                  values: QuestionnaireCustomQuantityComparator.values,
+                  itemBuilder: (item, pos) {
+                    return Align(
+                      alignment: Alignment.centerRight,
+                      child: FittedBox(
+                        child: Text(
+                          item.symbol,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
+                  },
+                  onChanged: (comparator) {
+                    value = value.copyWith(
+                      comparator: comparator?.asQuantityComparator,
+                    );
+                  },
+                  inputDecoration: const InputDecoration()),
             ),
-            child: Text(
-              item.title!,
-              style: Theme.of(context).textTheme.titleSmall,
+            if (noInputBorder)
+              const SizedBox(height: 20, child: VerticalDivider()),
+            const SizedBox(
+              width: 8.0,
             ),
-          ),
-        CustomTextField(
-          controller: valueEditingController,
-          focusNode: controller.focusNode,
-          enabled: !isReadOnly,
-          maxLength: maxLength,
-          textInputAction: TextInputAction.next,
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          onSubmitted: (text) {
-            valueEditingController.focusNode?.unfocus();
-            unitEditingController.focusNode?.requestFocus();
-          },
-          onChanged: (text) {
-            value = value.copyWith(
-              value: DoubleUtils.tryParse(text)?.asFhirDecimal,
-            );
-          },
-          decoration: InputDecoration(
-            prefixIcon: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  width: 70,
-                  child: CustomDropDownButtonFormField.buildDropDown<
-                          QuestionnaireCustomQuantityComparator>(
-                      controller: comparatorController,
-                      disabled: isReadOnly,
-                      values: QuestionnaireCustomQuantityComparator.values,
-                      itemBuilder: (item, pos) {
-                        return Align(
-                          alignment: Alignment.centerRight,
-                          child: FittedBox(
-                            child: Text(
-                              item.symbol,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        );
-                      },
-                      onChanged: (comparator) {
-                        value = value.copyWith(
-                          comparator: comparator?.asQuantityComparator,
-                        );
-                      },
-                      inputDecoration: const InputDecoration()),
-                ),
-                if (noInputBorder)
-                  const SizedBox(height: 20, child: VerticalDivider()),
-                const SizedBox(
-                  width: 8.0,
-                ),
-              ],
-            ),
-            suffixIcon: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (noInputBorder)
-                  const SizedBox(height: 20, child: VerticalDivider()),
-                const SizedBox(
-                  width: 8.0,
-                ),
-                SizedBox(
-                  width: 80,
-                  child: CustomTextField(
-                    controller: unitEditingController,
-                    focusNode: unitEditingController.focusNode,
-                    enabled: !isReadOnly && fixedUnit == null,
-                    maxLength: maxLength,
-                    useCustomButton: false,
-                    textAlign: TextAlign.center,
-                    textInputAction: TextInputAction.next,
-                    onChanged: (text) {
-                      value = value.copyWith(
-                        unit: text.isEmpty ? null : text,
-                      );
-                    },
-                    decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.all(12),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          ],
         ),
-      ],
+        suffixIcon: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (noInputBorder)
+              const SizedBox(height: 20, child: VerticalDivider()),
+            const SizedBox(
+              width: 8.0,
+            ),
+            SizedBox(
+              width: 80,
+              child: CustomTextField(
+                controller: unitEditingController,
+                focusNode: unitEditingController.focusNode,
+                enabled: !isReadOnly && fixedUnit == null,
+                maxLength: maxLength,
+                useCustomButton: false,
+                textAlign: TextAlign.center,
+                textInputAction: TextInputAction.next,
+                onChanged: (text) {
+                  value = value.copyWith(
+                    unit: text.isEmpty ? null : text,
+                  );
+                },
+                decoration: const InputDecoration(
+                  contentPadding: EdgeInsets.all(12),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

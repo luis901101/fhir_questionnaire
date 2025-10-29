@@ -3,9 +3,19 @@ import 'dart:ui';
 import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_base_localization.dart';
 import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_en_localization.dart';
 import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_es_localization.dart';
+import 'package:intl/intl.dart';
 
 class QuestionnaireLocalization {
   static final instance = QuestionnaireLocalization();
+
+  /// If set to true, the localization will always use Intl.defaultLocale if it's set
+  static bool useIntlDefaultLocale = false;
+
+  /// This locale will be used by extensions localization method when no locale is provided
+  static Locale get locale => useIntlDefaultLocale && Intl.defaultLocale != null
+      ? Locale(Intl.defaultLocale!)
+      : instance.localization.locale;
+
   QuestionnaireBaseLocalization localization = QuestionnaireEnLocalization();
   QuestionnaireBaseLocalization _defaultLocalization =
       QuestionnaireEnLocalization();

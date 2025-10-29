@@ -221,21 +221,45 @@ class QuestionnaireViewState extends State<QuestionnaireView>
 
   bool validate() {
     setState(() {});
+    final validation = validateRecursive(fieldBundles: itemBundles);
+    if (!validation.isValid) {
+      setState(() {});
+      scrollToField(
+        controller: validation.controller,
+        indexOffset: validation.offset,
+      );
+    }
+    return validation.isValid;
+  }
+
+  ({bool isValid, double offset, FieldController? controller})
+  validateRecursive({required List<QuestionnaireItemBundle> fieldBundles}) {
     bool isValid = true;
     FieldController? controller;
-    double tempOffset = questionnaireTitleHeight;
+    double tempOffset = 0;
     double indexOffset = 0;
-    for (int i = 0; i < itemBundles.length; ++i) {
-      final item = itemBundles[i];
-      if (!item.controller.validate() && isValid) {
+    for (int i = 0; i < fieldBundles.length; ++i) {
+      final fieldBundle = fieldBundles[i];
+      if (!fieldBundle.controller.validate() && isValid) {
         isValid = false;
         indexOffset = tempOffset;
-        controller = item.controller;
+        controller = fieldBundle.controller;
       }
-      tempOffset += item.controller.size.height;
+      tempOffset += fieldBundle.controller.size.height;
+      if (fieldBundle.children.isNotEmpty) {
+        final result = validateRecursive(fieldBundles: fieldBundle.children ?? []);
+        if (!result.isValid && isValid) {
+          isValid = false;
+          indexOffset += result.offset;
+          controller = result.controller;
+        }
+      }
     }
-    scrollToField(controller: controller, indexOffset: indexOffset);
-    return isValid;
+    return (
+    isValid: isValid,
+    offset: indexOffset,
+    controller: controller,
+    );
   }
 
   Future<void> scrollToField(
