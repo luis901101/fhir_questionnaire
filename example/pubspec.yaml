@@ -33,7 +33,7 @@ dependencies:
     sdk: flutter
   fhir_questionnaire:
     path: ../
-  fhir: 0.12.0 # Pending migration to fhir_r4
+  fhir: 0.12.0 # Pending migration to fhir_r4, version fixed to 0.12.0 due to issue with fhir_path when updating to 0.12.1
   image_picker: ^1.2.0
   file_picker: ^10.3.3
   crypto: ^3.0.6
