@@ -13,10 +13,10 @@ class QuestionnaireAttachmentItemView extends QuestionnaireItemView {
     required this.onAttachmentLoaded,
     super.enableWhenController,
   }) : super(
-            controller: controller ??
-                CustomValueController<Attachment>(
-                  focusNode: FocusNode(),
-                ));
+         controller:
+             controller ??
+             CustomValueController<Attachment>(focusNode: FocusNode()),
+       );
 
   @override
   State createState() => QuestionnaireAttachmentItemViewState();
@@ -81,33 +81,41 @@ class QuestionnaireAttachmentItemViewState
                 child: AnimatedSize(
                   duration: const Duration(milliseconds: 300),
                   child: SizedBox(
-                    width:
-                        mediaQuery.size.width.percent(value == null ? 80 : 40),
+                    width: mediaQuery.size.width.percent(
+                      value == null ? 80 : 40,
+                    ),
                     child: ElevatedButton.icon(
                       onPressed: isLoading ? null : onBtnUpload,
                       icon: Icon(
-                          value == null ? Icons.upload_rounded : Icons.refresh),
-                      label: Text(value == null
-                          ? QuestionnaireLocalization
-                              .instance.localization.btnUpload
-                          : QuestionnaireLocalization
-                              .instance.localization.btnChange),
+                        value == null ? Icons.upload_rounded : Icons.refresh,
+                      ),
+                      label: Text(
+                        value == null
+                            ? QuestionnaireLocalization
+                                  .instance
+                                  .localization
+                                  .btnUpload
+                            : QuestionnaireLocalization
+                                  .instance
+                                  .localization
+                                  .btnChange,
+                      ),
                     ),
                   ),
                 ),
               ),
               AnimatedSize(
-                  duration: const Duration(milliseconds: 300),
-                  child: SizedBox(
-                    width: value == null ? 0 : 8,
-                  )),
+                duration: const Duration(milliseconds: 300),
+                child: SizedBox(width: value == null ? 0 : 8),
+              ),
               Flexible(
                 flex: value == null ? 0 : 1,
                 child: AnimatedSize(
                   duration: const Duration(milliseconds: 300),
                   child: SizedBox(
-                    width:
-                        value == null ? 0 : mediaQuery.size.width.percent(40),
+                    width: value == null
+                        ? 0
+                        : mediaQuery.size.width.percent(40),
                     child: ElevatedButton.icon(
                       onPressed: isLoading ? null : onBtnRemove,
                       style: ElevatedButton.styleFrom(
@@ -116,8 +124,12 @@ class QuestionnaireAttachmentItemViewState
                         iconColor: theme.colorScheme.onError,
                       ),
                       icon: const Icon(Icons.delete_forever_rounded),
-                      label: Text(QuestionnaireLocalization
-                          .instance.localization.btnRemove),
+                      label: Text(
+                        QuestionnaireLocalization
+                            .instance
+                            .localization
+                            .btnRemove,
+                      ),
                     ),
                   ),
                 ),

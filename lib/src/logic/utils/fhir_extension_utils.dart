@@ -48,9 +48,11 @@ extension FhirExtensionUtils on Iterable<FhirExtension> {
       (ext) =>
           ext.url ==
               FhirUri('http://hl7.org/fhir/StructureDefinition/translation') &&
-          ext.extension_?.firstWhereOrNull((e) =>
-                  e.url == FhirUri('lang') && e.valueCode?.value == langTag ||
-                  e.valueCode?.value == langCode) !=
+          ext.extension_?.firstWhereOrNull(
+                (e) =>
+                    e.url == FhirUri('lang') && e.valueCode?.value == langTag ||
+                    e.valueCode?.value == langCode,
+              ) !=
               null,
     )?.extension_?.firstWhereOrNull((e) => e.url == FhirUri('content'));
 

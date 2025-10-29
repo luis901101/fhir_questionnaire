@@ -19,9 +19,6 @@ class QuestionnaireDisplayItemViewState
   bool get handleControllerErrorManually => false;
   @override
   Widget buildBody(BuildContext context) {
-    return Text(
-      '${item.title}',
-      style: theme.textTheme.titleMedium,
-    );
+    return Text('${item.title}', style: theme.textTheme.titleMedium);
   }
 }

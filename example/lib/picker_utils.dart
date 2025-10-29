@@ -17,9 +17,10 @@ class PickerUtils {
   static const String galleryAccessDenied = 'photo_access_denied';
 
   static Future<List<PlatformFile>> handlePickerResponse(
-      Future<Resource<List<PlatformFile>>> getCall,
-      {bool closeBottomSheetAutomatically = true,
-      required BuildContext context}) async {
+    Future<Resource<List<PlatformFile>>> getCall, {
+    bool closeBottomSheetAutomatically = true,
+    required BuildContext context,
+  }) async {
     Resource<List<PlatformFile>> resource = await getCall;
     switch (resource.status) {
       case ResourceStatus.success:
@@ -34,7 +35,9 @@ class PickerUtils {
       case ResourceStatus.error:
         if (context.mounted) {
           PickerUtils.showPermissionExplanation(
-              context: context, message: resource.message);
+            context: context,
+            message: resource.message,
+          );
         }
         break;
 
@@ -69,8 +72,9 @@ class PickerUtils {
                 imageQuality: 100,
               );
         for (final xFile in pickedXFiles) {
-          pickedFiles
-              .add(PlatformFile(path: xFile.path, name: xFile.name, size: 0));
+          pickedFiles.add(
+            PlatformFile(path: xFile.path, name: xFile.name, size: 0),
+          );
         }
       }
 
@@ -92,7 +96,10 @@ class PickerUtils {
         if (pickedXFile != null) {
           pickedFiles = [
             PlatformFile(
-                path: pickedXFile.path, name: pickedXFile.name, size: 0)
+              path: pickedXFile.path,
+              name: pickedXFile.name,
+              size: 0,
+            ),
           ];
         }
       }
@@ -111,8 +118,12 @@ class PickerUtils {
       }
       resource = Resource<List<PlatformFile>>.success(pickedFiles);
     } on PlatformException catch (e) {
-      resource = Resource<List<PlatformFile>>.error([], e.message,
-          exception: e, extras: e.details);
+      resource = Resource<List<PlatformFile>>.error(
+        [],
+        e.message,
+        exception: e,
+        extras: e.details,
+      );
       switch (e.code) {
         case cameraAccessDenied:
           resource.message = 'Camera access denied, plase grant camera access.';
@@ -123,8 +134,11 @@ class PickerUtils {
           break;
       }
     } catch (e) {
-      resource =
-          Resource<List<PlatformFile>>.error([], e.toString(), exception: e);
+      resource = Resource<List<PlatformFile>>.error(
+        [],
+        e.toString(),
+        exception: e,
+      );
     }
     return resource;
   }
@@ -170,7 +184,10 @@ class PickerUtils {
         if (pickedXFile != null) {
           pickedFiles = [
             PlatformFile(
-                path: pickedXFile.path, name: pickedXFile.name, size: 0)
+              path: pickedXFile.path,
+              name: pickedXFile.name,
+              size: 0,
+            ),
           ];
         }
       }
@@ -189,8 +206,12 @@ class PickerUtils {
       }
       resource = Resource<List<PlatformFile>>.success(pickedFiles);
     } on PlatformException catch (e) {
-      resource = Resource<List<PlatformFile>>.error([], e.message,
-          exception: e, extras: e.details);
+      resource = Resource<List<PlatformFile>>.error(
+        [],
+        e.message,
+        exception: e,
+        extras: e.details,
+      );
       switch (e.code) {
         case cameraAccessDenied:
           resource.message = 'Camera access denied, plase grant camera access.';
@@ -201,8 +222,11 @@ class PickerUtils {
           break;
       }
     } catch (e) {
-      resource =
-          Resource<List<PlatformFile>>.error([], e.toString(), exception: e);
+      resource = Resource<List<PlatformFile>>.error(
+        [],
+        e.toString(),
+        exception: e,
+      );
     }
     return resource;
   }
@@ -211,62 +235,63 @@ class PickerUtils {
     bool multiple = true,
     bool pickImage = true,
     Duration? maxDuration,
-  }) async =>
-      await _pickFrom(
-        source: ImageSource.gallery,
-        multiple: multiple,
-        pickImage: pickImage,
-        maxDuration: maxDuration,
-      );
+  }) async => await _pickFrom(
+    source: ImageSource.gallery,
+    multiple: multiple,
+    pickImage: pickImage,
+    maxDuration: maxDuration,
+  );
 
   static Future<Resource<List<PlatformFile>>> pickFromGalleryEnhanced({
     bool multiple = true,
     required FileType type,
     List<String>? allowedExtensions,
     Duration? maxDuration,
-  }) async =>
-      await _pickFromEnhanced(
-        source: ImageSource.gallery,
-        multiple: multiple,
-        type: type,
-        allowedExtensions: allowedExtensions,
-        maxDuration: maxDuration,
-      );
+  }) async => await _pickFromEnhanced(
+    source: ImageSource.gallery,
+    multiple: multiple,
+    type: type,
+    allowedExtensions: allowedExtensions,
+    maxDuration: maxDuration,
+  );
 
   static Future<Resource<List<PlatformFile>>> takeFromCamera({
     CameraDevice cameraDevice = CameraDevice.rear,
     bool pickImage = true,
     Duration? maxDuration,
-  }) async =>
-      await _pickFrom(
-        source: ImageSource.camera,
-        cameraDevice: cameraDevice,
-        multiple: false,
-        pickImage: pickImage,
-        maxDuration: maxDuration,
-      );
+  }) async => await _pickFrom(
+    source: ImageSource.camera,
+    cameraDevice: cameraDevice,
+    multiple: false,
+    pickImage: pickImage,
+    maxDuration: maxDuration,
+  );
 
-  static void showPermissionExplanation(
-      {required BuildContext context, String? message}) {
+  static void showPermissionExplanation({
+    required BuildContext context,
+    String? message,
+  }) {
     showDialog(
-        context: context,
-        builder: (innerContext) => AlertDialog(
-              title: const Text('Info'),
-              content: Text(message ?? ''),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      Navigator.of(innerContext).pop();
-                    },
-                    child: const Text('No')),
-                TextButton(
-                    onPressed: () {
-                      Navigator.of(innerContext).pop();
-                      Future.delayed(
-                          const Duration(milliseconds: 300), () async {});
-                    },
-                    child: const Text('Yes'))
-              ],
-            ));
+      context: context,
+      builder: (innerContext) => AlertDialog(
+        title: const Text('Info'),
+        content: Text(message ?? ''),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(innerContext).pop();
+            },
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(innerContext).pop();
+              Future.delayed(const Duration(milliseconds: 300), () async {});
+            },
+            child: const Text('Yes'),
+          ),
+        ],
+      ),
+    );
   }
 }

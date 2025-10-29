@@ -52,8 +52,7 @@ enum QuestionnaireItemType {
   reference('reference'),
 
   /// Question with a combination of a numeric value and unit, potentially with a comparator (<, >, etc.) as an answer. (valueQuantity) There is an extension 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit' that can be used to define what unit should be captured (or the unit that has a ucum conversion from the provided unit).
-  quantity('quantity'),
-  ;
+  quantity('quantity');
 
   final String code;
   const QuestionnaireItemType(this.code);
@@ -80,9 +79,9 @@ enum QuestionnaireItemType {
   @override
   String toString() => code;
   FhirCode get asFhirCode => FhirCode(code);
-  static QuestionnaireItemType? valueOf(String? code) =>
-      QuestionnaireItemType.values
-          .firstWhereOrNull((value) => value.code == code);
+  static QuestionnaireItemType? valueOf(String? code) => QuestionnaireItemType
+      .values
+      .firstWhereOrNull((value) => value.code == code);
   String get locale => name;
 
   static List<String> get locales => values.map((e) => e.locale).toList();

@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 
 /// Created by luis901101 on 3/5/24.
 class QuestionnaireDecimalItemView extends QuestionnaireTextFieldItemView {
-  QuestionnaireDecimalItemView(
-      {super.key,
-      super.controller,
-      required super.item,
-      super.enableWhenController});
+  QuestionnaireDecimalItemView({
+    super.key,
+    super.controller,
+    required super.item,
+    super.enableWhenController,
+  });
 
   @override
   State createState() => QuestionnaireDecimalItemViewState();
@@ -15,7 +16,6 @@ class QuestionnaireDecimalItemView extends QuestionnaireTextFieldItemView {
 
 class QuestionnaireDecimalItemViewState
     extends QuestionnaireTextFieldItemViewState<QuestionnaireDecimalItemView> {
-
   @override
   TextInputType? get keyboardType =>
       const TextInputType.numberWithOptions(signed: false, decimal: true);

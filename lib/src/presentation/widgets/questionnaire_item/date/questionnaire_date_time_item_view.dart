@@ -8,12 +8,12 @@ enum DateTimeType {
   dateTime;
 
   static DateTimeType fromQuestionnaireItemType(
-          QuestionnaireItemType? itemType) =>
-      switch (itemType) {
-        QuestionnaireItemType.date => date,
-        QuestionnaireItemType.time => time,
-        QuestionnaireItemType.dateTime || _ => dateTime,
-      };
+    QuestionnaireItemType? itemType,
+  ) => switch (itemType) {
+    QuestionnaireItemType.date => date,
+    QuestionnaireItemType.time => time,
+    QuestionnaireItemType.dateTime || _ => dateTime,
+  };
   bool get requiresDate => this == date || this == dateTime;
   bool get requiresTime => this == time || this == dateTime;
   bool get isDateTime => this == dateTime;
@@ -29,10 +29,10 @@ class QuestionnaireDateTimeItemView extends QuestionnaireItemView {
     required this.type,
     super.enableWhenController,
   }) : super(
-            controller: controller ??
-                CustomValueController<DateTime>(
-                  focusNode: FocusNode(),
-                ));
+         controller:
+             controller ??
+             CustomValueController<DateTime>(focusNode: FocusNode()),
+       );
 
   @override
   State createState() => QuestionnaireDateTimeItemViewState();
@@ -52,18 +52,21 @@ class QuestionnaireDateTimeItemViewState
     super.initState();
     if (dateTime == null) {
       final DateTime? initial = switch (type) {
-        DateTimeType.date => item.initial
-            ?.firstWhereOrNull((item) => item.valueDate != null)
-            ?.valueDate
-            ?.asDateTime,
-        DateTimeType.time => item.initial
-            ?.firstWhereOrNull((item) => item.valueTime != null)
-            ?.valueTime
-            ?.asDateTime,
-        DateTimeType.dateTime => item.initial
-            ?.firstWhereOrNull((item) => item.valueDateTime != null)
-            ?.valueDateTime
-            ?.asDateTime,
+        DateTimeType.date =>
+          item.initial
+              ?.firstWhereOrNull((item) => item.valueDate != null)
+              ?.valueDate
+              ?.asDateTime,
+        DateTimeType.time =>
+          item.initial
+              ?.firstWhereOrNull((item) => item.valueTime != null)
+              ?.valueTime
+              ?.asDateTime,
+        DateTimeType.dateTime =>
+          item.initial
+              ?.firstWhereOrNull((item) => item.valueDateTime != null)
+              ?.valueDateTime
+              ?.asDateTime,
       };
       if (initial != null) {
         dateTime = initial;
@@ -79,32 +82,43 @@ class QuestionnaireDateTimeItemViewState
         if (type.requiresDate)
           Expanded(
             flex: 60,
-            child: StatefulBuilder(builder: (context, setState) {
-              return ElevatedButton.icon(
+            child: StatefulBuilder(
+              builder: (context, setState) {
+                return ElevatedButton.icon(
                   icon: const Icon(Icons.calendar_month),
-                  label: Text(dateTime?.formattedDate() ??
-                      QuestionnaireLocalization
-                          .instance.localization.textDate),
+                  label: Text(
+                    dateTime?.formattedDate() ??
+                        QuestionnaireLocalization
+                            .instance
+                            .localization
+                            .textDate,
+                  ),
                   style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
-                  onPressed: openDatePicker);
-            }),
+                  onPressed: openDatePicker,
+                );
+              },
+            ),
           ),
-        if (type.isDateTime)
-          const Spacer(
-            flex: 2,
-          ),
+        if (type.isDateTime) const Spacer(flex: 2),
         if (type.requiresTime)
           Expanded(
             flex: 40,
-            child: StatefulBuilder(builder: (context, setState) {
-              return ElevatedButton.icon(
+            child: StatefulBuilder(
+              builder: (context, setState) {
+                return ElevatedButton.icon(
                   icon: const Icon(Icons.access_time_rounded),
-                  label: Text(dateTime?.formattedTime() ??
-                      QuestionnaireLocalization
-                          .instance.localization.textTime),
+                  label: Text(
+                    dateTime?.formattedTime() ??
+                        QuestionnaireLocalization
+                            .instance
+                            .localization
+                            .textTime,
+                  ),
                   style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
-                  onPressed: openTimePicker);
-            }),
+                  onPressed: openTimePicker,
+                );
+              },
+            ),
           ),
       ],
     );
@@ -118,7 +132,8 @@ class QuestionnaireDateTimeItemViewState
       lastDate: DateTime(2100),
     );
     if (newDate != null) {
-      dateTime = dateTime?.copyWith(
+      dateTime =
+          dateTime?.copyWith(
             year: newDate.year,
             month: newDate.month,
             day: newDate.day,

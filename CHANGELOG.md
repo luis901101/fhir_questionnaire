@@ -13,6 +13,7 @@ Types of changes
 ### Breaking Changes
 - Changes may affect devs using custom implementation of UI.
 - Changes may affect devs using custom localization due to new texts.
+- Minimum Dart version is now 3.8.0.
 
 ### Added
 - Added an asterisk (`*`) to the item title for required items.

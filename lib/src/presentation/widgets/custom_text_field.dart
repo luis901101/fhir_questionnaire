@@ -7,7 +7,9 @@ import 'dart:ui' as ui show BoxHeightStyle, BoxWidthStyle;
 
 class CustomTextField extends StatefulWidget {
   static Widget _defaultContextMenuBuilder(
-      BuildContext context, EditableTextState editableTextState) {
+    BuildContext context,
+    EditableTextState editableTextState,
+  ) {
     return AdaptiveTextSelectionToolbar.editableText(
       editableTextState: editableTextState,
     );
@@ -151,44 +153,45 @@ class CustomTextField extends StatefulWidget {
     this.autoValidate = true,
     this.onValidate,
     bool autoMultiline = false,
-  })  : decoration = (decoration ??= const InputDecoration()).copyWith(
-//      enabledBorder: OutlineInputBorder(
-//        borderRadius: BorderRadius.circular(R.dimens.radiusMedium),
-//        borderSide: BorderSide(color: Colors.transparent)
-//      ),
-//      focusedBorder: OutlineInputBorder(
-//        borderRadius: BorderRadius.circular(R.dimens.radiusMedium),
-//        borderSide: BorderSide(color: R.colors.colorPrimary)
-//      ),
-//      filled: true,
-          errorMaxLines: decoration.errorMaxLines ?? 4,
-        ),
-        keyboardType = autoMultiline ? TextInputType.multiline : keyboardType,
-        textCapitalization = textCapitalization ?? TextCapitalization.none,
-        textAlign = textAlign ?? TextAlign.start,
-        autofocus = autofocus ?? false,
-        obscureText = obscureText ?? false,
-        autocorrect = autocorrect ?? true,
-        maxLines = autoMultiline ? 1 : (maxLines ?? 1),
-        listenOnControllerChanged = listenOnControllerChanged ?? true,
-        cursorWidth = cursorWidth ?? 2.0,
-        scrollPadding = scrollPadding ?? const EdgeInsets.all(20.0),
-        enableInteractiveSelection = enableInteractiveSelection ?? true,
-        readOnly = readOnly ?? false,
-        obscuringCharacter = obscuringCharacter ?? '•',
-        enableSuggestions = enableSuggestions ?? true,
-        expands = expands ?? false,
-        selectionHeightStyle = selectionHeightStyle ?? ui.BoxHeightStyle.tight,
-        selectionWidthStyle = selectionWidthStyle ?? ui.BoxWidthStyle.tight,
-        dragStartBehavior = dragStartBehavior ?? DragStartBehavior.start,
-        spellCheckConfiguration = spellCheckConfiguration ??
-            (kIsWeb
-                ? null
-                : SpellCheckConfiguration(
-                    spellCheckService: DefaultSpellCheckService(),
-                  )),
-        customButtonIconSize = customButtonIconSize ?? 24,
-        customButtonIconPadding = customButtonIconPadding ?? 8;
+  }) : decoration = (decoration ??= const InputDecoration()).copyWith(
+         //      enabledBorder: OutlineInputBorder(
+         //        borderRadius: BorderRadius.circular(R.dimens.radiusMedium),
+         //        borderSide: BorderSide(color: Colors.transparent)
+         //      ),
+         //      focusedBorder: OutlineInputBorder(
+         //        borderRadius: BorderRadius.circular(R.dimens.radiusMedium),
+         //        borderSide: BorderSide(color: R.colors.colorPrimary)
+         //      ),
+         //      filled: true,
+         errorMaxLines: decoration.errorMaxLines ?? 4,
+       ),
+       keyboardType = autoMultiline ? TextInputType.multiline : keyboardType,
+       textCapitalization = textCapitalization ?? TextCapitalization.none,
+       textAlign = textAlign ?? TextAlign.start,
+       autofocus = autofocus ?? false,
+       obscureText = obscureText ?? false,
+       autocorrect = autocorrect ?? true,
+       maxLines = autoMultiline ? 1 : (maxLines ?? 1),
+       listenOnControllerChanged = listenOnControllerChanged ?? true,
+       cursorWidth = cursorWidth ?? 2.0,
+       scrollPadding = scrollPadding ?? const EdgeInsets.all(20.0),
+       enableInteractiveSelection = enableInteractiveSelection ?? true,
+       readOnly = readOnly ?? false,
+       obscuringCharacter = obscuringCharacter ?? '•',
+       enableSuggestions = enableSuggestions ?? true,
+       expands = expands ?? false,
+       selectionHeightStyle = selectionHeightStyle ?? ui.BoxHeightStyle.tight,
+       selectionWidthStyle = selectionWidthStyle ?? ui.BoxWidthStyle.tight,
+       dragStartBehavior = dragStartBehavior ?? DragStartBehavior.start,
+       spellCheckConfiguration =
+           spellCheckConfiguration ??
+           (kIsWeb
+               ? null
+               : SpellCheckConfiguration(
+                   spellCheckService: DefaultSpellCheckService(),
+                 )),
+       customButtonIconSize = customButtonIconSize ?? 24,
+       customButtonIconPadding = customButtonIconPadding ?? 8;
 
   @override
   State createState() => CustomTextFieldState();
@@ -220,13 +223,14 @@ class CustomTextFieldState<S extends CustomTextField> extends State<S> {
       suffixIcon: widget.decoration.suffixIcon != null || !showCustomButton
           ? widget.decoration.suffixIcon
           : widget.customButtonView ??
-              IconButton(
-                icon: customButtonIcon,
-                iconSize: widget.customButtonIconSize,
-                padding: EdgeInsets.all(widget.customButtonIconPadding),
-                onPressed:
-                    (widget.enabled ?? true) ? onCustomButtonPressed : null,
-              ),
+                IconButton(
+                  icon: customButtonIcon,
+                  iconSize: widget.customButtonIconSize,
+                  padding: EdgeInsets.all(widget.customButtonIconPadding),
+                  onPressed: (widget.enabled ?? true)
+                      ? onCustomButtonPressed
+                      : null,
+                ),
       suffixText: null,
     );
   }
@@ -241,15 +245,9 @@ class CustomTextFieldState<S extends CustomTextField> extends State<S> {
 
   Widget get customButtonIcon {
     if (widget.customButtonIcon != null) {
-      return Icon(
-        widget.customButtonIcon,
-        color: widget.customButtonColor,
-      );
+      return Icon(widget.customButtonIcon, color: widget.customButtonColor);
     }
-    return Icon(
-      Icons.clear,
-      color: widget.customButtonColor,
-    );
+    return Icon(Icons.clear, color: widget.customButtonColor);
   }
 
   bool get showCustomButton => widget.useCustomButton && hasText;
@@ -280,8 +278,9 @@ class CustomTextFieldState<S extends CustomTextField> extends State<S> {
       String currentErrorMessage = controller.error ?? '';
       String newErrorMessage = widget.onValidate?.call(value) ?? '';
       if (currentErrorMessage != newErrorMessage) {
-        controller
-            .setError(newErrorMessage.isNotEmpty ? newErrorMessage : null);
+        controller.setError(
+          newErrorMessage.isNotEmpty ? newErrorMessage : null,
+        );
         return true;
       }
     } else {

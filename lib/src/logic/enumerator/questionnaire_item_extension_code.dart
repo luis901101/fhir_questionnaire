@@ -79,8 +79,7 @@ enum QuestionnaireItemExtensionCode {
   spinner('spinner'),
 
   ///A control where a user can type in their answer freely.
-  textBox('text-box'),
-  ;
+  textBox('text-box');
 
   final String code;
   const QuestionnaireItemExtensionCode(this.code);
@@ -91,8 +90,9 @@ enum QuestionnaireItemExtensionCode {
   String toString() => code;
   FhirCode get asFhirCode => FhirCode(code);
   static QuestionnaireItemExtensionCode? valueOf(String? code) =>
-      QuestionnaireItemExtensionCode.values
-          .firstWhereOrNull((value) => value.code == code);
+      QuestionnaireItemExtensionCode.values.firstWhereOrNull(
+        (value) => value.code == code,
+      );
   String get locale => name;
 
   static List<String> get locales => values.map((e) => e.locale).toList();

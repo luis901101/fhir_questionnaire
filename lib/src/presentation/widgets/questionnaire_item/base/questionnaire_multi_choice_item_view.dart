@@ -12,14 +12,17 @@ abstract class QuestionnaireMultiChoiceItemView
     super.isOpen = false,
     super.enableWhenController,
   }) : super(
-            controller: controller ??
-                CustomValueController<List<QuestionnaireAnswerOption>>(
-                  focusNode: FocusNode(),
-                ));
+         controller:
+             controller ??
+             CustomValueController<List<QuestionnaireAnswerOption>>(
+               focusNode: FocusNode(),
+             ),
+       );
 }
 
 abstract class QuestionnaireMultiChoiceItemViewState<
-        SF extends QuestionnaireMultiChoiceItemView>
+  SF extends QuestionnaireMultiChoiceItemView
+>
     extends QuestionnaireChoiceItemViewState<SF> {
   @override
   CustomValueController<List<QuestionnaireAnswerOption>> get controller =>
@@ -32,13 +35,13 @@ abstract class QuestionnaireMultiChoiceItemViewState<
       List<QuestionnaireAnswerOption> initial = [];
       for (final value in item.initial ?? <QuestionnaireInitial>[]) {
         if (value.valueCoding != null) {
-          initial.add(QuestionnaireAnswerOption(
-            valueCoding: value.valueCoding!,
-          ));
+          initial.add(
+            QuestionnaireAnswerOption(valueCoding: value.valueCoding!),
+          );
         } else if (value.valueString != null) {
-          initial.add(QuestionnaireAnswerOption(
-            valueString: value.valueString,
-          ));
+          initial.add(
+            QuestionnaireAnswerOption(valueString: value.valueString),
+          );
         }
       }
 
@@ -52,7 +55,9 @@ abstract class QuestionnaireMultiChoiceItemViewState<
   bool isSelected(QuestionnaireAnswerOption? value) =>
       selectedValues.contains(value);
   void onSelectedValuesChanged(
-      bool? selected, QuestionnaireAnswerOption value) {
+    bool? selected,
+    QuestionnaireAnswerOption value,
+  ) {
     if (selected == true) {
       selectedValues.add(value);
     } else {
@@ -65,10 +70,14 @@ abstract class QuestionnaireMultiChoiceItemViewState<
   }
 
   @override
-  QuestionnaireAnswerOption onOpenAnswerAdded(String value,
-      {bool? hideKeyboard}) {
-    final answer =
-        super.onOpenAnswerAdded(value, hideKeyboard: hideKeyboard ?? false);
+  QuestionnaireAnswerOption onOpenAnswerAdded(
+    String value, {
+    bool? hideKeyboard,
+  }) {
+    final answer = super.onOpenAnswerAdded(
+      value,
+      hideKeyboard: hideKeyboard ?? false,
+    );
     onSelectedValuesChanged(true, answer);
     return answer;
   }

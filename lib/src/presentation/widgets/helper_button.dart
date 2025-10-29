@@ -12,7 +12,12 @@ class HelperButton extends StatelessWidget {
   /// Optional color for the icon.
   final Color? color;
 
-  const HelperButton({super.key, required this.text, this.onPressed, this.color});
+  const HelperButton({
+    super.key,
+    required this.text,
+    this.onPressed,
+    this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +27,10 @@ class HelperButton extends StatelessWidget {
       child: Tooltip(
         message: text,
         triggerMode: TooltipTriggerMode.tap,
-        child: Icon(Icons.help_outline, color: color ?? theme.colorScheme.primary),
+        child: Icon(
+          Icons.help_outline,
+          color: color ?? theme.colorScheme.primary,
+        ),
       ),
     );
   }

@@ -12,14 +12,17 @@ abstract class QuestionnaireSingleChoiceItemView
     super.isOpen = false,
     super.enableWhenController,
   }) : super(
-            controller: controller ??
-                CustomValueController<QuestionnaireAnswerOption>(
-                  focusNode: FocusNode(),
-                ));
+         controller:
+             controller ??
+             CustomValueController<QuestionnaireAnswerOption>(
+               focusNode: FocusNode(),
+             ),
+       );
 }
 
 abstract class QuestionnaireSingleChoiceItemViewState<
-        SF extends QuestionnaireSingleChoiceItemView>
+  SF extends QuestionnaireSingleChoiceItemView
+>
     extends QuestionnaireChoiceItemViewState<SF> {
   @override
   CustomValueController<QuestionnaireAnswerOption> get controller =>
@@ -32,14 +35,10 @@ abstract class QuestionnaireSingleChoiceItemViewState<
       QuestionnaireAnswerOption? initial;
       for (final value in item.initial ?? <QuestionnaireInitial>[]) {
         if (value.valueCoding != null) {
-          initial = QuestionnaireAnswerOption(
-            valueCoding: value.valueCoding!,
-          );
+          initial = QuestionnaireAnswerOption(valueCoding: value.valueCoding!);
           break;
         } else if (value.valueString != null) {
-          initial = QuestionnaireAnswerOption(
-            valueString: value.valueString,
-          );
+          initial = QuestionnaireAnswerOption(valueString: value.valueString);
           break;
         }
       }
@@ -62,8 +61,10 @@ abstract class QuestionnaireSingleChoiceItemViewState<
   }
 
   @override
-  QuestionnaireAnswerOption onOpenAnswerAdded(String value,
-      {bool? hideKeyboard}) {
+  QuestionnaireAnswerOption onOpenAnswerAdded(
+    String value, {
+    bool? hideKeyboard,
+  }) {
     final answer = super.onOpenAnswerAdded(value, hideKeyboard: hideKeyboard);
     selectedValue = answer;
     return answer;

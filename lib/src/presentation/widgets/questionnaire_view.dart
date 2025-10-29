@@ -135,16 +135,22 @@ class QuestionnaireViewState extends State<QuestionnaireView>
       questionnaireTitleHeight = ViewUtils.getTextHeightAfterRender(
         context: context,
         text: questionnaire.title!,
-        padding:
-            const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 24.0),
+        padding: const EdgeInsets.only(
+          top: 16,
+          left: 16,
+          right: 16,
+          bottom: 24.0,
+        ),
         textStyle: Theme.of(context).textTheme.titleLarge,
       );
     } catch (_) {}
   }
 
   Future<void> buildQuestionnaireItems() async {
-    itemBundles = controller.buildQuestionnaireItems(questionnaire,
-        onAttachmentLoaded: widget.onAttachmentLoaded);
+    itemBundles = controller.buildQuestionnaireItems(
+      questionnaire,
+      onAttachmentLoaded: widget.onAttachmentLoaded,
+    );
     loading(false);
   }
 
@@ -173,7 +179,8 @@ class QuestionnaireViewState extends State<QuestionnaireView>
               shape: const StadiumBorder(),
               onPressed: isLoading ? null : onSubmit,
               label: Text(
-                  QuestionnaireLocalization.instance.localization.btnSubmit),
+                QuestionnaireLocalization.instance.localization.btnSubmit,
+              ),
             ),
           ),
         ),
@@ -186,34 +193,38 @@ class QuestionnaireViewState extends State<QuestionnaireView>
               )
             : Scrollbar(
                 child: ListView.builder(
-                    primary: true,
-                    addAutomaticKeepAlives: true,
-                    padding: const EdgeInsets.only(
-                        top: 16, left: 16, right: 16, bottom: fabSize + 64),
-                    shrinkWrap: true,
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.onDrag,
-                    itemBuilder: (context, index) {
-                      if (index == 0 && questionnaire.title.isNotEmpty) {
-                        return Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: 24.0,
+                  primary: true,
+                  addAutomaticKeepAlives: true,
+                  padding: const EdgeInsets.only(
+                    top: 16,
+                    left: 16,
+                    right: 16,
+                    bottom: fabSize + 64,
+                  ),
+                  shrinkWrap: true,
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  itemBuilder: (context, index) {
+                    if (index == 0 && questionnaire.title.isNotEmpty) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 24.0),
+                        child: Text(
+                          questionnaire.title!,
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            color: theme.colorScheme.primary,
                           ),
-                          child: Text(
-                            questionnaire.title!,
-                            style: theme.textTheme.titleLarge
-                                ?.copyWith(color: theme.colorScheme.primary),
-                            textAlign: TextAlign.center,
-                          ),
-                        );
-                      }
-                      return itemBundles[
-                              index - (questionnaire.title.isNotEmpty ? 1 : 0)]
-                          .view;
-                    },
-                    // separatorBuilder: (context, index) =>
-                    //     const SizedBox(height: 24.0),
-                    itemCount: listViewCount),
+                          textAlign: TextAlign.center,
+                        ),
+                      );
+                    }
+                    return itemBundles[index -
+                            (questionnaire.title.isNotEmpty ? 1 : 0)]
+                        .view;
+                  },
+                  // separatorBuilder: (context, index) =>
+                  //     const SizedBox(height: 24.0),
+                  itemCount: listViewCount,
+                ),
               ),
       ),
     );
@@ -247,7 +258,9 @@ class QuestionnaireViewState extends State<QuestionnaireView>
       }
       tempOffset += fieldBundle.controller.size.height;
       if (fieldBundle.children.isNotEmpty) {
-        final result = validateRecursive(fieldBundles: fieldBundle.children ?? []);
+        final result = validateRecursive(
+          fieldBundles: fieldBundle.children ?? [],
+        );
         if (!result.isValid && isValid) {
           isValid = false;
           indexOffset += result.offset;
@@ -255,32 +268,41 @@ class QuestionnaireViewState extends State<QuestionnaireView>
         }
       }
     }
-    return (
-    isValid: isValid,
-    offset: indexOffset,
-    controller: controller,
-    );
+    return (isValid: isValid, offset: indexOffset, controller: controller);
   }
 
-  Future<void> scrollToField(
-      {required FieldController? controller,
-      required double indexOffset}) async {
+  Future<void> scrollToField({
+    required FieldController? controller,
+    required double indexOffset,
+  }) async {
     if (controller == null) return;
-    scrollController?.animateTo(indexOffset,
-        duration: const Duration(milliseconds: 300), curve: Curves.ease);
+    scrollController?.animateTo(
+      indexOffset,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.ease,
+    );
     Future.delayed(const Duration(milliseconds: 200), () {
       final fieldContext = controller.key.currentContext;
       if (fieldContext == null || !fieldContext.mounted) return;
-      Scrollable.ensureVisible(fieldContext,
-          duration: const Duration(milliseconds: 100), curve: Curves.ease);
-    }).whenComplete(() => Future.delayed(const Duration(milliseconds: 100),
-        () => controller.focusNode?.requestFocus()));
+      Scrollable.ensureVisible(
+        fieldContext,
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.ease,
+      );
+    }).whenComplete(
+      () => Future.delayed(
+        const Duration(milliseconds: 100),
+        () => controller.focusNode?.requestFocus(),
+      ),
+    );
   }
 
   void onSubmit() {
     if (validate()) {
       final questionnaireResponse = controller.generateResponse(
-          questionnaire: questionnaire, itemBundles: itemBundles);
+        questionnaire: questionnaire,
+        itemBundles: itemBundles,
+      );
       widget.onSubmit(questionnaireResponse);
     }
   }

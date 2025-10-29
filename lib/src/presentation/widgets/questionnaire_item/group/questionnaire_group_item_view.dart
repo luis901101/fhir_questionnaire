@@ -43,12 +43,14 @@ class QuestionnaireGroupItemViewState
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
-              border: Border.all(width: 0.5),
-              borderRadius: BorderRadius.circular(borderRadius)),
+            border: Border.all(width: 0.5),
+            borderRadius: BorderRadius.circular(borderRadius),
+          ),
           padding: EdgeInsets.only(
-              left: 16,
-              right: 16,
-              top: groupTitleHeight != null ? groupTitleHeight! : 24),
+            left: 16,
+            right: 16,
+            top: groupTitleHeight != null ? groupTitleHeight! : 24,
+          ),
           margin: const EdgeInsets.only(top: 14),
           child: children == null
               ? null
@@ -58,22 +60,25 @@ class QuestionnaireGroupItemViewState
                   children: [
                     ?super.buildHintTextView(context),
                     ?super.buildHelperTextView(context),
-                    ...children!.map((itemView) => itemView)
+                    ...children!.map((itemView) => itemView),
                   ],
                 ),
         ),
-        if (item.title.isNotEmpty || isRequired || (helperTextAsButton && helperText.isNotEmpty))
+        if (item.title.isNotEmpty ||
+            isRequired ||
+            (helperTextAsButton && helperText.isNotEmpty))
           Positioned(
-              left: 16,
-              right: 16,
-              top: 0,
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: SizeRenderer(
-                  onSizeRendered: onGroupTitleSizeRendered,
-                  child: super.buildTitleView(context, forGroup: true)!,
-                ),
-              )),
+            left: 16,
+            right: 16,
+            top: 0,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: SizeRenderer(
+                onSizeRendered: onGroupTitleSizeRendered,
+                child: super.buildTitleView(context, forGroup: true)!,
+              ),
+            ),
+          ),
       ],
     );
   }

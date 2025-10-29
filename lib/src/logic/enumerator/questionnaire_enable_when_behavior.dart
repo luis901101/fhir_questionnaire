@@ -6,8 +6,7 @@ enum QuestionnaireEnableWhenBehavior {
   all,
 
   /// Enable the question when any of the enableWhen criteria are satisfied.
-  any,
-  ;
+  any;
 
   static const defaultValue = any;
 
@@ -18,6 +17,7 @@ enum QuestionnaireEnableWhenBehavior {
       isAny ? currentValue || newValue : currentValue && newValue;
 
   static QuestionnaireEnableWhenBehavior? valueOf(String? name) =>
-      QuestionnaireEnableWhenBehavior.values
-          .firstWhereOrNull((value) => value.name == name);
+      QuestionnaireEnableWhenBehavior.values.firstWhereOrNull(
+        (value) => value.name == name,
+      );
 }

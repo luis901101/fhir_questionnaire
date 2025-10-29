@@ -10,7 +10,8 @@ class QuestionnaireController {
   QuestionnaireResponseItem Function(
     QuestionnaireItemBundle itemBundle,
     QuestionnaireResponseItem questionnaireResponseItem,
-  )? onGenerateItemResponse;
+  )?
+  onGenerateItemResponse;
 
   /// Allows customizing the logic that maps [QuestionnaireItem] objects into
   /// [QuestionnaireItemView] widgets.
@@ -22,24 +23,31 @@ class QuestionnaireController {
     QuestionnaireItem item,
     QuestionnaireItemEnableWhenController? enableWhenController,
     Future<Attachment?> Function()? onAttachmentLoaded,
-  )? onBuildItemView;
+  )?
+  onBuildItemView;
 
-  QuestionnaireController({
-    this.onGenerateItemResponse,
-    this.onBuildItemView,
-  });
+  QuestionnaireController({this.onGenerateItemResponse, this.onBuildItemView});
 
-  QuestionnaireItemView? buildChoiceItemView(
-      {required QuestionnaireItem item,
-      QuestionnaireItemEnableWhenController? enableWhenController}) {
+  QuestionnaireItemView? buildChoiceItemView({
+    required QuestionnaireItem item,
+    QuestionnaireItemEnableWhenController? enableWhenController,
+  }) {
     if (item.repeats?.value == true) {
       return QuestionnaireCheckBoxChoiceItemView(
         item: item,
         enableWhenController: enableWhenController,
       );
     } else {
-      if (QuestionnaireItemExtensionCode.valueOf(item.extension_?.firstOrNull
-              ?.valueCodeableConcept?.coding?.firstOrNull?.code?.value) ==
+      if (QuestionnaireItemExtensionCode.valueOf(
+            item
+                .extension_
+                ?.firstOrNull
+                ?.valueCodeableConcept
+                ?.coding
+                ?.firstOrNull
+                ?.code
+                ?.value,
+          ) ==
           QuestionnaireItemExtensionCode.dropDown) {
         return QuestionnaireDropDownChoiceItemView(
           item: item,
@@ -54,17 +62,26 @@ class QuestionnaireController {
     }
   }
 
-  QuestionnaireItemView? buildOpenChoiceItemView(
-      {required QuestionnaireItem item,
-      QuestionnaireItemEnableWhenController? enableWhenController}) {
+  QuestionnaireItemView? buildOpenChoiceItemView({
+    required QuestionnaireItem item,
+    QuestionnaireItemEnableWhenController? enableWhenController,
+  }) {
     if (item.repeats?.value == true) {
       return QuestionnaireCheckBoxOpenChoiceItemView(
         item: item,
         enableWhenController: enableWhenController,
       );
     } else {
-      if (QuestionnaireItemExtensionCode.valueOf(item.extension_?.firstOrNull
-              ?.valueCodeableConcept?.coding?.firstOrNull?.code?.value) ==
+      if (QuestionnaireItemExtensionCode.valueOf(
+            item
+                .extension_
+                ?.firstOrNull
+                ?.valueCodeableConcept
+                ?.coding
+                ?.firstOrNull
+                ?.code
+                ?.value,
+          ) ==
           QuestionnaireItemExtensionCode.dropDown) {
         return QuestionnaireDropDownOpenChoiceItemView(
           item: item,
@@ -91,15 +108,18 @@ class QuestionnaireController {
       for (final enableWhen in item.enableWhen!) {
         final controller = itemBundles
             .firstWhereOrNull(
-                (itemBundle) => itemBundle.item.linkId == enableWhen.question)
+              (itemBundle) => itemBundle.item.linkId == enableWhen.question,
+            )
             ?.controller;
         if (controller == null) {
           continue;
         }
-        list.add(QuestionnaireItemEnableWhenBundle(
-          controller: controller,
-          expectedAnswer: enableWhen,
-        ));
+        list.add(
+          QuestionnaireItemEnableWhenBundle(
+            controller: controller,
+            expectedAnswer: enableWhen,
+          ),
+        );
       }
       if (list.isNotEmpty) {
         controller = QuestionnaireItemEnableWhenController(
@@ -173,11 +193,15 @@ class QuestionnaireController {
           break;
         case QuestionnaireItemType.choice:
           itemView = buildChoiceItemView(
-              item: item, enableWhenController: enableWhenController);
+            item: item,
+            enableWhenController: enableWhenController,
+          );
           break;
         case QuestionnaireItemType.openChoice:
           itemView = buildOpenChoiceItemView(
-              item: item, enableWhenController: enableWhenController);
+            item: item,
+            enableWhenController: enableWhenController,
+          );
           break;
         case QuestionnaireItemType.date:
         case QuestionnaireItemType.time:
@@ -245,10 +269,10 @@ class QuestionnaireController {
     try {
       for (final QuestionnaireItem item in questionnaireItems ?? []) {
         QuestionnaireItemEnableWhenController? enableWhenController =
-            getEnableWhenController(item: item, itemBundles: [
-          ...(alreadyBuiltItemBundles ?? []),
-          ...itemBundles,
-        ]);
+            getEnableWhenController(
+              item: item,
+              itemBundles: [...(alreadyBuiltItemBundles ?? []), ...itemBundles],
+            );
 
         final itemBundle = buildQuestionnaireItemBundle(
           item: item,
@@ -273,12 +297,17 @@ class QuestionnaireController {
   }
 
   List<QuestionnaireItemBundle> buildQuestionnaireItems(
-      Questionnaire questionnaire,
-      {Future<Attachment?> Function()? onAttachmentLoaded}) {
+    Questionnaire questionnaire, {
+    Future<Attachment?> Function()? onAttachmentLoaded,
+  }) {
     List<QuestionnaireItemBundle> itemBundles = [];
     try {
-      itemBundles.addAll(buildQuestionnaireItemBundles(questionnaire.item,
-          onAttachmentLoaded: onAttachmentLoaded));
+      itemBundles.addAll(
+        buildQuestionnaireItemBundles(
+          questionnaire.item,
+          onAttachmentLoaded: onAttachmentLoaded,
+        ),
+      );
     } catch (e) {
       if (kDebugMode) {
         print(e);
@@ -290,11 +319,13 @@ class QuestionnaireController {
   List<QuestionnaireResponseAnswer> generateChoiceAnswer(dynamic data) {
     final answers = <QuestionnaireResponseAnswer>[];
     if (data is QuestionnaireAnswerOption) {
-      answers.add(QuestionnaireResponseAnswer(
-        valueCoding: data.valueCoding,
-        valueString: data.valueString,
-        valueInteger: data.valueInteger,
-      ));
+      answers.add(
+        QuestionnaireResponseAnswer(
+          valueCoding: data.valueCoding,
+          valueString: data.valueString,
+          valueInteger: data.valueInteger,
+        ),
+      );
     } else if (data is List<QuestionnaireAnswerOption>) {
       for (final answerOption in data) {
         answers.addAll(generateChoiceAnswer(answerOption));
@@ -316,11 +347,13 @@ class QuestionnaireController {
 
     // capture all top-level variables as list, in order
     final rootExpressions = (questionnaire.extension_ ?? [])
-        .where((ext) =>
-            ext.url ==
-                FhirUri('http://hl7.org/fhir/StructureDefinition/variable') &&
-            ext.valueExpression?.language ==
-                FhirExpressionLanguage.text_fhirpath)
+        .where(
+          (ext) =>
+              ext.url ==
+                  FhirUri('http://hl7.org/fhir/StructureDefinition/variable') &&
+              ext.valueExpression?.language ==
+                  FhirExpressionLanguage.text_fhirpath,
+        )
         .toList();
 
     for (final exp in rootExpressions) {
@@ -355,7 +388,8 @@ class QuestionnaireController {
       } catch (e) {
         if (kDebugMode) {
           print(
-              'Failed to compute fhirpath expression "$expression", subsequent evaluations may fail as well: $e');
+            'Failed to compute fhirpath expression "$expression", subsequent evaluations may fail as well: $e',
+          );
         }
       }
     }
@@ -367,8 +401,9 @@ class QuestionnaireController {
   /// list. Returns the number of all expression for which no answer value
   /// exists. The number will be the sum of all expressions in the entire
   /// sub tree of items.
-  int _nrUnresolvedExpressionsInItemList(
-      {required List<QuestionnaireResponseItem>? itemList}) {
+  int _nrUnresolvedExpressionsInItemList({
+    required List<QuestionnaireResponseItem>? itemList,
+  }) {
     if (itemList == null) {
       return 0;
     }
@@ -383,12 +418,15 @@ class QuestionnaireController {
       }
 
       final calculatedExpressions = (item.extension_ ?? [])
-          .where((ext) =>
-              ext.url ==
-                  FhirUri(
-                      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression') &&
-              ext.valueExpression?.language ==
-                  FhirExpressionLanguage.text_fhirpath)
+          .where(
+            (ext) =>
+                ext.url ==
+                    FhirUri(
+                      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+                    ) &&
+                ext.valueExpression?.language ==
+                    FhirExpressionLanguage.text_fhirpath,
+          )
           .toList()
           .length;
 
@@ -418,14 +456,16 @@ class QuestionnaireController {
     for (int itemIndex = 0; itemIndex < updatedList.length; itemIndex++) {
       if (updatedList[itemIndex].item != null &&
           _nrUnresolvedExpressionsInItemList(
-                  itemList: updatedList[itemIndex].item) >
+                itemList: updatedList[itemIndex].item,
+              ) >
               0) {
         updatedList[itemIndex] = updatedList[itemIndex].copyWith(
-            item: _resolveFirstCalculatedExpression(
-          environment: environment,
-          itemList: updatedList[itemIndex].item,
-          questionnaireResponse: questionnaireResponse,
-        ));
+          item: _resolveFirstCalculatedExpression(
+            environment: environment,
+            itemList: updatedList[itemIndex].item,
+            questionnaireResponse: questionnaireResponse,
+          ),
+        );
 
         return updatedList;
       }
@@ -436,21 +476,24 @@ class QuestionnaireController {
       // skip items that already have an answer
       if (updatedList[itemIndex].answer != null) {
         // remove any extensions that we copied over from the build process
-        updatedList[itemIndex] =
-            updatedList[itemIndex].copyWith(extension_: null);
+        updatedList[itemIndex] = updatedList[itemIndex].copyWith(
+          extension_: null,
+        );
         continue;
       }
 
-      final calculatedExpressionExtensions = (updatedList[itemIndex]
-                  .extension_ ??
-              [])
-          .where((ext) =>
-              ext.url ==
-                  FhirUri(
-                      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression') &&
-              ext.valueExpression?.language ==
-                  FhirExpressionLanguage.text_fhirpath)
-          .toList();
+      final calculatedExpressionExtensions =
+          (updatedList[itemIndex].extension_ ?? [])
+              .where(
+                (ext) =>
+                    ext.url ==
+                        FhirUri(
+                          'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+                        ) &&
+                    ext.valueExpression?.language ==
+                        FhirExpressionLanguage.text_fhirpath,
+              )
+              .toList();
 
       if (calculatedExpressionExtensions.isNotEmpty) {
         final expression =
@@ -500,7 +543,8 @@ class QuestionnaireController {
         } catch (e) {
           if (kDebugMode) {
             print(
-                'Failed to compute fhirpath expression "$expression", subsequent evaluations may fail as well: $e');
+              'Failed to compute fhirpath expression "$expression", subsequent evaluations may fail as well: $e',
+            );
           }
         }
       }
@@ -537,29 +581,34 @@ class QuestionnaireController {
     // if we have unresolved items, try to resolve the first and repeat
     // until we reach 0 or calculations stop resolving
     do {
-      currentNumberOfUnresolvedItems =
-          _nrUnresolvedExpressionsInItemList(itemList: itemList);
+      currentNumberOfUnresolvedItems = _nrUnresolvedExpressionsInItemList(
+        itemList: itemList,
+      );
 
       if (currentNumberOfUnresolvedItems > 0) {
         itemList = _resolveFirstCalculatedExpression(
-            environment: environment,
-            itemList: itemList,
-            questionnaireResponse: questionnaireResponse);
+          environment: environment,
+          itemList: itemList,
+          questionnaireResponse: questionnaireResponse,
+        );
       }
 
-      newNumberOfUnresolvedItems =
-          _nrUnresolvedExpressionsInItemList(itemList: itemList);
+      newNumberOfUnresolvedItems = _nrUnresolvedExpressionsInItemList(
+        itemList: itemList,
+      );
     } while (newNumberOfUnresolvedItems > 0 &&
         newNumberOfUnresolvedItems < currentNumberOfUnresolvedItems);
 
     return itemList;
   }
 
-  QuestionnaireResponse generateResponse(
-      {required Questionnaire questionnaire,
-      required List<QuestionnaireItemBundle> itemBundles}) {
-    List<QuestionnaireResponseItem> itemResponses =
-        generateItemResponses(itemBundles: itemBundles);
+  QuestionnaireResponse generateResponse({
+    required Questionnaire questionnaire,
+    required List<QuestionnaireItemBundle> itemBundles,
+  }) {
+    List<QuestionnaireResponseItem> itemResponses = generateItemResponses(
+      itemBundles: itemBundles,
+    );
 
     final questionnaireResponse = QuestionnaireResponse(
       questionnaire: questionnaire.asFhirCanonical,
@@ -584,7 +633,8 @@ class QuestionnaireController {
   }
 
   QuestionnaireResponseItem? generateItemResponse(
-      QuestionnaireItemBundle itemBundle) {
+    QuestionnaireItemBundle itemBundle,
+  ) {
     List<QuestionnaireResponseItem>? childItems;
     List<QuestionnaireResponseAnswer>? answers;
     final itemType = QuestionnaireItemType.valueOf(itemBundle.item.type.value);
@@ -614,15 +664,15 @@ class QuestionnaireController {
                       : null,
                   valueInteger: itemType.isInteger
                       ? IntUtils.tryParse(
-                              itemBundle.controller.rawValue?.toString())
-                          ?.asFhirInteger
+                          itemBundle.controller.rawValue?.toString(),
+                        )?.asFhirInteger
                       : null,
                   valueDecimal: itemType.isDecimal
                       ? DoubleUtils.tryParse(
-                              itemBundle.controller.rawValue?.toString())
-                          ?.asFhirDecimal
+                          itemBundle.controller.rawValue?.toString(),
+                        )?.asFhirDecimal
                       : null,
-                )
+                ),
               ];
         break;
       case QuestionnaireItemType.boolean:
@@ -630,8 +680,10 @@ class QuestionnaireController {
             ? null
             : [
                 QuestionnaireResponseAnswer(
-                    valueBoolean:
-                        FhirBoolean(itemBundle.controller.rawValue as bool))
+                  valueBoolean: FhirBoolean(
+                    itemBundle.controller.rawValue as bool,
+                  ),
+                ),
               ];
         break;
       case QuestionnaireItemType.choice:
@@ -654,18 +706,19 @@ class QuestionnaireController {
                   valueDateTime: !itemType.isDateTime
                       ? null
                       : (itemBundle.controller.rawValue as DateTime)
-                          .asFhirDateTime,
-                )
+                            .asFhirDateTime,
+                ),
               ];
         break;
       case QuestionnaireItemType.quantity:
-        answers = itemBundle.controller.rawValue is! Quantity ||
+        answers =
+            itemBundle.controller.rawValue is! Quantity ||
                 (itemBundle.controller.rawValue as Quantity).value == null
             ? null
             : [
                 QuestionnaireResponseAnswer(
                   valueQuantity: itemBundle.controller.rawValue as Quantity,
-                )
+                ),
               ];
         break;
       case QuestionnaireItemType.attachment:
@@ -674,7 +727,7 @@ class QuestionnaireController {
             : [
                 QuestionnaireResponseAnswer(
                   valueAttachment: itemBundle.controller.rawValue as Attachment,
-                )
+                ),
               ];
         break;
 
@@ -700,8 +753,9 @@ class QuestionnaireController {
     return item;
   }
 
-  List<QuestionnaireResponseItem> generateItemResponses(
-      {required List<QuestionnaireItemBundle> itemBundles}) {
+  List<QuestionnaireResponseItem> generateItemResponses({
+    required List<QuestionnaireItemBundle> itemBundles,
+  }) {
     List<QuestionnaireResponseItem> items = [];
     for (final itemBundle in itemBundles) {
       final item = generateItemResponse(itemBundle);

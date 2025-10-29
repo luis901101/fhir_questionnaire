@@ -36,8 +36,11 @@ extension ListUtils on List {
     return buffer.toString();
   }
 
-  void insertAllRemovingDuplicates<E>(List<E> elements, int index,
-      {bool Function(E element1, E element2)? checkDuplicate}) {
+  void insertAllRemovingDuplicates<E>(
+    List<E> elements,
+    int index, {
+    bool Function(E element1, E element2)? checkDuplicate,
+  }) {
     checkDuplicate ??= (element1, element2) => element1 == element2;
     for (final element2 in elements) {
       removeWhere((element1) => checkDuplicate!(element1, element2));
@@ -46,8 +49,10 @@ extension ListUtils on List {
     insertAll(index, elements);
   }
 
-  void addAllIgnoringDuplicates<E>(List<E> elements,
-      {bool Function(E element1, E element2)? checkDuplicate}) {
+  void addAllIgnoringDuplicates<E>(
+    List<E> elements, {
+    bool Function(E element1, E element2)? checkDuplicate,
+  }) {
     checkDuplicate ??= (element1, element2) => element1 == element2;
     List<E> temp = [];
     for (final element2 in elements) {
@@ -58,16 +63,21 @@ extension ListUtils on List {
     addAll(temp);
   }
 
-  void addIgnoringDuplicates<E>(E element,
-      {bool Function(E element1, E element2)? checkDuplicate}) {
+  void addIgnoringDuplicates<E>(
+    E element, {
+    bool Function(E element1, E element2)? checkDuplicate,
+  }) {
     checkDuplicate ??= (element1, element2) => element1 == element2;
     if (!any((element1) => checkDuplicate!(element1, element))) {
       add(element);
     }
   }
 
-  void addCountIgnoringDuplicates<E>(List<E> elements, int count,
-      {bool Function(E element1, E element2)? checkDuplicate}) {
+  void addCountIgnoringDuplicates<E>(
+    List<E> elements,
+    int count, {
+    bool Function(E element1, E element2)? checkDuplicate,
+  }) {
     checkDuplicate ??= (element1, element2) => element1 == element2;
     List<E> temp = [];
     for (int i = 0, added = 0; i < elements.length && added < count; ++i) {
@@ -83,8 +93,9 @@ extension ListUtils on List {
     // addAll(temp); //For some reason this throws exception
   }
 
-  void removeDuplicates<E>(
-      {bool Function(E element1, E element2)? checkDuplicate}) {
+  void removeDuplicates<E>({
+    bool Function(E element1, E element2)? checkDuplicate,
+  }) {
     checkDuplicate ??= (element1, element2) => element1 == element2;
     List<E> temp = [];
     for (final element1 in this) {

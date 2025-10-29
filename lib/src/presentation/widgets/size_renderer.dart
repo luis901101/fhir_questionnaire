@@ -38,9 +38,6 @@ class _SizeRendererState extends State<SizeRenderer> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      key: key,
-      child: widget.child,
-    );
+    return SizedBox(key: key, child: widget.child);
   }
 }

@@ -11,9 +11,10 @@ class QuestionnaireItemEnableWhenController {
   QuestionnaireItemEnableWhenController({
     required List<QuestionnaireItemEnableWhenBundle>? enableWhenBundleList,
     required FhirCode? behavior,
-  })  : _enableWhenBundleList = enableWhenBundleList ?? [],
-        _behavior = QuestionnaireEnableWhenBehavior.valueOf(behavior?.value) ??
-            QuestionnaireEnableWhenBehavior.defaultValue;
+  }) : _enableWhenBundleList = enableWhenBundleList ?? [],
+       _behavior =
+           QuestionnaireEnableWhenBehavior.valueOf(behavior?.value) ??
+           QuestionnaireEnableWhenBehavior.defaultValue;
 
   bool init({required ValueChanged<bool> onEnabledChangedListener}) {
     _onEnabledChanged = onEnabledChangedListener;
@@ -34,7 +35,8 @@ class QuestionnaireItemEnableWhenController {
     bool enabled = _behavior.init();
     for (final enableWhenBundle in _enableWhenBundleList) {
       final controller = enableWhenBundle.controller;
-      dynamic expectedValue = enableWhenBundle.expectedAnswer.answerString ??
+      dynamic expectedValue =
+          enableWhenBundle.expectedAnswer.answerString ??
           enableWhenBundle.expectedAnswer.answerInteger?.value ??
           enableWhenBundle.expectedAnswer.answerDecimal?.value ??
           enableWhenBundle.expectedAnswer.answerBoolean?.value ??
@@ -46,7 +48,8 @@ class QuestionnaireItemEnableWhenController {
       List<dynamic> controllerValues = [];
       if (controller.rawValue is QuestionnaireAnswerOption) {
         final answerOption = controller.rawValue as QuestionnaireAnswerOption;
-        final controllerValueOption = answerOption.valueString ??
+        final controllerValueOption =
+            answerOption.valueString ??
             answerOption.valueInteger?.value ??
             answerOption.valueTime?.asDateTime ??
             answerOption.valueDate?.asDateTime ??
@@ -59,12 +62,14 @@ class QuestionnaireItemEnableWhenController {
             controller.rawValue as List<QuestionnaireAnswerOption>;
 
         final values = answerOptions
-            .map((answerOption) =>
-                answerOption.valueString ??
-                answerOption.valueInteger?.value ??
-                answerOption.valueTime?.asDateTime ??
-                answerOption.valueDate?.asDateTime ??
-                answerOption.valueCoding?.code?.value)
+            .map(
+              (answerOption) =>
+                  answerOption.valueString ??
+                  answerOption.valueInteger?.value ??
+                  answerOption.valueTime?.asDateTime ??
+                  answerOption.valueDate?.asDateTime ??
+                  answerOption.valueCoding?.code?.value,
+            )
             .nonNulls;
 
         controllerValues = values.toList() as List<dynamic>;
@@ -88,25 +93,30 @@ class QuestionnaireItemEnableWhenController {
           final bool existAnswer =
               enableWhenBundle.expectedAnswer.answerBoolean?.value ?? false;
           enabled = _behavior.check(
-              enabled,
-              (TextUtils.isNotEmpty(controller.rawValue?.toString()) &&
-                      existAnswer) ||
-                  (TextUtils.isEmpty(controller.rawValue?.toString()) &&
-                      !existAnswer));
+            enabled,
+            (TextUtils.isNotEmpty(controller.rawValue?.toString()) &&
+                    existAnswer) ||
+                (TextUtils.isEmpty(controller.rawValue?.toString()) &&
+                    !existAnswer),
+          );
           break;
         case QuestionnaireEnableWhenOperator.equals:
           enabled = _behavior.check(
             enabled,
-            controllerValues.firstWhereOrNull((controllerValue) =>
-                    controllerValue?.toString() == expectedValue?.toString()) !=
+            controllerValues.firstWhereOrNull(
+                  (controllerValue) =>
+                      controllerValue?.toString() == expectedValue?.toString(),
+                ) !=
                 null,
           );
           break;
         case QuestionnaireEnableWhenOperator.notEquals:
           enabled = _behavior.check(
             enabled,
-            controllerValues.firstWhereOrNull((controllerValue) =>
-                    controllerValue?.toString() != expectedValue?.toString()) !=
+            controllerValues.firstWhereOrNull(
+                  (controllerValue) =>
+                      controllerValue?.toString() != expectedValue?.toString(),
+                ) !=
                 null,
           );
           break;
@@ -115,7 +125,8 @@ class QuestionnaireItemEnableWhenController {
             enabled,
             expectedValueAsNum != null &&
                 controllerValuesAsNum.firstWhereOrNull(
-                        (value) => value > expectedValueAsNum) !=
+                      (value) => value > expectedValueAsNum,
+                    ) !=
                     null,
           );
           break;
@@ -124,7 +135,8 @@ class QuestionnaireItemEnableWhenController {
             enabled,
             expectedValueAsNum != null &&
                 controllerValuesAsNum.firstWhereOrNull(
-                        (value) => value < expectedValueAsNum) !=
+                      (value) => value < expectedValueAsNum,
+                    ) !=
                     null,
           );
           break;
@@ -133,7 +145,8 @@ class QuestionnaireItemEnableWhenController {
             enabled,
             expectedValueAsNum != null &&
                 controllerValuesAsNum.firstWhereOrNull(
-                        (value) => value >= expectedValueAsNum) !=
+                      (value) => value >= expectedValueAsNum,
+                    ) !=
                     null,
           );
           break;
@@ -142,7 +155,8 @@ class QuestionnaireItemEnableWhenController {
             enabled,
             expectedValueAsNum != null &&
                 controllerValuesAsNum.firstWhereOrNull(
-                        (value) => value <= expectedValueAsNum) !=
+                      (value) => value <= expectedValueAsNum,
+                    ) !=
                     null,
           );
           break;

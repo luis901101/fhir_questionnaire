@@ -96,24 +96,27 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
 
   /// Checks for questionnaire-hidden extension to hide the item
   /// Docs: http://hl7.org/fhir/R4/extension-questionnaire-hidden.html
-  bool get isHidden => _isHiddenCache ??= (item.extension_ ?? []).any(
-    (ext) =>
-        ext.url?.value?.toString() ==
-            'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden' &&
-        ext.valueBoolean?.value == true,
-  ) || (item.type.value == QuestionnaireItemType.display.code &&
-      (item.extension_?.any(
-            (subExt) =>
-        subExt.url?.value?.toString() ==
-            'http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory' &&
-            subExt
-                .valueCodeableConcept
-                ?.coding
-                ?.firstOrNull
-                ?.code
-                ?.value ==
-                QuestionnaireItemExtensionCode.help.code,
-      ) ?? false));
+  bool get isHidden => _isHiddenCache ??=
+      (item.extension_ ?? []).any(
+        (ext) =>
+            ext.url?.value?.toString() ==
+                'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden' &&
+            ext.valueBoolean?.value == true,
+      ) ||
+      (item.type.value == QuestionnaireItemType.display.code &&
+          (item.extension_?.any(
+                (subExt) =>
+                    subExt.url?.value?.toString() ==
+                        'http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory' &&
+                    subExt
+                            .valueCodeableConcept
+                            ?.coding
+                            ?.firstOrNull
+                            ?.code
+                            ?.value ==
+                        QuestionnaireItemExtensionCode.help.code,
+              ) ??
+              false));
 
   /// Checks for entryFormat extension to provide hint text
   /// Docs: http://hl7.org/fhir/R4/extension-entryformat.html
@@ -174,9 +177,11 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
       controller.addListener(onControllerErrorChanged);
     }
     ValidationController? rangeValidation;
-    if(minValue != null && maxValue != null) {
+    if (minValue != null && maxValue != null) {
       rangeValidation = ValidationUtils.rangeValidationController(
-          minValue: minValue, maxValue: maxValue);
+        minValue: minValue,
+        maxValue: maxValue,
+      );
     } else if (minValue != null) {
       rangeValidation = ValidationUtils.minRangeValidationController(minValue);
     } else if (maxValue != null) {
@@ -184,7 +189,7 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
     }
     controller.validations.addAll([
       if (isRequired) ValidationUtils.requiredFieldValidation,
-      ?rangeValidation
+      ?rangeValidation,
     ]);
     isEnabled =
         enableWhenController?.init(onEnabledChangedListener: onEnabled) ?? true;
@@ -251,47 +256,55 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
   Widget? buildTitleView(BuildContext context, {bool forGroup = false}) {
     if (item.title.isEmpty && !isRequired) return null;
     final fieldRadius =
-    (theme.inputDecorationTheme.border is OutlineInputBorder)
+        (theme.inputDecorationTheme.border is OutlineInputBorder)
         ? (theme.inputDecorationTheme.border as OutlineInputBorder).borderRadius
         : const BorderRadius.all(Radius.circular(8));
     return Padding(
-      padding: forGroup ? EdgeInsets.zero : EdgeInsets.only(
-        left: fieldRadius.topLeft.x / 2,
-        right: fieldRadius.topRight.x / 2,
-        bottom: 4.0,
-      ),
+      padding: forGroup
+          ? EdgeInsets.zero
+          : EdgeInsets.only(
+              left: fieldRadius.topLeft.x / 2,
+              right: fieldRadius.topRight.x / 2,
+              bottom: 4.0,
+            ),
       child: Row(
         children: [
-          if(item.title.isNotEmpty || isRequired)
-          Expanded(
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                color: forGroup ? theme.colorScheme.surface : null,
-                padding: forGroup ? const EdgeInsets.symmetric(horizontal: 8) : null,
-                child: Text.rich(
-                  TextSpan(
-                    style: forGroup ? theme.textTheme.titleMedium : theme.textTheme.titleSmall,
-                    children: [
-                      if (item.title.isNotEmpty) TextSpan(text: item.title),
-                      if (isRequired)
-                        TextSpan(
-                          text: '${item.title.isNotEmpty ? ' ' : ''}*',
-                          style: TextStyle(color: theme.colorScheme.error),
-                        ),
-                    ],
+          if (item.title.isNotEmpty || isRequired)
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  color: forGroup ? theme.colorScheme.surface : null,
+                  padding: forGroup
+                      ? const EdgeInsets.symmetric(horizontal: 8)
+                      : null,
+                  child: Text.rich(
+                    TextSpan(
+                      style: forGroup
+                          ? theme.textTheme.titleMedium
+                          : theme.textTheme.titleSmall,
+                      children: [
+                        if (item.title.isNotEmpty) TextSpan(text: item.title),
+                        if (isRequired)
+                          TextSpan(
+                            text: '${item.title.isNotEmpty ? ' ' : ''}*',
+                            style: TextStyle(color: theme.colorScheme.error),
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
           const SizedBox(width: 8),
-          if(helperTextAsButton && helperText.isNotEmpty)
-          Container(
-            color: forGroup ? theme.colorScheme.surface : null,
-            padding: forGroup ? const EdgeInsets.symmetric(horizontal: 4) : null,
-            child: helperButton,
-          ),
+          if (helperTextAsButton && helperText.isNotEmpty)
+            Container(
+              color: forGroup ? theme.colorScheme.surface : null,
+              padding: forGroup
+                  ? const EdgeInsets.symmetric(horizontal: 4)
+                  : null,
+              child: helperButton,
+            ),
         ],
       ),
     );
@@ -300,7 +313,7 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
   Widget? buildErrorManuallyView(BuildContext context) {
     if (!handleControllerErrorManually || !controller.hasError) return null;
     final inputBorderRadius =
-    (theme.inputDecorationTheme.border is OutlineInputBorder)
+        (theme.inputDecorationTheme.border is OutlineInputBorder)
         ? (theme.inputDecorationTheme.border as OutlineInputBorder).borderRadius
         : const BorderRadius.all(Radius.circular(4));
     return Padding(
@@ -321,7 +334,7 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
   Widget? buildHintTextView(BuildContext context) {
     if (hintText.isEmpty) return null;
     final inputBorderRadius =
-    (theme.inputDecorationTheme.border is OutlineInputBorder)
+        (theme.inputDecorationTheme.border is OutlineInputBorder)
         ? (theme.inputDecorationTheme.border as OutlineInputBorder).borderRadius
         : const BorderRadius.all(Radius.circular(4));
     return Padding(
@@ -330,17 +343,14 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
         right: inputBorderRadius.bottomLeft.x / 2,
         top: 4.0,
       ),
-      child: Text(
-        hintText ?? '',
-        style: theme.textTheme.bodySmall,
-      ),
+      child: Text(hintText ?? '', style: theme.textTheme.bodySmall),
     );
   }
 
   Widget? buildHelperTextView(BuildContext context) {
     if (helperText.isEmpty || helperTextAsButton) return null;
     final inputBorderRadius =
-    (theme.inputDecorationTheme.border is OutlineInputBorder)
+        (theme.inputDecorationTheme.border is OutlineInputBorder)
         ? (theme.inputDecorationTheme.border as OutlineInputBorder).borderRadius
         : const BorderRadius.all(Radius.circular(4));
     return Padding(
@@ -349,10 +359,7 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
         right: inputBorderRadius.bottomLeft.x / 2,
         top: 4.0,
       ),
-      child: Text(
-        helperText ?? '',
-        style: theme.textTheme.bodyMedium,
-      ),
+      child: Text(helperText ?? '', style: theme.textTheme.bodyMedium),
     );
   }
 

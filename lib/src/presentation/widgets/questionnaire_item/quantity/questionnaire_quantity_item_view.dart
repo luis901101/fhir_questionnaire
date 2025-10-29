@@ -12,10 +12,10 @@ class QuestionnaireQuantityItemView extends QuestionnaireItemView {
     required super.item,
     super.enableWhenController,
   }) : super(
-            controller: controller ??
-                CustomValueController<Quantity>(
-                  focusNode: FocusNode(),
-                ));
+         controller:
+             controller ??
+             CustomValueController<Quantity>(focusNode: FocusNode()),
+       );
 
   @override
   State createState() => QuestionnaireQuantityItemViewState();
@@ -38,8 +38,14 @@ class QuestionnaireQuantityItemViewState
   @override
   void initState() {
     super.initState();
-    fixedUnit = item.extension_?.firstOrNull?.valueCodeableConcept?.coding
-        ?.firstOrNull?.code?.value;
+    fixedUnit = item
+        .extension_
+        ?.firstOrNull
+        ?.valueCodeableConcept
+        ?.coding
+        ?.firstOrNull
+        ?.code
+        ?.value;
     if (controller.value == null) {
       final initial = item.initial
           ?.firstWhereOrNull((item) => item.valueQuantity != null)
@@ -48,15 +54,15 @@ class QuestionnaireQuantityItemViewState
       if (initial != null) {
         value = initial.copyWith();
       } else if (fixedUnit != null) {
-        value = value.copyWith(
-          unit: fixedUnit,
-        );
+        value = value.copyWith(unit: fixedUnit);
       }
     }
     valueEditingController.text = value.value?.value?.toString() ?? '';
     unitEditingController.text = value.unit ?? value.code?.value ?? '';
-    comparatorController.value = QuestionnaireCustomQuantityComparator.valueOf(
-            asQuantityComparator: value.comparator) ??
+    comparatorController.value =
+        QuestionnaireCustomQuantityComparator.valueOf(
+          asQuantityComparator: value.comparator,
+        ) ??
         QuestionnaireCustomQuantityComparator.defaultValue;
   }
 
@@ -64,9 +70,9 @@ class QuestionnaireQuantityItemViewState
   Widget buildBody(BuildContext context) {
     final noInputBorder =
         theme.inputDecorationTheme.border is! OutlineInputBorder ||
-            (theme.inputDecorationTheme.border?.borderSide.style ==
-                    BorderStyle.none &&
-                theme.inputDecorationTheme.border?.borderSide.width == 0);
+        (theme.inputDecorationTheme.border?.borderSide.style ==
+                BorderStyle.none &&
+            theme.inputDecorationTheme.border?.borderSide.width == 0);
     return CustomTextField(
       controller: valueEditingController,
       focusNode: controller.focusNode,
@@ -89,34 +95,32 @@ class QuestionnaireQuantityItemViewState
           children: [
             SizedBox(
               width: 70,
-              child: CustomDropDownButtonFormField.buildDropDown<
-                      QuestionnaireCustomQuantityComparator>(
-                  controller: comparatorController,
-                  disabled: isReadOnly,
-                  values: QuestionnaireCustomQuantityComparator.values,
-                  itemBuilder: (item, pos) {
-                    return Align(
-                      alignment: Alignment.centerRight,
-                      child: FittedBox(
-                        child: Text(
-                          item.symbol,
-                          textAlign: TextAlign.center,
+              child:
+                  CustomDropDownButtonFormField.buildDropDown<
+                    QuestionnaireCustomQuantityComparator
+                  >(
+                    controller: comparatorController,
+                    disabled: isReadOnly,
+                    values: QuestionnaireCustomQuantityComparator.values,
+                    itemBuilder: (item, pos) {
+                      return Align(
+                        alignment: Alignment.centerRight,
+                        child: FittedBox(
+                          child: Text(item.symbol, textAlign: TextAlign.center),
                         ),
-                      ),
-                    );
-                  },
-                  onChanged: (comparator) {
-                    value = value.copyWith(
-                      comparator: comparator?.asQuantityComparator,
-                    );
-                  },
-                  inputDecoration: const InputDecoration()),
+                      );
+                    },
+                    onChanged: (comparator) {
+                      value = value.copyWith(
+                        comparator: comparator?.asQuantityComparator,
+                      );
+                    },
+                    inputDecoration: const InputDecoration(),
+                  ),
             ),
             if (noInputBorder)
               const SizedBox(height: 20, child: VerticalDivider()),
-            const SizedBox(
-              width: 8.0,
-            ),
+            const SizedBox(width: 8.0),
           ],
         ),
         suffixIcon: Row(
@@ -124,9 +128,7 @@ class QuestionnaireQuantityItemViewState
           children: [
             if (noInputBorder)
               const SizedBox(height: 20, child: VerticalDivider()),
-            const SizedBox(
-              width: 8.0,
-            ),
+            const SizedBox(width: 8.0),
             SizedBox(
               width: 80,
               child: CustomTextField(
@@ -138,9 +140,7 @@ class QuestionnaireQuantityItemViewState
                 textAlign: TextAlign.center,
                 textInputAction: TextInputAction.next,
                 onChanged: (text) {
-                  value = value.copyWith(
-                    unit: text.isEmpty ? null : text,
-                  );
+                  value = value.copyWith(unit: text.isEmpty ? null : text);
                 },
                 decoration: const InputDecoration(
                   contentPadding: EdgeInsets.all(12),

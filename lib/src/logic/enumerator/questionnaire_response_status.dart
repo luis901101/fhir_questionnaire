@@ -16,8 +16,7 @@ enum QuestionnaireResponseStatus {
   enteredInError('entered-in-error'),
 
   /// This QuestionnaireResponse has been partially filled out with answers but has been abandoned. It is unknown whether changes or additions are expected to be made to it.
-  stopped('stopped'),
-  ;
+  stopped('stopped');
 
   final String name;
   const QuestionnaireResponseStatus(this.name);
@@ -25,6 +24,7 @@ enum QuestionnaireResponseStatus {
   FhirCode get asFhirCode => FhirCode(name);
 
   static QuestionnaireResponseStatus? valueOf(String? name) =>
-      QuestionnaireResponseStatus.values
-          .firstWhereOrNull((value) => value.name == name);
+      QuestionnaireResponseStatus.values.firstWhereOrNull(
+        (value) => value.name == name,
+      );
 }

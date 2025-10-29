@@ -13,11 +13,7 @@ class ViewUtils {
     if (text.isEmpty && textSpan == null) return 0;
     final mediaQuery = MediaQuery.of(context);
     var renderParagraph = rendering.RenderParagraph(
-      textSpan ??
-          TextSpan(
-            style: textStyle,
-            text: text,
-          ),
+      textSpan ?? TextSpan(style: textStyle, text: text),
       textDirection: rendering.TextDirection.ltr,
       // Important as the user can have increased text on his device
       textScaler: MediaQuery.textScalerOf(context),

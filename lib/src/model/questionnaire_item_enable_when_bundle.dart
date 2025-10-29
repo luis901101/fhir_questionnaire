@@ -10,8 +10,10 @@ class QuestionnaireItemEnableWhenBundle {
     required this.controller,
     required this.expectedAnswer,
   }) {
-    operator = QuestionnaireEnableWhenOperator.valueOf(
-            expectedAnswer.operator_?.value) ??
+    operator =
+        QuestionnaireEnableWhenOperator.valueOf(
+          expectedAnswer.operator_?.value,
+        ) ??
         QuestionnaireEnableWhenOperator.exists;
   }
 }
