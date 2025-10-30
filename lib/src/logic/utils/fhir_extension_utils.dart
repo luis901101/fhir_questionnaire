@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:collection/collection.dart';
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
-import 'package:intl/intl.dart';
 
 extension FhirExtensionUtils on Iterable<FhirExtension> {
   /// Attempts to localize the content of FHIR extensions based on the provided locale.
