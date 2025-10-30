@@ -8,12 +8,12 @@ enum DateTimeType {
   dateTime;
 
   static DateTimeType fromQuestionnaireItemType(
-          QuestionnaireItemType? itemType) =>
-      switch (itemType) {
-        QuestionnaireItemType.date => date,
-        QuestionnaireItemType.time => time,
-        QuestionnaireItemType.dateTime || _ => dateTime,
-      };
+    QuestionnaireItemType? itemType,
+  ) => switch (itemType) {
+    QuestionnaireItemType.date => date,
+    QuestionnaireItemType.time => time,
+    QuestionnaireItemType.dateTime || _ => dateTime,
+  };
   bool get requiresDate => this == date || this == dateTime;
   bool get requiresTime => this == time || this == dateTime;
   bool get isDateTime => this == dateTime;
@@ -29,10 +29,10 @@ class QuestionnaireDateTimeItemView extends QuestionnaireItemView {
     required this.type,
     super.enableWhenController,
   }) : super(
-            controller: controller ??
-                CustomValueController<DateTime>(
-                  focusNode: FocusNode(),
-                ));
+         controller:
+             controller ??
+             CustomValueController<DateTime>(focusNode: FocusNode()),
+       );
 
   @override
   State createState() => QuestionnaireDateTimeItemViewState();
@@ -52,18 +52,21 @@ class QuestionnaireDateTimeItemViewState
     super.initState();
     if (dateTime == null) {
       final DateTime? initial = switch (type) {
-        DateTimeType.date => item.initial
-            ?.firstWhereOrNull((item) => item.valueDate != null)
-            ?.valueDate
-            ?.asDateTime,
-        DateTimeType.time => item.initial
-            ?.firstWhereOrNull((item) => item.valueTime != null)
-            ?.valueTime
-            ?.asDateTime,
-        DateTimeType.dateTime => item.initial
-            ?.firstWhereOrNull((item) => item.valueDateTime != null)
-            ?.valueDateTime
-            ?.asDateTime,
+        DateTimeType.date =>
+          item.initial
+              ?.firstWhereOrNull((item) => item.valueDate != null)
+              ?.valueDate
+              ?.asDateTime,
+        DateTimeType.time =>
+          item.initial
+              ?.firstWhereOrNull((item) => item.valueTime != null)
+              ?.valueTime
+              ?.asDateTime,
+        DateTimeType.dateTime =>
+          item.initial
+              ?.firstWhereOrNull((item) => item.valueDateTime != null)
+              ?.valueDateTime
+              ?.asDateTime,
       };
       if (initial != null) {
         dateTime = initial;
@@ -73,54 +76,50 @@ class QuestionnaireDateTimeItemViewState
 
   @override
   Widget buildBody(BuildContext context) {
-    final theme = Theme.of(context);
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (item.title.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 4.0),
-            child: Text(
-              item.title!,
-              style: theme.textTheme.titleSmall,
+        if (type.requiresDate)
+          Expanded(
+            flex: 60,
+            child: StatefulBuilder(
+              builder: (context, setState) {
+                return ElevatedButton.icon(
+                  icon: const Icon(Icons.calendar_month),
+                  label: Text(
+                    dateTime?.formattedDate() ??
+                        QuestionnaireLocalization
+                            .instance
+                            .localization
+                            .textDate,
+                  ),
+                  style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
+                  onPressed: openDatePicker,
+                );
+              },
             ),
           ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (type.requiresDate)
-              Expanded(
-                flex: 60,
-                child: StatefulBuilder(builder: (context, setState) {
-                  return ElevatedButton.icon(
-                      icon: const Icon(Icons.calendar_month),
-                      label: Text(dateTime?.formattedDate() ??
-                          QuestionnaireLocalization
-                              .instance.localization.textDate),
-                      style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
-                      onPressed: openDatePicker);
-                }),
-              ),
-            if (type.isDateTime)
-              const Spacer(
-                flex: 2,
-              ),
-            if (type.requiresTime)
-              Expanded(
-                flex: 40,
-                child: StatefulBuilder(builder: (context, setState) {
-                  return ElevatedButton.icon(
-                      icon: const Icon(Icons.access_time_rounded),
-                      label: Text(dateTime?.formattedTime() ??
-                          QuestionnaireLocalization
-                              .instance.localization.textTime),
-                      style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
-                      onPressed: openTimePicker);
-                }),
-              ),
-          ],
-        ),
+        if (type.isDateTime) const Spacer(flex: 2),
+        if (type.requiresTime)
+          Expanded(
+            flex: 40,
+            child: StatefulBuilder(
+              builder: (context, setState) {
+                return ElevatedButton.icon(
+                  icon: const Icon(Icons.access_time_rounded),
+                  label: Text(
+                    dateTime?.formattedTime() ??
+                        QuestionnaireLocalization
+                            .instance
+                            .localization
+                            .textTime,
+                  ),
+                  style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
+                  onPressed: openTimePicker,
+                );
+              },
+            ),
+          ),
       ],
     );
   }
@@ -133,12 +132,14 @@ class QuestionnaireDateTimeItemViewState
       lastDate: DateTime(2100),
     );
     if (newDate != null) {
-      dateTime = dateTime?.copyWith(
+      dateTime =
+          dateTime?.copyWith(
             year: newDate.year,
             month: newDate.month,
             day: newDate.day,
           ) ??
           newDate;
+      controller.validate();
       setState(() {});
       if (type.requiresTime) {
         openTimePicker();
@@ -156,6 +157,7 @@ class QuestionnaireDateTimeItemViewState
         hour: newTime.hour,
         minute: newTime.minute,
       );
+      controller.validate();
       setState(() {});
     }
   }

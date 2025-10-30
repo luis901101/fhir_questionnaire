@@ -42,18 +42,18 @@ extension FhirExtensionUtils on Iterable<FhirExtension> {
   /// print(localizedContent); // Output: Hello, World!
   /// ```
   String? localize([Locale? locale]) {
-    locale ??= Intl.defaultLocale != null
-        ? Locale(Intl.defaultLocale!)
-        : QuestionnaireLocalization.instance.localization.locale;
+    locale ??= QuestionnaireLocalization.locale;
     String langTag = locale.toLanguageTag();
     String langCode = locale.languageCode;
     final translation = firstWhereOrNull(
       (ext) =>
           ext.url ==
               FhirUri('http://hl7.org/fhir/StructureDefinition/translation') &&
-          ext.extension_?.firstWhereOrNull((e) =>
-                  e.url == FhirUri('lang') && e.valueCode?.value == langTag ||
-                  e.valueCode?.value == langCode) !=
+          ext.extension_?.firstWhereOrNull(
+                (e) =>
+                    e.url == FhirUri('lang') && e.valueCode?.value == langTag ||
+                    e.valueCode?.value == langCode,
+              ) !=
               null,
     )?.extension_?.firstWhereOrNull((e) => e.url == FhirUri('content'));
 

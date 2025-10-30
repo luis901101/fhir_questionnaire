@@ -30,9 +30,10 @@ class MyApp extends StatelessWidget {
           title: 'FHIR Questionnaire Demo',
           scrollBehavior: const CustomScrollBehavior(),
           theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-              useMaterial3: true,
-              inputDecorationTheme: snapshot.data),
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+            useMaterial3: true,
+            inputDecorationTheme: snapshot.data,
+          ),
           home: const MyHomePage(),
         );
       },
@@ -63,14 +64,14 @@ class _MyHomePageState extends State<MyHomePage> {
     (name: 'FDR Communs', value: QuestionnaireSamples.fdrCommuns),
   ];
   final List<({String name, InputDecorationTheme? value})>
-      inputDecorationThemes = [
+  inputDecorationThemes = [
     (name: 'Default', value: null),
     (
       name: 'Outline',
       value: const InputDecorationTheme(
         contentPadding: EdgeInsets.only(left: 16, top: 12, bottom: 12),
         border: OutlineInputBorder(),
-      )
+      ),
     ),
     (
       name: 'Outline Streched Rounded',
@@ -79,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(28)),
         ),
-      )
+      ),
     ),
     (
       name: 'Outline Streched Rounded Filled',
@@ -89,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
           borderRadius: BorderRadius.all(Radius.circular(28)),
         ),
         filled: true,
-      )
+      ),
     ),
     (
       name: 'Outline Streched Rounded Filled No Borders',
@@ -97,15 +98,12 @@ class _MyHomePageState extends State<MyHomePage> {
         contentPadding: EdgeInsets.only(left: 16, top: 12, bottom: 12),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(28)),
-          borderSide: BorderSide(
-            style: BorderStyle.none,
-            width: 0,
-          ),
+          borderSide: BorderSide(style: BorderStyle.none, width: 0),
         ),
         isDense: true,
         alignLabelWithHint: true,
         filled: true,
-      )
+      ),
     ),
   ];
   static bool isValidJson(String? jsonString) {
@@ -140,211 +138,221 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               DropdownButtonFormField<String>(
-                  decoration: const InputDecoration(
-                      label: Text('Select a Questionnaire sample')),
-                  initialValue: selectedQuestionnaire,
-                  items: questionnaires
-                      .map((e) => DropdownMenuItem<String>(
-                            value: e.value,
-                            child: Text(e.name),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      selectedQuestionnaire = value;
-                    }
-                  }),
+                decoration: const InputDecoration(
+                  label: Text('Select a Questionnaire sample'),
+                ),
+                initialValue: selectedQuestionnaire,
+                items: questionnaires
+                    .map(
+                      (e) => DropdownMenuItem<String>(
+                        value: e.value,
+                        child: Text(e.name),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    selectedQuestionnaire = value;
+                  }
+                },
+              ),
               const SizedBox(height: 8.0),
               TextButton.icon(
                 onPressed: () {
                   showDialog(
-                      context: context,
-                      builder: (context) {
-                        String? nameError;
-                        String? jsonError;
-                        final nameController = JsonTextFieldController();
-                        final jsonController = JsonTextFieldController();
-                        return Dialog(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: StatefulBuilder(
-                                builder: (context, dialogSetState) => Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          'Add a Questionnaire from JSON',
-                                          textAlign: TextAlign.center,
-                                          style: theme.textTheme.titleLarge,
-                                        ),
-                                        const SizedBox(height: 8),
-                                        TextField(
-                                          controller: nameController,
-                                          decoration: InputDecoration(
-                                            labelText: 'Questionnaire Name',
-                                            errorText: nameError,
-                                            contentPadding: EdgeInsets.only(
-                                                left: 16, top: 12, bottom: 12),
-                                            border: OutlineInputBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(28)),
-                                            ),
-                                            filled: true,
+                    context: context,
+                    builder: (context) {
+                      String? nameError;
+                      String? jsonError;
+                      final nameController = JsonTextFieldController();
+                      final jsonController = JsonTextFieldController();
+                      return Dialog(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: StatefulBuilder(
+                            builder: (context, dialogSetState) => Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Add a Questionnaire from JSON',
+                                  textAlign: TextAlign.center,
+                                  style: theme.textTheme.titleLarge,
+                                ),
+                                const SizedBox(height: 8),
+                                TextField(
+                                  controller: nameController,
+                                  decoration: InputDecoration(
+                                    labelText: 'Questionnaire Name',
+                                    errorText: nameError,
+                                    contentPadding: EdgeInsets.only(
+                                      left: 16,
+                                      top: 12,
+                                      bottom: 12,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(28),
+                                      ),
+                                    ),
+                                    filled: true,
+                                  ),
+                                ),
+                                ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxHeight:
+                                        MediaQuery.of(context).size.height *
+                                        0.6,
+                                  ),
+                                  child: SingleChildScrollView(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 16,
+                                      ),
+                                      child: JsonField(
+                                        controller: jsonController,
+                                        isFormatting: true,
+                                        showErrorMessage: true,
+                                        maxLines: null,
+                                        decoration: InputDecoration(
+                                          labelText: 'Questionnaire JSON',
+                                          errorText: jsonError,
+                                          contentPadding: EdgeInsets.only(
+                                            left: 16,
+                                            top: 12,
+                                            bottom: 12,
                                           ),
-                                        ),
-                                        ConstrainedBox(
-                                          constraints: BoxConstraints(
-                                              maxHeight: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.6),
-                                          child: SingleChildScrollView(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 16),
-                                              child: JsonField(
-                                                controller: jsonController,
-                                                isFormatting: true,
-                                                showErrorMessage: true,
-                                                maxLines: null,
-                                                decoration: InputDecoration(
-                                                  labelText:
-                                                      'Questionnaire JSON',
-                                                  errorText: jsonError,
-                                                  contentPadding:
-                                                      EdgeInsets.only(
-                                                          left: 16,
-                                                          top: 12,
-                                                          bottom: 12),
-                                                  border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                28)),
-                                                  ),
-                                                  filled: true,
-                                                ),
-                                              ),
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(28),
                                             ),
                                           ),
+                                          filled: true,
                                         ),
-                                        const SizedBox(height: 16),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: ElevatedButton(
-                                                onPressed: () => jsonController
-                                                    .formatJson(sortJson: true),
-                                                child:
-                                                    const Text('Format JSON'),
-                                              ),
-                                            ),
-                                            const SizedBox(width: 8),
-                                            Expanded(
-                                              child: ElevatedButton(
-                                                onPressed: () {
-                                                  nameError = jsonError = null;
-                                                  if (nameController
-                                                      .text.isEmpty) {
-                                                    nameError =
-                                                        'Name is required';
-                                                  }
-                                                  if (nameError == null &&
-                                                      questionnaires.any(
-                                                          (item) =>
-                                                              item.name ==
-                                                              nameController
-                                                                  .text)) {
-                                                    nameError =
-                                                        'A Questionnaire with this name already exists';
-                                                  }
-                                                  if (jsonController
-                                                      .text.isEmpty) {
-                                                    jsonError =
-                                                        'JSON is required';
-                                                  }
-                                                  if (jsonError == null &&
-                                                      !isValidJson(
-                                                          jsonController
-                                                              .text)) {
-                                                    jsonError = 'Invalid JSON';
-                                                  }
-                                                  if (jsonError == null &&
-                                                      questionnaires.any(
-                                                          (item) =>
-                                                              item.value ==
-                                                              jsonController
-                                                                  .text)) {
-                                                    jsonError =
-                                                        'A Questionnaire with this JSON already exists';
-                                                  }
-                                                  if (nameError != null ||
-                                                      jsonError != null) {
-                                                    dialogSetState(() {});
-                                                    return;
-                                                  }
-                                                  questionnaires.add((
-                                                    name: nameController.text,
-                                                    value: jsonController.text
-                                                  ));
-                                                  selectedQuestionnaire =
-                                                      jsonController.text;
-                                                  setState(() {});
-                                                  Navigator.pop(context);
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor:
-                                                      theme.colorScheme.primary,
-                                                  foregroundColor: theme
-                                                      .colorScheme.onPrimary,
-                                                ),
-                                                child: const Text('Add'),
-                                              ),
-                                            ),
-                                          ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: ElevatedButton(
+                                        onPressed: () => jsonController
+                                            .formatJson(sortJson: true),
+                                        child: const Text('Format JSON'),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          nameError = jsonError = null;
+                                          if (nameController.text.isEmpty) {
+                                            nameError = 'Name is required';
+                                          }
+                                          if (nameError == null &&
+                                              questionnaires.any(
+                                                (item) =>
+                                                    item.name ==
+                                                    nameController.text,
+                                              )) {
+                                            nameError =
+                                                'A Questionnaire with this name already exists';
+                                          }
+                                          if (jsonController.text.isEmpty) {
+                                            jsonError = 'JSON is required';
+                                          }
+                                          if (jsonError == null &&
+                                              !isValidJson(
+                                                jsonController.text,
+                                              )) {
+                                            jsonError = 'Invalid JSON';
+                                          }
+                                          if (jsonError == null &&
+                                              questionnaires.any(
+                                                (item) =>
+                                                    item.value ==
+                                                    jsonController.text,
+                                              )) {
+                                            jsonError =
+                                                'A Questionnaire with this JSON already exists';
+                                          }
+                                          if (nameError != null ||
+                                              jsonError != null) {
+                                            dialogSetState(() {});
+                                            return;
+                                          }
+                                          questionnaires.add((
+                                            name: nameController.text,
+                                            value: jsonController.text,
+                                          ));
+                                          selectedQuestionnaire =
+                                              jsonController.text;
+                                          setState(() {});
+                                          Navigator.pop(context);
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              theme.colorScheme.primary,
+                                          foregroundColor:
+                                              theme.colorScheme.onPrimary,
                                         ),
-                                      ],
-                                    )),
+                                        child: const Text('Add'),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        );
-                      });
+                        ),
+                      );
+                    },
+                  );
                 },
                 icon: const Icon(Icons.add),
                 label: const Text('Add a Questionnaire from JSON'),
               ),
               const SizedBox(height: 16.0),
               DropdownButtonFormField<Locale?>(
-                  decoration: const InputDecoration(
-                      label: Text('Select the Questionnaire locale')),
-                  initialValue: selectedLocale,
-                  items: locales
-                      .map((e) => DropdownMenuItem<Locale>(
-                            value: e.value,
-                            child: Text(e.name),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    selectedLocale = value;
-                  }),
+                decoration: const InputDecoration(
+                  label: Text('Select the Questionnaire locale'),
+                ),
+                initialValue: selectedLocale,
+                items: locales
+                    .map(
+                      (e) => DropdownMenuItem<Locale>(
+                        value: e.value,
+                        child: Text(e.name),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  selectedLocale = value;
+                },
+              ),
               const SizedBox(height: 16.0),
               DropdownButtonFormField<InputDecorationTheme?>(
-                  decoration: const InputDecoration(
-                      label: Text('Select input decoration theme ')),
-                  initialValue: selectedInputDecorationTheme,
-                  items: inputDecorationThemes
-                      .map((e) => DropdownMenuItem<InputDecorationTheme>(
-                            value: e.value,
-                            child: SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.78,
-                              child: Text(e.name),
-                            ),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    selectedInputDecorationTheme = value;
-                    inputDecorationThemeStream
-                        .add(selectedInputDecorationTheme);
-                  }),
+                decoration: const InputDecoration(
+                  label: Text('Select input decoration theme '),
+                ),
+                initialValue: selectedInputDecorationTheme,
+                items: inputDecorationThemes
+                    .map(
+                      (e) => DropdownMenuItem<InputDecorationTheme>(
+                        value: e.value,
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.78,
+                          child: Text(e.name),
+                        ),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  selectedInputDecorationTheme = value;
+                  inputDecorationThemeStream.add(selectedInputDecorationTheme);
+                },
+              ),
             ],
           ),
         ),
@@ -354,14 +362,15 @@ class _MyHomePageState extends State<MyHomePage> {
         extendedPadding: const EdgeInsets.symmetric(horizontal: 32.0),
         onPressed: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => QuestionnairePage(
-                  questionnaire: questionnaire,
-                  locale: selectedLocale,
-                  localizations: extraLocalizations,
-                ),
-              ));
+            context,
+            MaterialPageRoute(
+              builder: (context) => QuestionnairePage(
+                questionnaire: questionnaire,
+                locale: selectedLocale,
+                localizations: extraLocalizations,
+              ),
+            ),
+          );
         },
         label: const Text('Open Questionnaire'),
       ),
@@ -395,16 +404,16 @@ class QuestionnairePageState extends State<QuestionnairePage> {
   void initState() {
     super.initState();
     Future.delayed(
-        const Duration(seconds: 1), () => setState(() => loading = false));
+      const Duration(seconds: 1),
+      () => setState(() => loading = false),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Questionnaire'),
-      ),
+      appBar: AppBar(title: const Text('Questionnaire')),
       body: QuestionnaireView(
         key: ValueKey(loading),
         questionnaire: widget.questionnaire,
@@ -423,59 +432,64 @@ class QuestionnairePageState extends State<QuestionnairePage> {
 
   void onSubmit(QuestionnaireResponse questionnaireResponse) async {
     String json = jsonEncode(questionnaireResponse.toJson());
-    var prettyJson = const JsonEncoder.withIndent('  ')
-        .convert(questionnaireResponse.toJson());
+    var prettyJson = const JsonEncoder.withIndent(
+      '  ',
+    ).convert(questionnaireResponse.toJson());
     debugPrint('''
       ========================================================================
       $prettyJson
       ========================================================================
       ''');
     showDialog(
-        context: context,
-        builder: (context) => Dialog(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Questionnaire Response',
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 8),
-                    ConstrainedBox(
-                      constraints: BoxConstraints(
-                          maxHeight: MediaQuery.of(context).size.height * 0.7),
-                      child: SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: JsonField(
-                            controller: JsonTextFieldController()..text = json,
-                            isFormatting: true,
-                            showErrorMessage: true,
-                            doInitFormatting: true,
-                            readOnly: true,
-                            showCursor: true,
-                            enableInteractiveSelection: true,
-                            maxLines: null,
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.only(
-                                  left: 16, top: 12, bottom: 12),
-                              border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(28)),
-                              ),
-                              filled: true,
-                            ),
-                          ),
+      context: context,
+      builder: (context) => Dialog(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Questionnaire Response',
+                textAlign: TextAlign.center,
+                style: theme.textTheme.titleLarge,
+              ),
+              const SizedBox(height: 8),
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.7,
+                ),
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: JsonField(
+                      controller: JsonTextFieldController()..text = json,
+                      isFormatting: true,
+                      showErrorMessage: true,
+                      doInitFormatting: true,
+                      readOnly: true,
+                      showCursor: true,
+                      enableInteractiveSelection: true,
+                      maxLines: null,
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.only(
+                          left: 16,
+                          top: 12,
+                          bottom: 12,
                         ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(28)),
+                        ),
+                        filled: true,
                       ),
                     ),
-                  ],
+                  ),
                 ),
               ),
-            ));
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -511,16 +525,26 @@ class QuestionnaireFrLocalization extends QuestionnaireBaseLocalization {
   String exceptionValueOutOfRange(dynamic minValue, dynamic maxValue) =>
       'La valeur doit être comprise entre $minValue et $maxValue.';
   @override
+  String exceptionValueMinRange(dynamic minValue) =>
+      'La valeur doit être au minimum $minValue.';
+  @override
+  String exceptionValueMaxRange(dynamic maxValue) =>
+      'La valeur doit être au maximum $maxValue.';
+  @override
   String exceptionTextLength(dynamic minLength, dynamic maxLength) =>
       'Le texte doit contenir au moins des caractères $minLength et au maximum $maxLength.';
+  @override
+  String exceptionTextMinLength(dynamic minLength) =>
+      'Le texte doit contenir au maximum des caractères $minLength.';
   @override
   String exceptionTextMaxLength(dynamic maxLength) =>
       'Le texte doit contenir au maximum des caractères $maxLength.';
 }
 
 class CustomScrollBehavior extends MaterialScrollBehavior {
-  static const _webScrollPhysics =
-      BouncingScrollPhysics(parent: RangeMaintainingScrollPhysics());
+  static const _webScrollPhysics = BouncingScrollPhysics(
+    parent: RangeMaintainingScrollPhysics(),
+  );
 
   const CustomScrollBehavior() : super();
 

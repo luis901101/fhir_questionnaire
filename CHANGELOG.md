@@ -9,6 +9,28 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## 6.0.0
+### Breaking Changes
+- Changes may affect devs using custom implementation of UI.
+- Changes may affect devs using custom localization due to new texts.
+- Minimum Dart version is now 3.8.0.
+
+### Added
+- Added an asterisk (`*`) to the item title for required items.
+- Added support for [minLength](http://hl7.org/fhir/R4/extension-minlength.html) extension.
+- Added support for [minValue](http://hl7.org/fhir/R4/extension-minvalue.html) extension.
+- Added support for [maxValue](http://hl7.org/fhir/R4/extension-maxvalue.html) extension.
+- Added support for hint texts using [entryFormat](http://hl7.org/fhir/R4/extension-entryformat.html) extension.
+- Added support for helper text or helper button using [questionnaire-displayCategory](https://hl7.org/fhir/R4/extension-questionnaire-displaycategory.html) and [questionnaire-itemControl](https://hl7.org/fhir/R4/extension-questionnaire-itemcontrol.html) extensions with the codes `help` and `flyover`.
+- Added new texts to `QuestionnaireBaseLocalization`.
+- Added option to `useIntlDfaultLocale` on `QuestionnaireLocalization` when localizing items.
+
+### Changed
+- Refactored item views for centralized title and validation logic from `QuestionnaireItemView`.
+
+### Fixed
+- Fixed item validation to consider recursively all nested items.
+
 ## 5.1.0
 ### Added
 - Added support to populate questionnaire answers with response.

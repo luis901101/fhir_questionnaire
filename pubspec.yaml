@@ -1,6 +1,6 @@
 name: fhir_questionnaire
 description: "A library to render FHIR Questionnaires and generate a QuestionnaireResponse"
-version: 5.1.0
+version: 6.0.0
 repository: https://github.com/luis901101/fhir_questionnaire
 issue_tracker: https://github.com/luis901101/fhir_questionnaire/issues
 topics:
@@ -10,7 +10,7 @@ topics:
   - r4
 
 environment:
-  sdk: '>=3.3.0 <4.0.0'
+  sdk: '>=3.8.0 <4.0.0'
   flutter: '>=3.3.0'
 
 dependencies:
@@ -18,7 +18,7 @@ dependencies:
     sdk: flutter
   collection: ^1.19.1
   shimmer: ^3.0.0
-  fhir: 0.12.0 # Pending migration to fhir_r4
+  fhir: 0.12.0 # Pending migration to fhir_r4, version fixed to 0.12.0 due to issue with fhir_path when updating to 0.12.1
   fhir_path: ^0.12.0 # Pending migration to fhir_r4_path
   intl: ^0.19.0
   validators: ^3.0.0

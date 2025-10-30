@@ -13,14 +13,14 @@ abstract class QuestionnaireChoiceItemView extends QuestionnaireItemView {
     super.enableWhenController,
     this.isOpen = false,
   }) : super(
-            controller: controller ??
-                CustomValueController(
-                  focusNode: FocusNode(),
-                ));
+         controller:
+             controller ?? CustomValueController(focusNode: FocusNode()),
+       );
 }
 
 abstract class QuestionnaireChoiceItemViewState<
-        SF extends QuestionnaireChoiceItemView>
+  SF extends QuestionnaireChoiceItemView
+>
     extends QuestionnaireItemViewState<SF> {
   @override
   CustomValueController get controller =>
@@ -39,12 +39,15 @@ abstract class QuestionnaireChoiceItemViewState<
   String valueNameResolver(QuestionnaireAnswerOption value) =>
       value.title ?? '';
 
-  QuestionnaireAnswerOption onOpenAnswerAdded(String value,
-      {bool? hideKeyboard}) {
+  QuestionnaireAnswerOption onOpenAnswerAdded(
+    String value, {
+    bool? hideKeyboard,
+  }) {
     hideKeyboard ??= true;
     QuestionnaireAnswerOption newAnwser;
-    final existingAnswer =
-        values.firstWhereOrNull((answer) => answer.valueString == value);
+    final existingAnswer = values.firstWhereOrNull(
+      (answer) => answer.valueString == value,
+    );
     if (existingAnswer == null) {
       newAnwser = QuestionnaireAnswerOption(valueString: value);
       values.add(newAnwser);
@@ -76,35 +79,20 @@ abstract class QuestionnaireChoiceItemViewState<
   }
 
   @override
+  Widget? buildErrorManuallyView(BuildContext context) => null;
+
+  @override
   Widget buildBody(BuildContext context) {
-    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (item.title.isNotEmpty) titleView(context),
         choiceView(context),
-        if (handleControllerErrorManually && controller.hasError)
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 8.0,
-              right: 8.0,
-              top: 4.0,
-            ),
-            child: Text(
-              '${controller.error}',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.error,
-              ),
-            ),
-          ),
+        ?super.buildErrorManuallyView(context),
         if (isOpen) ...[
           const SizedBox(height: 8.0),
           Padding(
-            padding: const EdgeInsets.only(
-              left: 8.0,
-              right: 8.0,
-              bottom: 4.0,
-            ),
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 4.0),
             child: Text(
               QuestionnaireLocalization.instance.localization.textOtherOption,
               style: Theme.of(context).textTheme.titleSmall,
@@ -127,7 +115,7 @@ abstract class QuestionnaireChoiceItemViewState<
             keyboardType: TextInputType.text,
             textCapitalization: TextCapitalization.sentences,
           ),
-        ]
+        ],
       ],
     );
   }

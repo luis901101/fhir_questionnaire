@@ -10,10 +10,9 @@ class QuestionnaireBooleanItemView extends QuestionnaireItemView {
     required super.item,
     super.enableWhenController,
   }) : super(
-            controller: controller ??
-                CustomValueController<bool>(
-                  focusNode: FocusNode(),
-                ));
+         controller:
+             controller ?? CustomValueController<bool>(focusNode: FocusNode()),
+       );
 
   @override
   State createState() => QuestionnaireBooleanItemViewState();
@@ -31,7 +30,8 @@ class QuestionnaireBooleanItemViewState
   void initState() {
     super.initState();
     if (controller.value == null) {
-      final initial = item.initial
+      final initial =
+          item.initial
               ?.firstWhereOrNull((item) => item.valueBoolean != null)
               ?.valueBoolean
               ?.value ??
@@ -42,12 +42,29 @@ class QuestionnaireBooleanItemViewState
   }
 
   @override
+  Widget? buildTitleView(BuildContext context, {bool forGroup = false}) => null;
+  @override
+  Widget? buildHintTextView(BuildContext context) => null;
+  @override
+  Widget? buildHelperTextView(BuildContext context) => null;
+
+  @override
   Widget buildBody(BuildContext context) {
+    final hintTextView = super.buildHintTextView(context);
+    final helperTextView = super.buildHelperTextView(context);
     return SwitchListTile(
       value: value,
-      onChanged:
-          isReadOnly ? null : (value) => setState(() => this.value = value),
+      onChanged: isReadOnly
+          ? null
+          : (value) => setState(() => this.value = value),
       title: item.title.isEmpty ? null : Text(item.title!),
+      subtitle: hintTextView == null && helperTextView == null
+          ? null
+          : Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [?hintTextView, ?helperTextView],
+            ),
       contentPadding: const EdgeInsets.only(left: 8),
     );
   }

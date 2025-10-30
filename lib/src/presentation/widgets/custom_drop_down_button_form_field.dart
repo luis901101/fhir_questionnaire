@@ -94,25 +94,25 @@ class CustomDropDownButtonFormField<T> extends StatefulWidget {
           ? valuesNames[i]
           : (nameResolver?.call(value) ?? value?.toString())!;
       if (currentValue == value) controller.value = value;
-      dropDownItems.add(DropdownMenuItem<T>(
-        value: value,
-        child: itemBuilder?.call(value, i) ??
-            Text(
-              valueName,
-            ),
-      ));
+      dropDownItems.add(
+        DropdownMenuItem<T>(
+          value: value,
+          child: itemBuilder?.call(value, i) ?? Text(valueName),
+        ),
+      );
     }
     itemsController.value = dropDownItems;
     return IgnorePointer(
       ignoring: isLoading || disabled,
       child: CustomDropDownButtonFormField<T>(
-//          key: GlobalKey(),
+        //          key: GlobalKey(),
         controller: controller,
         items: dropDownItems,
         onChanged: onChanged,
         focusNode: focusNode,
-        decoration: (inputDecoration ?? const InputDecoration())
-            .copyWith(errorText: controller.error),
+        decoration: (inputDecoration ?? const InputDecoration()).copyWith(
+          errorText: controller.error,
+        ),
         disabled: disabled,
         isDense: isDense,
         showClearButtonOnValueChanged: showClearButtonOnValueChanged,
@@ -155,7 +155,8 @@ class _CustomDropDownButtonFormFieldState<T>
           : (widget.onTap ?? () => widget.focusNode?.requestFocus()),
       elevation: widget.elevation ?? 8,
       style: widget.style,
-      icon: widget.icon ??
+      icon:
+          widget.icon ??
           (showSuffixButtons
               ? Row(
                   mainAxisSize: MainAxisSize.min,
@@ -179,17 +180,9 @@ class _CustomDropDownButtonFormFieldState<T>
       autofocus: widget.autofocus ?? false,
       dropdownColor: widget.dropdownColor,
       decoration: (widget.decoration ?? const InputDecoration()).copyWith(
-        suffix: showSuffixButtons
-            ? null
-            : const SizedBox(
-                width: 10,
-              ),
+        suffix: showSuffixButtons ? null : const SizedBox(width: 10),
         errorText: widget.controller?.error,
-        contentPadding: const EdgeInsets.only(
-          left: 12,
-          top: 12,
-          bottom: 12,
-        ),
+        contentPadding: const EdgeInsets.only(left: 12, top: 12, bottom: 12),
       ),
       onSaved: widget.onSaved,
       validator: widget.validator,
@@ -197,23 +190,26 @@ class _CustomDropDownButtonFormFieldState<T>
   }
 
   Widget get addButton => IconButton(
-      icon: const Icon(Icons.add),
-      padding: EdgeInsets.zero,
-      color: Theme.of(context).colorScheme.primary,
-      onPressed: widget.onAdd);
+    icon: const Icon(Icons.add),
+    padding: EdgeInsets.zero,
+    color: Theme.of(context).colorScheme.primary,
+    onPressed: widget.onAdd,
+  );
 
   Widget get retryButton => IconButton(
-      icon: const Icon(Icons.refresh),
-      padding: EdgeInsets.zero,
-      color: Theme.of(context).colorScheme.primary,
-      onPressed: widget.onRetry);
+    icon: const Icon(Icons.refresh),
+    padding: EdgeInsets.zero,
+    color: Theme.of(context).colorScheme.primary,
+    onPressed: widget.onRetry,
+  );
 
   Widget get clearButton => IconButton(
-      icon: const Icon(Icons.clear),
-      padding: EdgeInsets.zero,
-      onPressed: () {
-        onChanged(null);
-      });
+    icon: const Icon(Icons.clear),
+    padding: EdgeInsets.zero,
+    onPressed: () {
+      onChanged(null);
+    },
+  );
 
   bool get showSuffixButtons =>
       showAddButton || showRetryButton || showClearButton;

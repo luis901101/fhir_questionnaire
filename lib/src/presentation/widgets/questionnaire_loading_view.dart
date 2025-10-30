@@ -10,8 +10,8 @@ class QuestionnaireLoadingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final shimmerFieldRadius = (theme.inputDecorationTheme.border
-            is OutlineInputBorder)
+    final shimmerFieldRadius =
+        (theme.inputDecorationTheme.border is OutlineInputBorder)
         ? (theme.inputDecorationTheme.border as OutlineInputBorder).borderRadius
         : const BorderRadius.all(Radius.circular(4));
     final baseColor = theme.brightness == Brightness.light
@@ -25,56 +25,48 @@ class QuestionnaireLoadingView extends StatelessWidget {
       color: Colors.white,
     );
     final shimmerGradient = LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.centerRight,
-        colors: <Color>[
-          baseColor,
-          baseColor,
-          highlightColor,
-          baseColor,
-          baseColor,
-        ],
-        stops: const <double>[
-          0.0,
-          0.35,
-          0.5,
-          0.65,
-          1.0
-        ]);
+      begin: Alignment.topLeft,
+      end: Alignment.centerRight,
+      colors: <Color>[
+        baseColor,
+        baseColor,
+        highlightColor,
+        baseColor,
+        baseColor,
+      ],
+      stops: const <double>[0.0, 0.35, 0.5, 0.65, 1.0],
+    );
     final random = Random();
     return ListView.separated(
-        primary: false,
-        shrinkWrap: true,
-        padding: const EdgeInsets.symmetric(vertical: 16.0),
-        separatorBuilder: (context, index) => const SizedBox(height: 20.0),
-        itemBuilder: (context, index) => Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 8.0,
-                    right: 8.0,
-                    bottom: 8.0,
-                  ),
-                  child: Shimmer(
-                    gradient: shimmerGradient,
-                    child: Container(
-                      width: 100.0 + random.nextInt(200),
-                      height: 18,
-                      decoration: shimmerDecoration,
-                    ),
-                  ),
-                ),
-                Shimmer(
-                  gradient: shimmerGradient,
-                  child: Container(
-                    width: double.infinity,
-                    height: 48,
-                    decoration: shimmerDecoration,
-                  ),
-                ),
-              ],
+      primary: false,
+      shrinkWrap: true,
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      separatorBuilder: (context, index) => const SizedBox(height: 20.0),
+      itemBuilder: (context, index) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
+            child: Shimmer(
+              gradient: shimmerGradient,
+              child: Container(
+                width: 100.0 + random.nextInt(200),
+                height: 18,
+                decoration: shimmerDecoration,
+              ),
             ),
-        itemCount: 20);
+          ),
+          Shimmer(
+            gradient: shimmerGradient,
+            child: Container(
+              width: double.infinity,
+              height: 48,
+              decoration: shimmerDecoration,
+            ),
+          ),
+        ],
+      ),
+      itemCount: 20,
+    );
   }
 }

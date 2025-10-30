@@ -21,13 +21,13 @@ enum QuestionnaireEnableWhenOperator {
   greaterOrEquals('>='),
 
   /// True if whether at least no answer has a value that is less or equal to the enableWhen answer.
-  lessOrEquals('<='),
-  ;
+  lessOrEquals('<=');
 
   final String operator;
   const QuestionnaireEnableWhenOperator(this.operator);
 
   static QuestionnaireEnableWhenOperator? valueOf(String? operator) =>
-      QuestionnaireEnableWhenOperator.values
-          .firstWhereOrNull((value) => value.operator == operator);
+      QuestionnaireEnableWhenOperator.values.firstWhereOrNull(
+        (value) => value.operator == operator,
+      );
 }

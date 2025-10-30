@@ -34,8 +34,17 @@ class QuestionnaireEsLocalization extends QuestionnaireBaseLocalization {
   String exceptionValueOutOfRange(dynamic minValue, dynamic maxValue) =>
       'El valor debe estar en un rango de $minValue a $maxValue.';
   @override
+  String exceptionValueMinRange(dynamic minValue) =>
+      'El valor debe ser como mínimo $minValue.';
+  @override
+  String exceptionValueMaxRange(dynamic maxValue) =>
+      'El valor debe ser como máximo $maxValue.';
+  @override
   String exceptionTextLength(dynamic minLength, dynamic maxLength) =>
       'El texto debe tener al menos $minLength caracteres y $maxLength como máximo.';
+  @override
+  String exceptionTextMinLength(dynamic minLength) =>
+      'El texto debe tener $minLength caracteres como mínimo.';
   @override
   String exceptionTextMaxLength(dynamic maxLength) =>
       'El texto debe tener $maxLength caracteres como máximo.';

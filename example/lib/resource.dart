@@ -1,9 +1,4 @@
-enum ResourceStatus {
-  loading,
-  transient,
-  success,
-  error,
-}
+enum ResourceStatus { loading, transient, success, error }
 
 extension ResourceUtils on ResourceStatus {
   bool get isLoading => this == ResourceStatus.loading;
@@ -20,25 +15,31 @@ class Resource<T> {
   dynamic extras;
   T? data;
 
-  Resource(
-      {this.status = ResourceStatus.error,
-      this.data,
-      this.message,
-      this.code,
-      this.exception,
-      this.extras});
+  Resource({
+    this.status = ResourceStatus.error,
+    this.data,
+    this.message,
+    this.code,
+    this.exception,
+    this.extras,
+  });
 
   factory Resource.success(T? data, {dynamic extras}) =>
       Resource(status: ResourceStatus.success, data: data, extras: extras);
-  factory Resource.error(T? data, String? message,
-          {int? code, dynamic exception, dynamic extras}) =>
-      Resource(
-          status: ResourceStatus.error,
-          data: data,
-          message: message,
-          code: code,
-          exception: exception,
-          extras: extras);
+  factory Resource.error(
+    T? data,
+    String? message, {
+    int? code,
+    dynamic exception,
+    dynamic extras,
+  }) => Resource(
+    status: ResourceStatus.error,
+    data: data,
+    message: message,
+    code: code,
+    exception: exception,
+    extras: extras,
+  );
   factory Resource.loading(T? data, {dynamic extras}) =>
       Resource(status: ResourceStatus.loading, data: data, extras: extras);
 
@@ -70,10 +71,11 @@ class Resource<T> {
       extras.hashCode ^
       data.hashCode;
 
-  Resource<T> clone(
-      {required Resource<T> currentData,
-      Resource<T>? newData,
-      bool merge = false}) {
+  Resource<T> clone({
+    required Resource<T> currentData,
+    Resource<T>? newData,
+    bool merge = false,
+  }) {
     final clone = Resource<T>()
       ..status = newData?.status ?? currentData.status
       ..message = currentData.message

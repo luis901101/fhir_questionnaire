@@ -8,5 +8,5 @@ extension FlutterViewUtils on FlutterView {
   static FlutterView get({BuildContext? context}) => context != null
       ? View.of(context)
       : WidgetsBinding.instance.platformDispatcher.implicitView ??
-          WidgetsBinding.instance.platformDispatcher.views.first;
+            WidgetsBinding.instance.platformDispatcher.views.first;
 }

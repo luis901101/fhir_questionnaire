@@ -5,26 +5,30 @@ import 'package:flutter/material.dart';
 /// Created by luis901101 on 3/9/24.
 class QuestionnaireDropDownChoiceItemView
     extends QuestionnaireSingleChoiceItemView {
-  QuestionnaireDropDownChoiceItemView(
-      {super.key,
-      super.controller,
-      required super.item,
-      super.isOpen,
-      super.enableWhenController});
+  QuestionnaireDropDownChoiceItemView({
+    super.key,
+    super.controller,
+    required super.item,
+    super.isOpen,
+    super.enableWhenController,
+  });
 
   @override
   State createState() => QuestionnaireDropDownChoiceItemViewState();
 }
 
 class QuestionnaireDropDownChoiceItemViewState
-    extends QuestionnaireSingleChoiceItemViewState<
-        QuestionnaireDropDownChoiceItemView> {
+    extends
+        QuestionnaireSingleChoiceItemViewState<
+          QuestionnaireDropDownChoiceItemView
+        > {
   @override
   bool get handleControllerErrorManually => false;
   @override
   Widget choiceView(BuildContext context) {
     return CustomDropDownButtonFormField.buildDropDown<
-        QuestionnaireAnswerOption>(
+      QuestionnaireAnswerOption
+    >(
       controller: controller,
       disabled: isReadOnly,
       values: values,
