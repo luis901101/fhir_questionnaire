@@ -18,7 +18,18 @@ class QuestionnaireDisplayItemViewState
   @override
   bool get handleControllerErrorManually => false;
   @override
-  Widget buildBody(BuildContext context) {
-    return Text('${item.title}', style: theme.textTheme.titleMedium);
-  }
+  Widget? buildTitleView(
+    BuildContext context, {
+    bool? forGroup,
+    bool? noPadding,
+    TextStyle? style,
+  }) => null;
+  @override
+  Widget buildBody(BuildContext context) =>
+      super.buildTitleView(
+        context,
+        noPadding: true,
+        style: theme.textTheme.titleMedium,
+      ) ??
+      SizedBox();
 }

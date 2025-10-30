@@ -9,6 +9,10 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## 6.0.1
+### Fixed
+- Fixed issue with duplicated title on `display` items.
+
 ## 6.0.0
 ### Breaking Changes
 - Changes may affect devs using custom implementation of UI.

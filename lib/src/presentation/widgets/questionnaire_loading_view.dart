@@ -10,16 +10,19 @@ class QuestionnaireLoadingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final shimmerFieldRadius =
+    final inputFieldRadius =
         (theme.inputDecorationTheme.border is OutlineInputBorder)
         ? (theme.inputDecorationTheme.border as OutlineInputBorder).borderRadius
-        : const BorderRadius.all(Radius.circular(4));
+        : BorderRadius.zero;
     final baseColor = theme.brightness == Brightness.light
         ? Colors.grey.shade300
         : const Color(0xFF797770);
     final highlightColor = theme.brightness == Brightness.light
         ? Colors.grey.shade100
         : const Color(0xFF939089);
+    final shimmerFieldRadius = inputFieldRadius == BorderRadius.zero
+        ? BorderRadius.circular(4)
+        : inputFieldRadius;
     final shimmerDecoration = BoxDecoration(
       borderRadius: shimmerFieldRadius,
       color: Colors.white,
@@ -46,7 +49,11 @@ class QuestionnaireLoadingView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
+            padding: EdgeInsets.only(
+              left: shimmerFieldRadius.topLeft.x / 2,
+              right: shimmerFieldRadius.topRight.x / 2,
+              bottom: 8.0,
+            ),
             child: Shimmer(
               gradient: shimmerGradient,
               child: Container(

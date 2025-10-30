@@ -253,14 +253,21 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
           );
   }
 
-  Widget? buildTitleView(BuildContext context, {bool forGroup = false}) {
+  Widget? buildTitleView(
+    BuildContext context, {
+    bool? forGroup,
+    bool? noPadding,
+    TextStyle? style,
+  }) {
+    forGroup ??= false;
+    noPadding ??= false;
     if (item.title.isEmpty && !isRequired) return null;
     final fieldRadius =
         (theme.inputDecorationTheme.border is OutlineInputBorder)
         ? (theme.inputDecorationTheme.border as OutlineInputBorder).borderRadius
-        : const BorderRadius.all(Radius.circular(8));
+        : BorderRadius.zero;
     return Padding(
-      padding: forGroup
+      padding: forGroup || noPadding
           ? EdgeInsets.zero
           : EdgeInsets.only(
               left: fieldRadius.topLeft.x / 2,
@@ -275,14 +282,16 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
                 alignment: Alignment.centerLeft,
                 child: Container(
                   color: forGroup ? theme.colorScheme.surface : null,
-                  padding: forGroup
+                  padding: forGroup || noPadding
                       ? const EdgeInsets.symmetric(horizontal: 8)
                       : null,
                   child: Text.rich(
                     TextSpan(
-                      style: forGroup
-                          ? theme.textTheme.titleMedium
-                          : theme.textTheme.titleSmall,
+                      style:
+                          style ??
+                          (forGroup
+                              ? theme.textTheme.titleMedium
+                              : theme.textTheme.titleSmall),
                       children: [
                         if (item.title.isNotEmpty) TextSpan(text: item.title),
                         if (isRequired)

@@ -42,7 +42,12 @@ class QuestionnaireBooleanItemViewState
   }
 
   @override
-  Widget? buildTitleView(BuildContext context, {bool forGroup = false}) => null;
+  Widget? buildTitleView(
+    BuildContext context, {
+    bool? forGroup,
+    bool? noPadding,
+    TextStyle? style,
+  }) => null;
   @override
   Widget? buildHintTextView(BuildContext context) => null;
   @override

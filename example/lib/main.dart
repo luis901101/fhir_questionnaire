@@ -63,9 +63,15 @@ class _MyHomePageState extends State<MyHomePage> {
     (name: 'BMI', value: QuestionnaireSamples.sampleBMI),
     (name: 'FDR Communs', value: QuestionnaireSamples.fdrCommuns),
   ];
-  final List<({String name, InputDecorationTheme? value})>
+  final List<({String name, InputDecorationTheme value})>
   inputDecorationThemes = [
-    (name: 'Default', value: null),
+    (
+      name: 'Default',
+      value: const InputDecorationTheme(
+        border: UnderlineInputBorder(),
+        enabledBorder: UnderlineInputBorder(),
+      ),
+    ),
     (
       name: 'Outline',
       value: const InputDecorationTheme(
@@ -122,6 +128,13 @@ class _MyHomePageState extends State<MyHomePage> {
   String selectedQuestionnaire = QuestionnaireSamples.sampleGeneric;
   InputDecorationTheme? selectedInputDecorationTheme;
   final extraLocalizations = [QuestionnaireFrLocalization()];
+
+  @override
+  void initState() {
+    super.initState();
+    selectedInputDecorationTheme = inputDecorationThemes.first.value;
+  }
+
   ThemeData theme = ThemeData();
   @override
   Widget build(BuildContext context) {
