@@ -9,6 +9,10 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## 6.0.2
+### Fixed
+- Required items are validated only if enabled.
+
 ## 6.0.1
 ### Fixed
 - Fixed issue with duplicated title on `display` items.

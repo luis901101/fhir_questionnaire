@@ -3,7 +3,7 @@ import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
 
 class ValidationUtils {
-  static ValidationController get requiredFieldValidation =>
+  static EnhancedEmptyValidationController get requiredFieldValidation =>
       EnhancedEmptyValidationController(
         message: QuestionnaireLocalization
             .instance

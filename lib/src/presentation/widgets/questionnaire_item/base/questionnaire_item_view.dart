@@ -39,6 +39,7 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
       widget.enableWhenController;
   QuestionnaireItem get item => widget.item;
   List<QuestionnaireItemView>? get children => widget.children;
+  EnhancedEmptyValidationController? requiredValidation;
 
   @override
   bool get wantKeepAlive => false;
@@ -187,8 +188,11 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
     } else if (maxValue != null) {
       rangeValidation = ValidationUtils.maxRangeValidationController(maxValue);
     }
+    if (isRequired) {
+      requiredValidation = ValidationUtils.requiredFieldValidation;
+    }
     controller.validations.addAll([
-      if (isRequired) ValidationUtils.requiredFieldValidation,
+      if (isRequired) ?requiredValidation,
       ?rangeValidation,
     ]);
     isEnabled =
@@ -207,6 +211,13 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
 
   void onEnabled(bool enabled) {
     if (isEnabled != enabled) {
+      if (isRequired && requiredValidation != null) {
+        if (enabled) {
+          controller.validations.add(requiredValidation!);
+        } else {
+          controller.validations.remove(requiredValidation);
+        }
+      }
       setState(() => isEnabled = enabled);
     }
   }
