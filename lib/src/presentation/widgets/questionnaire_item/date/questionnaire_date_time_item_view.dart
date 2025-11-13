@@ -94,7 +94,7 @@ class QuestionnaireDateTimeItemViewState
                             .textDate,
                   ),
                   style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
-                  onPressed: openDatePicker,
+                  onPressed: isReadOnly ? null : openDatePicker,
                 );
               },
             ),
@@ -115,7 +115,7 @@ class QuestionnaireDateTimeItemViewState
                             .textTime,
                   ),
                   style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
-                  onPressed: openTimePicker,
+                  onPressed: isReadOnly ? null : openTimePicker,
                 );
               },
             ),
