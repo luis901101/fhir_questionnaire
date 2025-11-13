@@ -127,7 +127,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "6.0.2"
+    version: "6.1.0"
   file_picker:
     dependency: "direct main"
     description:
