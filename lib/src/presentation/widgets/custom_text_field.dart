@@ -244,10 +244,13 @@ class CustomTextFieldState<S extends CustomTextField> extends State<S> {
   }
 
   Widget get customButtonIcon {
+    final color = (widget.enabled ?? true)
+        ? widget.customButtonColor
+        : Theme.of(context).disabledColor;
     if (widget.customButtonIcon != null) {
-      return Icon(widget.customButtonIcon, color: widget.customButtonColor);
+      return Icon(widget.customButtonIcon, color: color);
     }
-    return Icon(Icons.clear, color: widget.customButtonColor);
+    return Icon(Icons.clear, color: color);
   }
 
   bool get showCustomButton => widget.useCustomButton && hasText;

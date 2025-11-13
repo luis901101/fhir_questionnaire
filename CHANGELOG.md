@@ -9,6 +9,14 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## 6.1.0
+### Changed
+- `onSubmit` is no longer required on `QuestionnaireView` _(useful when loading readOnly questionnaires)_.
+
+### Fixed
+- Fixed `readOnly` behavior on `QuestionnaireDateTimeItemView`.
+- Fixed `readOnly` behavior on `QuestionnaireAttachmentItemView`.
+
 ## 6.0.2
 ### Fixed
 - Required items are validated only if enabled.
