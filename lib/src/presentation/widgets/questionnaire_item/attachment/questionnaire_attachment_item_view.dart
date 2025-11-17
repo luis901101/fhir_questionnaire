@@ -85,7 +85,7 @@ class QuestionnaireAttachmentItemViewState
                       value == null ? 80 : 40,
                     ),
                     child: ElevatedButton.icon(
-                      onPressed: isLoading ? null : onBtnUpload,
+                      onPressed: isLoading || isReadOnly ? null : onBtnUpload,
                       icon: Icon(
                         value == null ? Icons.upload_rounded : Icons.refresh,
                       ),

@@ -8,7 +8,7 @@ class QuestionnaireView extends StatefulWidget {
   final Questionnaire questionnaire;
 
   /// Get the QuestionnaireResponse once the user taps on Submit button.
-  final ValueChanged<QuestionnaireResponse> onSubmit;
+  final ValueChanged<QuestionnaireResponse>? onSubmit;
 
   /// Necessary callback when Questionnaire has items of type = `attachment`
   /// so the logic of loading an Attachment is handled outside of the logic
@@ -36,7 +36,7 @@ class QuestionnaireView extends StatefulWidget {
   const QuestionnaireView({
     super.key,
     required this.questionnaire,
-    required this.onSubmit,
+    this.onSubmit,
     this.controller,
     this.onAttachmentLoaded,
     this.isLoading = false,
@@ -158,6 +158,8 @@ class QuestionnaireViewState extends State<QuestionnaireView>
       itemBundles.length +
       (questionnaire.title?.valueString?.isNotEmpty == true ? 1 : 0);
 
+  bool get allowSubmit => !isLoading && widget.onSubmit != null;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -178,7 +180,9 @@ class QuestionnaireViewState extends State<QuestionnaireView>
             padding: EdgeInsets.only(bottom: bottomPadding > 0 ? 0 : 16),
             child: FloatingActionButton.extended(
               shape: const StadiumBorder(),
-              onPressed: isLoading ? null : onSubmit,
+              backgroundColor: allowSubmit ? null : theme.disabledColor,
+              foregroundColor: allowSubmit ? null : theme.disabledColor,
+              onPressed: allowSubmit ? onSubmit : null,
               label: Text(
                 QuestionnaireLocalization.instance.localization.btnSubmit,
               ),
@@ -308,7 +312,7 @@ class QuestionnaireViewState extends State<QuestionnaireView>
         questionnaire: questionnaire,
         itemBundles: itemBundles,
       );
-      widget.onSubmit(questionnaireResponse);
+      widget.onSubmit?.call(questionnaireResponse);
     }
   }
 
