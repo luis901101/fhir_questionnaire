@@ -1,5 +1,5 @@
 import 'package:fhir_questionnaire/src/logic/utils/text_utils.dart';
-import 'package:fhir/r4.dart';
+import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_item_view.dart';
 
 class QuestionnaireItemBundle {
@@ -20,6 +20,7 @@ class QuestionnaireItemBundle {
 
   /// Returns linkId of the questionnaire [item] prefixed by its parent item
   /// link ids, showing a unique id for this questionnaire [item].
-  String get uid =>
-      groupId.isNotEmpty ? '$groupId/${item.linkId}' : item.linkId;
+  String get uid => groupId?.isNotEmpty == true
+      ? '$groupId/${item.linkId.valueString}'
+      : item.linkId.valueString ?? '';
 }

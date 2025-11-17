@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:fhir/r4.dart';
-import 'package:fhir/r4/general_types/general_types.dart';
+import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
 
@@ -45,7 +44,7 @@ class QuestionnaireQuantityItemViewState
         ?.coding
         ?.firstOrNull
         ?.code
-        ?.value;
+        ?.valueString;
     if (controller.value == null) {
       final initial = item.initial
           ?.firstWhereOrNull((item) => item.valueQuantity != null)
@@ -54,11 +53,12 @@ class QuestionnaireQuantityItemViewState
       if (initial != null) {
         value = initial.copyWith();
       } else if (fixedUnit != null) {
-        value = value.copyWith(unit: fixedUnit);
+        value = value.copyWith(unit: FhirString(fixedUnit!));
       }
     }
-    valueEditingController.text = value.value?.value?.toString() ?? '';
-    unitEditingController.text = value.unit ?? value.code?.value ?? '';
+    valueEditingController.text = value.value?.valueString ?? '';
+    unitEditingController.text =
+        value.unit?.valueString ?? value.code?.valueString ?? '';
     comparatorController.value =
         QuestionnaireCustomQuantityComparator.valueOf(
           asQuantityComparator: value.comparator,
@@ -140,7 +140,9 @@ class QuestionnaireQuantityItemViewState
                 textAlign: TextAlign.center,
                 textInputAction: TextInputAction.next,
                 onChanged: (text) {
-                  value = value.copyWith(unit: text.isEmpty ? null : text);
+                  value = value.copyWith(
+                    unit: text.isEmpty ? null : FhirString(text),
+                  );
                 },
                 decoration: const InputDecoration(
                   contentPadding: EdgeInsets.all(12),

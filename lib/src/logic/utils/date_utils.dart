@@ -1,4 +1,4 @@
-import 'package:fhir/r4.dart';
+import 'package:fhir_r4/fhir_r4.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
@@ -33,7 +33,7 @@ extension CustomDateUtils on DateTime {
     }
   }
 
-  FhirDateTime get asFhirDateTime => FhirDateTime(this);
+  FhirDateTime get asFhirDateTime => FhirDateTime.fromDateTime(this);
   FhirDate get asFhirDate =>
       FhirDate.fromUnits(year: year, month: month, day: day, isUtc: isUtc);
   FhirTime get asFhirTime =>

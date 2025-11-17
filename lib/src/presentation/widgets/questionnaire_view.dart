@@ -1,4 +1,4 @@
-import 'package:fhir/r4.dart';
+import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
 
@@ -134,7 +134,7 @@ class QuestionnaireViewState extends State<QuestionnaireView>
     try {
       questionnaireTitleHeight = ViewUtils.getTextHeightAfterRender(
         context: context,
-        text: questionnaire.title!,
+        text: questionnaire.title?.valueString ?? '',
         padding: const EdgeInsets.only(
           top: 16,
           left: 16,
@@ -155,7 +155,8 @@ class QuestionnaireViewState extends State<QuestionnaireView>
   }
 
   int get listViewCount =>
-      itemBundles.length + (questionnaire.title.isNotEmpty ? 1 : 0);
+      itemBundles.length +
+      (questionnaire.title?.valueString?.isNotEmpty == true ? 1 : 0);
 
   bool get allowSubmit => !isLoading && widget.onSubmit != null;
 
@@ -209,11 +210,12 @@ class QuestionnaireViewState extends State<QuestionnaireView>
                   keyboardDismissBehavior:
                       ScrollViewKeyboardDismissBehavior.onDrag,
                   itemBuilder: (context, index) {
-                    if (index == 0 && questionnaire.title.isNotEmpty) {
+                    if (index == 0 &&
+                        questionnaire.title?.valueString?.isNotEmpty == true) {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 24.0),
                         child: Text(
-                          questionnaire.title!,
+                          questionnaire.title?.valueString ?? '',
                           style: theme.textTheme.titleLarge?.copyWith(
                             color: theme.colorScheme.primary,
                           ),
@@ -222,7 +224,10 @@ class QuestionnaireViewState extends State<QuestionnaireView>
                       );
                     }
                     return itemBundles[index -
-                            (questionnaire.title.isNotEmpty ? 1 : 0)]
+                            (questionnaire.title?.valueString?.isNotEmpty ==
+                                    true
+                                ? 1
+                                : 0)]
                         .view;
                   },
                   // separatorBuilder: (context, index) =>
@@ -301,9 +306,9 @@ class QuestionnaireViewState extends State<QuestionnaireView>
     );
   }
 
-  void onSubmit() {
+  Future<void> onSubmit() async {
     if (validate()) {
-      final questionnaireResponse = controller.generateResponse(
+      final questionnaireResponse = await controller.generateResponse(
         questionnaire: questionnaire,
         itemBundles: itemBundles,
       );
