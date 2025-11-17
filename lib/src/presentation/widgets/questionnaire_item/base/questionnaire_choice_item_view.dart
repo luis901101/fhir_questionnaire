@@ -1,4 +1,4 @@
-import 'package:fhir/r4.dart';
+import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
@@ -46,10 +46,10 @@ abstract class QuestionnaireChoiceItemViewState<
     hideKeyboard ??= true;
     QuestionnaireAnswerOption newAnwser;
     final existingAnswer = values.firstWhereOrNull(
-      (answer) => answer.valueString == value,
+      (answer) => answer.valueString?.valueString == value,
     );
     if (existingAnswer == null) {
-      newAnwser = QuestionnaireAnswerOption(valueString: value);
+      newAnwser = QuestionnaireAnswerOption(valueX: FhirString(value));
       values.add(newAnwser);
     } else {
       newAnwser = existingAnswer;

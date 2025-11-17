@@ -18,8 +18,8 @@ dependencies:
     sdk: flutter
   collection: ^1.19.1
   shimmer: ^3.0.0
-  fhir: 0.12.0 # Pending migration to fhir_r4, version fixed to 0.12.0 due to issue with fhir_path when updating to 0.12.1
-  fhir_path: ^0.12.0 # Pending migration to fhir_r4_path
+  fhir_r4: ^0.4.3
+  fhir_r4_path: ^0.4.3
   intl: ^0.19.0
   validators: ^3.0.0
 

@@ -1,4 +1,4 @@
-import 'package:fhir/r4.dart';
+import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_questionnaire/src/logic/utils/date_utils.dart';
 import 'package:fhir_questionnaire/src/logic/utils/num_utils.dart';
 import 'package:validators/validators.dart' as validators;
@@ -13,7 +13,7 @@ extension StringExtension on String {
 
   Annotation asAnnotation({Reference? authorReference}) => Annotation(
     text: FhirMarkdown(this),
-    authorReference: authorReference,
+    authorX: authorReference,
     time: DateTime.now().asFhirDateTime,
   );
 }

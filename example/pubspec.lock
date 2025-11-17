@@ -105,22 +105,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
-  fhir:
-    dependency: "direct main"
-    description:
-      name: fhir
-      sha256: "5242574636c300849227902717e2b37e4df7791ea75bda6c47c2600de417546a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.12.0"
-  fhir_path:
-    dependency: transitive
-    description:
-      name: fhir_path
-      sha256: "72facf58e3e492822936b7e2992aa96e482592a2665eb4c5ac9adf299c22d856"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.12.0"
   fhir_questionnaire:
     dependency: "direct main"
     description:
@@ -128,6 +112,22 @@ packages:
       relative: true
     source: path
     version: "6.0.2"
+  fhir_r4:
+    dependency: "direct main"
+    description:
+      name: fhir_r4
+      sha256: e37bd2f79fa9a23617739220741aec862d1e20f3ac8850243828a4d559c98d8f
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.3"
+  fhir_r4_path:
+    dependency: transitive
+    description:
+      name: fhir_r4_path
+      sha256: "05311f6240e2e02c0c4cee0feec6b8a62fba427309c7c18a136cb7f081449745"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.3"
   file_picker:
     dependency: "direct main"
     description:
@@ -207,22 +207,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  freezed_annotation:
-    dependency: transitive
-    description:
-      name: freezed_annotation
-      sha256: c2e2d632dd9b8a2b7751117abcfc2b4888ecfe181bd9fca7170d9ef02e595fe2
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.4.4"
   http:
     dependency: transitive
     description:
       name: http
-      sha256: b9c29a161230ee03d3ccf545097fccd9b87a5264228c5d348202e0f0c28f9010
+      sha256: "87721a4a50b19c7f1d49001e51409bddc46303966ce89a65af4f4e6004896412"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.2"
+    version: "1.6.0"
   http_parser:
     dependency: transitive
     description:
@@ -303,14 +295,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.19.0"
-  json_annotation:
-    dependency: transitive
-    description:
-      name: json_annotation
-      sha256: "1ce844379ca14835a50d2f019a3099f419082cfdd231cd86a142af94dd5c6bb1"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.9.0"
   json_field_editor:
     dependency: "direct main"
     description:
@@ -428,14 +412,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.10.1"
-  sprintf:
-    dependency: transitive
-    description:
-      name: sprintf
-      sha256: "1fc9ffe69d4df602376b52949af107d8f5703b77cda567c4d7d86a0693120f23"
-      url: "https://pub.dev"
-    source: hosted
-    version: "7.0.0"
   stack_trace:
     dependency: transitive
     description:
@@ -488,18 +464,26 @@ packages:
     dependency: transitive
     description:
       name: ucum
-      sha256: "45767ceaa8376da962cfabe48facbcdeb27cb92005cf89b6d4abf89d9e2ce796"
+      sha256: e92bcd575e1ac33f0eb68d9f371625365f362083d0d20873b7a6850ee81cfb8b
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.0"
+    version: "0.6.0"
+  universal_io:
+    dependency: transitive
+    description:
+      name: universal_io
+      sha256: "1722b2dcc462b4b2f3ee7d188dad008b6eb4c40bbd03a3de451d82c78bba9aad"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.2"
   uuid:
     dependency: transitive
     description:
       name: uuid
-      sha256: "83d37c7ad7aaf9aa8e275490669535c8080377cfa7a7004c24dfac53afffaa90"
+      sha256: a11b666489b1954e01d992f3d601b1804a33937b5a8fe677bd26b8a9f96f96e8
       url: "https://pub.dev"
     source: hosted
-    version: "4.4.2"
+    version: "4.5.2"
   validators:
     dependency: transitive
     description:
@@ -548,22 +532,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.5.0"
-  xml2json:
-    dependency: transitive
-    description:
-      name: xml2json
-      sha256: "52b7c8d350fdce09545b058982c26689ee89f1eb188cc9910d585665bfe27bc0"
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.2.3"
   yaml:
     dependency: transitive
     description:
       name: yaml
-      sha256: "75769501ea3489fca56601ff33454fe45507ea3bfb014161abc3b43ae25989d5"
+      sha256: b9da305ac7c39faa3f030eccd175340f968459dae4af175130b3fc47e40d76ce
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.2"
+    version: "3.1.3"
 sdks:
   dart: ">=3.9.0 <4.0.0"
   flutter: ">=3.35.0"
