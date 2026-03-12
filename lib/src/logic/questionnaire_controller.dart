@@ -527,6 +527,22 @@ class QuestionnaireController {
               answer = QuestionnaireResponseAnswer(
                 valueDecimal: FhirDecimal(resultValue),
               );
+            } else if (resultValue is bool) {
+              answer = QuestionnaireResponseAnswer(
+                valueBoolean: FhirBoolean(resultValue),
+              );
+            } else if (resultValue is FhirDate) {
+              answer = QuestionnaireResponseAnswer(
+                valueDate: resultValue,
+              );
+            } else if (resultValue is FhirTime) {
+              answer = QuestionnaireResponseAnswer(
+                valueTime: resultValue,
+              );
+            } else if (resultValue is FhirDateTime) {
+              answer = QuestionnaireResponseAnswer(
+                valueDateTime: resultValue,
+              );
             } else {
               answer = QuestionnaireResponseAnswer(valueString: resultValue);
             }
