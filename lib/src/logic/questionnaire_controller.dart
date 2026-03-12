@@ -527,10 +527,6 @@ class QuestionnaireController {
               answer = QuestionnaireResponseAnswer(
                 valueDecimal: FhirDecimal(resultValue),
               );
-            } else if (resultValue is bool) {
-              answer = QuestionnaireResponseAnswer(
-                valueBoolean: FhirBoolean(resultValue),
-              );
             } else if (resultValue is FhirDate) {
               answer = QuestionnaireResponseAnswer(
                 valueDate: resultValue,
