@@ -48,13 +48,12 @@ class QuestionnaireGroupItemViewState
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
-            border: Border.all(width: 0.5),
             borderRadius: BorderRadius.circular(borderRadius),
           ),
           padding: EdgeInsets.only(
             left: 16,
             right: 16,
-            top: groupTitleHeight != null ? groupTitleHeight! : 24,
+            top: groupTitleHeight != null ? groupTitleHeight! : 12,
           ),
           margin: const EdgeInsets.only(top: 14),
           child: children == null

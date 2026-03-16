@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
-import 'package:fhir/r4.dart';
+import 'package:fhir_r4/fhir_r4.dart';
 import 'package:flutter/cupertino.dart';
 
 class QuestionnaireItemEnableWhenController {
@@ -13,7 +13,7 @@ class QuestionnaireItemEnableWhenController {
     required FhirCode? behavior,
   }) : _enableWhenBundleList = enableWhenBundleList ?? [],
        _behavior =
-           QuestionnaireEnableWhenBehavior.valueOf(behavior?.value) ??
+           QuestionnaireEnableWhenBehavior.valueOf(behavior?.valueString) ??
            QuestionnaireEnableWhenBehavior.defaultValue;
 
   bool init({required ValueChanged<bool> onEnabledChangedListener}) {
@@ -36,24 +36,24 @@ class QuestionnaireItemEnableWhenController {
     for (final enableWhenBundle in _enableWhenBundleList) {
       final controller = enableWhenBundle.controller;
       dynamic expectedValue =
-          enableWhenBundle.expectedAnswer.answerString ??
-          enableWhenBundle.expectedAnswer.answerInteger?.value ??
-          enableWhenBundle.expectedAnswer.answerDecimal?.value ??
-          enableWhenBundle.expectedAnswer.answerBoolean?.value ??
-          enableWhenBundle.expectedAnswer.answerQuantity?.value?.value ??
-          enableWhenBundle.expectedAnswer.answerTime?.asDateTime ??
+          enableWhenBundle.expectedAnswer.answerString?.valueString ??
+          enableWhenBundle.expectedAnswer.answerInteger?.valueNum ??
+          enableWhenBundle.expectedAnswer.answerDecimal?.valueNum ??
+          enableWhenBundle.expectedAnswer.answerBoolean?.valueBoolean ??
+          enableWhenBundle.expectedAnswer.answerQuantity?.value?.valueNum ??
+          enableWhenBundle.expectedAnswer.answerTime?.valueString ??
           enableWhenBundle.expectedAnswer.answerDate?.asDateTime ??
           enableWhenBundle.expectedAnswer.answerDateTime?.asDateTime ??
-          enableWhenBundle.expectedAnswer.answerCoding?.code?.value;
+          enableWhenBundle.expectedAnswer.answerCoding?.code?.valueString;
       List<dynamic> controllerValues = [];
       if (controller.rawValue is QuestionnaireAnswerOption) {
         final answerOption = controller.rawValue as QuestionnaireAnswerOption;
         final controllerValueOption =
-            answerOption.valueString ??
-            answerOption.valueInteger?.value ??
-            answerOption.valueTime?.asDateTime ??
+            answerOption.valueString?.valueString ??
+            answerOption.valueInteger?.valueNum ??
+            answerOption.valueTime?.valueString ??
             answerOption.valueDate?.asDateTime ??
-            answerOption.valueCoding?.code?.value;
+            answerOption.valueCoding?.code?.valueString;
         if (controllerValueOption != null) {
           controllerValues = [controllerValueOption];
         }
@@ -64,11 +64,11 @@ class QuestionnaireItemEnableWhenController {
         final values = answerOptions
             .map(
               (answerOption) =>
-                  answerOption.valueString ??
-                  answerOption.valueInteger?.value ??
-                  answerOption.valueTime?.asDateTime ??
+                  answerOption.valueString?.valueString ??
+                  answerOption.valueInteger?.valueNum ??
+                  answerOption.valueTime?.valueString ??
                   answerOption.valueDate?.asDateTime ??
-                  answerOption.valueCoding?.code?.value,
+                  answerOption.valueCoding?.code?.valueString,
             )
             .nonNulls;
 
@@ -91,7 +91,7 @@ class QuestionnaireItemEnableWhenController {
       switch (enableWhenBundle.operator) {
         case QuestionnaireEnableWhenOperator.exists:
           final bool existAnswer =
-              enableWhenBundle.expectedAnswer.answerBoolean?.value ?? false;
+              enableWhenBundle.expectedAnswer.answerBoolean?.valueBoolean ?? false;
           enabled = _behavior.check(
             enabled,
             (TextUtils.isNotEmpty(controller.rawValue?.toString()) &&

@@ -1,4 +1,4 @@
-import 'package:fhir/r4.dart';
+import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_questionnaire/src/logic/enumerator/questionnaire_enable_when_operator.dart';
 import 'package:fhir_questionnaire/src/logic/utils/text_utils.dart';
 
@@ -12,7 +12,7 @@ class QuestionnaireItemEnableWhenBundle {
   }) {
     operator =
         QuestionnaireEnableWhenOperator.valueOf(
-          expectedAnswer.operator_?.value,
+          expectedAnswer.operator_.valueString,
         ) ??
         QuestionnaireEnableWhenOperator.exists;
   }

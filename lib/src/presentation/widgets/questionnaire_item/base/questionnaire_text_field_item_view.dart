@@ -28,16 +28,16 @@ abstract class QuestionnaireTextFieldItemViewState<
     if (controller.text.isEmpty) {
       final initial = item.initial?.firstWhereOrNull(
         (item) =>
-            item.valueString.isNotEmpty ||
-            TextUtils.isNotEmpty(item.valueUri?.value?.toString()) ||
-            item.valueInteger?.value != null ||
-            item.valueDecimal?.value != null,
+            item.valueString?.valueString.isNotEmpty == true ||
+            TextUtils.isNotEmpty(item.valueUri?.valueString) ||
+            item.valueInteger != null ||
+            item.valueDecimal != null,
       );
       final String? initialValue =
-          (initial?.valueString ??
-                  initial?.valueUri?.value?.toString() ??
-                  initial?.valueInteger?.value ??
-                  initial?.valueDecimal?.value)
+          (initial?.valueString?.valueString ??
+                  initial?.valueUri?.valueString ??
+                  initial?.valueInteger?.valueNum ??
+                  initial?.valueDecimal?.valueNum)
               ?.toString();
 
       if (initialValue.isNotEmpty) {
