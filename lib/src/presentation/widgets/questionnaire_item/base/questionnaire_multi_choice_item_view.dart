@@ -1,4 +1,4 @@
-import 'package:fhir/r4.dart';
+import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
 
@@ -35,13 +35,9 @@ abstract class QuestionnaireMultiChoiceItemViewState<
       List<QuestionnaireAnswerOption> initial = [];
       for (final value in item.initial ?? <QuestionnaireInitial>[]) {
         if (value.valueCoding != null) {
-          initial.add(
-            QuestionnaireAnswerOption(valueCoding: value.valueCoding!),
-          );
+          initial.add(QuestionnaireAnswerOption(valueX: value.valueCoding!));
         } else if (value.valueString != null) {
-          initial.add(
-            QuestionnaireAnswerOption(valueString: value.valueString),
-          );
+          initial.add(QuestionnaireAnswerOption(valueX: value.valueString!));
         }
       }
 

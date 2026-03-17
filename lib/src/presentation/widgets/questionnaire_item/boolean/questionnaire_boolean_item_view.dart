@@ -34,7 +34,7 @@ class QuestionnaireBooleanItemViewState
           item.initial
               ?.firstWhereOrNull((item) => item.valueBoolean != null)
               ?.valueBoolean
-              ?.value ??
+              ?.valueBoolean ??
           false;
 
       value = initial;

@@ -1,4 +1,4 @@
-import 'package:fhir/r4.dart';
+import 'package:fhir_r4/fhir_r4.dart';
 import 'package:collection/collection.dart';
 
 enum QuestionnaireCustomQuantityComparator {

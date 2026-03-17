@@ -1,7 +1,8 @@
 import 'package:collection/collection.dart';
-import 'package:fhir/r4.dart';
-import 'package:fhir_path/fhir_path.dart';
-import 'package:fhir_questionnaire/fhir_questionnaire.dart';
+import 'package:fhir_r4/fhir_r4.dart' hide QuestionnaireItemType;
+import 'package:fhir_r4_path/fhir_r4_path.dart';
+import 'package:fhir_questionnaire/fhir_questionnaire.dart'
+    hide QuestionnaireResponseStatus;
 import 'package:flutter/foundation.dart';
 
 class QuestionnaireController {
@@ -32,7 +33,7 @@ class QuestionnaireController {
     required QuestionnaireItem item,
     QuestionnaireItemEnableWhenController? enableWhenController,
   }) {
-    if (item.repeats?.value == true) {
+    if (item.repeats?.valueBoolean == true) {
       return QuestionnaireCheckBoxChoiceItemView(
         item: item,
         enableWhenController: enableWhenController,
@@ -46,7 +47,7 @@ class QuestionnaireController {
                 ?.coding
                 ?.firstOrNull
                 ?.code
-                ?.value,
+                ?.valueString,
           ) ==
           QuestionnaireItemExtensionCode.dropDown) {
         return QuestionnaireDropDownChoiceItemView(
@@ -66,7 +67,7 @@ class QuestionnaireController {
     required QuestionnaireItem item,
     QuestionnaireItemEnableWhenController? enableWhenController,
   }) {
-    if (item.repeats?.value == true) {
+    if (item.repeats?.valueBoolean == true) {
       return QuestionnaireCheckBoxOpenChoiceItemView(
         item: item,
         enableWhenController: enableWhenController,
@@ -80,7 +81,7 @@ class QuestionnaireController {
                 ?.coding
                 ?.firstOrNull
                 ?.code
-                ?.value,
+                ?.valueString,
           ) ==
           QuestionnaireItemExtensionCode.dropDown) {
         return QuestionnaireDropDownOpenChoiceItemView(
@@ -141,7 +142,7 @@ class QuestionnaireController {
   }) {
     QuestionnaireItemView? itemView;
     List<QuestionnaireItemBundle>? children;
-    final itemType = QuestionnaireItemType.valueOf(item.type.value);
+    final itemType = QuestionnaireItemType.valueOf(item.type.valueString);
 
     final groupIdForChildren =
         '${groupId != null ? "$groupId/" : ""}${item.linkId}';
@@ -339,26 +340,26 @@ class QuestionnaireController {
   /// level and calculates their value. Returns a map of variable name / value
   /// pairs that can be used as execution context to evaluate expressions at
   /// a deeper level.
-  Map<String, dynamic> _fetchCalculatedExpressionRootVariables({
+  Future<Map<String, dynamic>> _fetchCalculatedExpressionRootVariables({
     required Questionnaire questionnaire,
     required QuestionnaireResponse questionnaireResponse,
-  }) {
+  }) async {
     final calculatedResults = <String, dynamic>{};
 
     // capture all top-level variables as list, in order
     final rootExpressions = (questionnaire.extension_ ?? [])
         .where(
           (ext) =>
-              ext.url ==
-                  FhirUri('http://hl7.org/fhir/StructureDefinition/variable') &&
-              ext.valueExpression?.language ==
-                  FhirExpressionLanguage.text_fhirpath,
+              ext.url.valueString ==
+                  'http://hl7.org/fhir/StructureDefinition/variable' &&
+              ext.valueExpression?.language.valueEnum ==
+                  ExpressionLanguageEnum.textFhirpath,
         )
         .toList();
 
     for (final exp in rootExpressions) {
-      final expression = exp.valueExpression?.expression;
-      final expressionName = exp.valueExpression?.name?.value;
+      final expression = exp.valueExpression?.expression?.valueString;
+      final expressionName = exp.valueExpression?.name?.valueString;
 
       if (expression == null) {
         if (kDebugMode) {
@@ -375,11 +376,11 @@ class QuestionnaireController {
       }
 
       try {
-        final result = walkFhirPath(
+        final result = await walkFhirPath(
           environment: calculatedResults,
           pathExpression: expression,
-          context: questionnaireResponse.toJson(),
-          resource: questionnaireResponse.toJson(),
+          context: questionnaireResponse,
+          resource: questionnaireResponse,
         );
 
         if (result.isNotEmpty) {
@@ -420,12 +421,10 @@ class QuestionnaireController {
       final calculatedExpressions = (item.extension_ ?? [])
           .where(
             (ext) =>
-                ext.url ==
-                    FhirUri(
-                      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
-                    ) &&
-                ext.valueExpression?.language ==
-                    FhirExpressionLanguage.text_fhirpath,
+                ext.url.valueString ==
+                    'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression' &&
+                ext.valueExpression?.language.valueEnum ==
+                    ExpressionLanguageEnum.textFhirpath,
           )
           .toList()
           .length;
@@ -441,11 +440,11 @@ class QuestionnaireController {
   /// Attempts to resolve exactly one unresolved calculated expression.
   /// Traverses the tree of items depth-first and will abort after it tried
   /// to resolve the first matching element.
-  List<QuestionnaireResponseItem>? _resolveFirstCalculatedExpression({
+  Future<List<QuestionnaireResponseItem>?> _resolveFirstCalculatedExpression({
     required Map<String, dynamic> environment,
     required List<QuestionnaireResponseItem>? itemList,
     required QuestionnaireResponse questionnaireResponse,
-  }) {
+  }) async {
     if (itemList == null) {
       return null;
     }
@@ -460,7 +459,7 @@ class QuestionnaireController {
               ) >
               0) {
         updatedList[itemIndex] = updatedList[itemIndex].copyWith(
-          item: _resolveFirstCalculatedExpression(
+          item: await _resolveFirstCalculatedExpression(
             environment: environment,
             itemList: updatedList[itemIndex].item,
             questionnaireResponse: questionnaireResponse,
@@ -486,18 +485,19 @@ class QuestionnaireController {
           (updatedList[itemIndex].extension_ ?? [])
               .where(
                 (ext) =>
-                    ext.url ==
-                        FhirUri(
-                          'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
-                        ) &&
-                    ext.valueExpression?.language ==
-                        FhirExpressionLanguage.text_fhirpath,
+                    ext.url.valueString ==
+                        'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression' &&
+                    ext.valueExpression?.language.valueEnum ==
+                        ExpressionLanguageEnum.textFhirpath,
               )
               .toList();
 
       if (calculatedExpressionExtensions.isNotEmpty) {
-        final expression =
-            calculatedExpressionExtensions.first.valueExpression?.expression;
+        final expression = calculatedExpressionExtensions
+            .first
+            .valueExpression
+            ?.expression
+            ?.valueString;
 
         if (expression == null) {
           if (kDebugMode) {
@@ -507,11 +507,11 @@ class QuestionnaireController {
         }
 
         try {
-          final result = walkFhirPath(
+          final result = await walkFhirPath(
             environment: environment,
             pathExpression: expression,
-            context: questionnaireResponse.toJson(),
-            resource: questionnaireResponse.toJson(),
+            context: questionnaireResponse,
+            resource: questionnaireResponse,
           );
 
           if (result.isNotEmpty) {
@@ -521,14 +521,16 @@ class QuestionnaireController {
 
             if (resultValue is int) {
               answer = QuestionnaireResponseAnswer(
-                valueInteger: FhirInteger(resultValue),
+                valueX: FhirInteger(resultValue),
               );
             } else if (resultValue is num) {
               answer = QuestionnaireResponseAnswer(
-                valueDecimal: FhirDecimal(resultValue),
+                valueX: FhirDecimal(resultValue),
               );
             } else {
-              answer = QuestionnaireResponseAnswer(valueString: resultValue);
+              answer = QuestionnaireResponseAnswer(
+                valueX: FhirString(resultValue),
+              );
             }
 
             updatedList[itemIndex] = itemList[itemIndex].copyWith(
@@ -566,11 +568,12 @@ class QuestionnaireController {
   /// an error.
   /// In case an expression with an error is encountered in the middle of
   /// processing, all other unresolved expressions will remain unresolved.
-  List<QuestionnaireResponseItem>? _resolveItemsWithCalculatedExpressions({
+  Future<List<QuestionnaireResponseItem>?>
+  _resolveItemsWithCalculatedExpressions({
     required Map<String, dynamic> environment,
     required List<QuestionnaireResponseItem>? itemList,
     required QuestionnaireResponse questionnaireResponse,
-  }) {
+  }) async {
     if (itemList == null) {
       return null;
     }
@@ -586,7 +589,7 @@ class QuestionnaireController {
       );
 
       if (currentNumberOfUnresolvedItems > 0) {
-        itemList = _resolveFirstCalculatedExpression(
+        itemList = await _resolveFirstCalculatedExpression(
           environment: environment,
           itemList: itemList,
           questionnaireResponse: questionnaireResponse,
@@ -602,27 +605,27 @@ class QuestionnaireController {
     return itemList;
   }
 
-  QuestionnaireResponse generateResponse({
+  Future<QuestionnaireResponse> generateResponse({
     required Questionnaire questionnaire,
     required List<QuestionnaireItemBundle> itemBundles,
-  }) {
+  }) async {
     List<QuestionnaireResponseItem> itemResponses = generateItemResponses(
       itemBundles: itemBundles,
     );
 
     final questionnaireResponse = QuestionnaireResponse(
       questionnaire: questionnaire.asFhirCanonical,
-      status: QuestionnaireResponseStatus.completed.asFhirCode,
+      status: QuestionnaireResponseStatus.completed,
       item: itemResponses,
     );
 
-    final environment = _fetchCalculatedExpressionRootVariables(
+    final environment = await _fetchCalculatedExpressionRootVariables(
       questionnaire: questionnaire,
       questionnaireResponse: questionnaireResponse,
     );
 
     final updatedQuestionnaireResponse = questionnaireResponse.copyWith(
-      item: _resolveItemsWithCalculatedExpressions(
+      item: await _resolveItemsWithCalculatedExpressions(
         itemList: questionnaireResponse.item,
         environment: environment,
         questionnaireResponse: questionnaireResponse,
@@ -637,7 +640,9 @@ class QuestionnaireController {
   ) {
     List<QuestionnaireResponseItem>? childItems;
     List<QuestionnaireResponseAnswer>? answers;
-    final itemType = QuestionnaireItemType.valueOf(itemBundle.item.type.value);
+    final itemType = QuestionnaireItemType.valueOf(
+      itemBundle.item.type.valueString,
+    );
     if (itemBundle.children.isNotEmpty) {
       childItems = generateItemResponses(itemBundles: itemBundle.children!);
     }
@@ -657,7 +662,7 @@ class QuestionnaireController {
             : [
                 QuestionnaireResponseAnswer(
                   valueString: itemType!.isString || itemType.isText
-                      ? itemBundle.controller.rawValue?.toString()
+                      ? FhirString(itemBundle.controller.rawValue?.toString())
                       : null,
                   valueUri: itemType.isUrl
                       ? FhirUri(itemBundle.controller.rawValue!.toString())
@@ -812,68 +817,72 @@ class QuestionnaireController {
         questionItem.answerOption?.toList() ?? [];
     for (final answer in answers) {
       if (answer.valueBoolean != null) {
-        initials.add(QuestionnaireInitial(valueBoolean: answer.valueBoolean));
+        initials.add(QuestionnaireInitial(valueX: answer.valueBoolean!));
       } else if (answer.valueDecimal != null) {
-        initials.add(QuestionnaireInitial(valueDecimal: answer.valueDecimal));
+        initials.add(QuestionnaireInitial(valueX: answer.valueDecimal!));
       } else if (answer.valueInteger != null) {
-        initials.add(QuestionnaireInitial(valueInteger: answer.valueInteger));
-        if (questionItem.type == QuestionnaireItemType.openChoice.asFhirCode) {
-          if (!options.any((e) => e.valueInteger == answer.valueInteger)) {
+        initials.add(QuestionnaireInitial(valueX: answer.valueInteger!));
+        if (questionItem.type.valueString ==
+            QuestionnaireItemType.openChoice.code) {
+          if (answer.valueInteger != null &&
+              !options.any(
+                (e) =>
+                    e.valueInteger?.valueInt == answer.valueInteger?.valueInt,
+              )) {
             options.add(
-              QuestionnaireAnswerOption(valueInteger: answer.valueInteger),
+              QuestionnaireAnswerOption(valueX: answer.valueInteger!),
             );
           }
         }
       } else if (answer.valueDate != null) {
-        initials.add(QuestionnaireInitial(valueDate: answer.valueDate));
-        if (questionItem.type == QuestionnaireItemType.openChoice.asFhirCode) {
-          if (!options.any((e) => e.valueDate == answer.valueDate)) {
-            options.add(QuestionnaireAnswerOption(valueDate: answer.valueDate));
+        initials.add(QuestionnaireInitial(valueX: answer.valueDate!));
+        if (questionItem.type.valueString ==
+            QuestionnaireItemType.openChoice.code) {
+          if (answer.valueDate != null &&
+              !options.any((e) => e.valueDate == answer.valueDate)) {
+            options.add(QuestionnaireAnswerOption(valueX: answer.valueDate!));
           }
         }
       } else if (answer.valueDateTime != null) {
-        initials.add(QuestionnaireInitial(valueDateTime: answer.valueDateTime));
+        initials.add(QuestionnaireInitial(valueX: answer.valueDateTime!));
       } else if (answer.valueTime != null) {
-        initials.add(QuestionnaireInitial(valueTime: answer.valueTime));
-        if (questionItem.type == QuestionnaireItemType.openChoice.asFhirCode) {
-          if (!options.any((e) => e.valueTime == answer.valueTime)) {
-            options.add(QuestionnaireAnswerOption(valueTime: answer.valueTime));
+        initials.add(QuestionnaireInitial(valueX: answer.valueTime!));
+        if (questionItem.type.valueString ==
+            QuestionnaireItemType.openChoice.code) {
+          if (answer.valueTime != null &&
+              !options.any((e) => e.valueTime == answer.valueTime)) {
+            options.add(QuestionnaireAnswerOption(valueX: answer.valueTime!));
           }
         }
       } else if (answer.valueString != null) {
-        initials.add(QuestionnaireInitial(valueString: answer.valueString));
+        initials.add(QuestionnaireInitial(valueX: answer.valueString!));
         if (questionItem.type == QuestionnaireItemType.openChoice.asFhirCode) {
-          if (!options.any((e) => e.valueString == answer.valueString)) {
-            options.add(
-              QuestionnaireAnswerOption(valueString: answer.valueString),
-            );
+          if (answer.valueString != null &&
+              !options.any((e) => e.valueString == answer.valueString)) {
+            options.add(QuestionnaireAnswerOption(valueX: answer.valueString!));
           }
         }
       } else if (answer.valueUri != null) {
-        initials.add(QuestionnaireInitial(valueUri: answer.valueUri));
+        initials.add(QuestionnaireInitial(valueX: answer.valueUri!));
       } else if (answer.valueAttachment != null) {
-        initials.add(
-          QuestionnaireInitial(valueAttachment: answer.valueAttachment),
-        );
+        initials.add(QuestionnaireInitial(valueX: answer.valueAttachment!));
       } else if (answer.valueCoding != null) {
-        initials.add(QuestionnaireInitial(valueCoding: answer.valueCoding));
+        initials.add(QuestionnaireInitial(valueX: answer.valueCoding!));
         if (questionItem.type == QuestionnaireItemType.openChoice.asFhirCode) {
-          if (!options.any((e) => e.valueCoding == answer.valueCoding)) {
-            options.add(
-              QuestionnaireAnswerOption(valueCoding: answer.valueCoding),
-            );
+          if (answer.valueCoding != null &&
+              !options.any((e) => e.valueCoding == answer.valueCoding)) {
+            options.add(QuestionnaireAnswerOption(valueX: answer.valueCoding!));
           }
         }
       } else if (answer.valueQuantity != null) {
-        initials.add(QuestionnaireInitial(valueQuantity: answer.valueQuantity));
+        initials.add(QuestionnaireInitial(valueX: answer.valueQuantity!));
       } else if (answer.valueReference != null) {
-        initials.add(
-          QuestionnaireInitial(valueReference: answer.valueReference),
-        );
+        initials.add(QuestionnaireInitial(valueX: answer.valueReference!));
         if (questionItem.type == QuestionnaireItemType.openChoice.asFhirCode) {
-          if (!options.any((e) => e.valueReference == answer.valueReference)) {
+          if (answer.valueReference != null &&
+              !options.any((e) => e.valueReference == answer.valueReference)) {
             options.add(
-              QuestionnaireAnswerOption(valueReference: answer.valueReference),
+              QuestionnaireAnswerOption(valueX: answer.valueReference!),
             );
           }
         }
