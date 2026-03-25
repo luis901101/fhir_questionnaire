@@ -1,9 +1,12 @@
 
-# FHIR Questionnaire
+# FHIR R4 Questionnaire
 
 A Flutter package for working with FHIR® Questionnaires. FHIR® is the registered trademark of HL7 and is used with the permission of HL7. Use of the FHIR trademark does not constitute endorsement of this product by HL7.
 
 This package takes care building the UI of a **FHIR R4 Questionnaire**, handle behavior and validations and finally generates the **QuestionnaireResponse** from the user answers.
+
+# Important
+This package is based on [fhir_r4](https://pub.dev/packages/fhir_r4) from [fhirfli.dev](https://fhirfli.dev)
 
 ## Supported Questionnaire Items
 So far this package only supports [FHIR R4 Item Types](https://hl7.org/fhir/R4/valueset-item-type.html)

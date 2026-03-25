@@ -1,8 +1,8 @@
 import 'dart:ui';
 
-import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_base_localization.dart';
-import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_en_localization.dart';
-import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_es_localization.dart';
+import 'package:fhir_questionnaire_r4/src/presentation/localization/questionnaire_base_localization.dart';
+import 'package:fhir_questionnaire_r4/src/presentation/localization/questionnaire_en_localization.dart';
+import 'package:fhir_questionnaire_r4/src/presentation/localization/questionnaire_es_localization.dart';
 import 'package:intl/intl.dart';
 
 class QuestionnaireLocalization {

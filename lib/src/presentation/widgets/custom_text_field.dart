@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fhir_questionnaire/src/logic/utils/text_utils.dart';
+import 'package:fhir_questionnaire_r4/src/logic/utils/text_utils.dart';
 import 'dart:ui' as ui show BoxHeightStyle, BoxWidthStyle;
 
 class CustomTextField extends StatefulWidget {

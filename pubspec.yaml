@@ -1,7 +1,7 @@
-name: fhir_questionnaire
+name: fhir_questionnaire_r4
 description: "A library to render FHIR Questionnaires and generate a QuestionnaireResponse"
-version: 6.1.0
-repository: https://github.com/luis901101/fhir_questionnaire
+version: 1.0.0
+repository: https://github.com/luis901101/fhir_questionnaire/tree/migration_to_fhir_r4
 issue_tracker: https://github.com/luis901101/fhir_questionnaire/issues
 topics:
   - fhir

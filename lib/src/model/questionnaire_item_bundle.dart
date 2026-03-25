@@ -1,6 +1,6 @@
-import 'package:fhir_questionnaire/src/logic/utils/text_utils.dart';
+import 'package:fhir_questionnaire_r4/src/logic/utils/text_utils.dart';
 import 'package:fhir_r4/fhir_r4.dart';
-import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_item_view.dart';
+import 'package:fhir_questionnaire_r4/src/presentation/widgets/questionnaire_item/base/questionnaire_item_view.dart';
 
 class QuestionnaireItemBundle {
   /// Use it just to group views

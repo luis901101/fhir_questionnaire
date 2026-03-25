@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_base_localization.dart';
+import 'package:fhir_questionnaire_r4/src/presentation/localization/questionnaire_base_localization.dart';
 
 /// English localizations
 class QuestionnaireEnLocalization extends QuestionnaireBaseLocalization {

@@ -31,7 +31,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  fhir_questionnaire:
+  fhir_questionnaire_r4:
     path: ../
   fhir_r4: ^0.5.1
   image_picker: ^1.2.1
