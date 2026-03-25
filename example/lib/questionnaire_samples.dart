@@ -1,4 +1,4 @@
-import 'package:fhir/r4.dart';
+import 'package:fhir_plus/r4.dart';
 
 extension QuestionnaireSamples on Questionnaire {
   static String get sampleGeneric => '''

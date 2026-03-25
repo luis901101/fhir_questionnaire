@@ -9,6 +9,10 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## 7.0.0
+### Changed
+- Breaking Change on the `fhir` dependencies which now this package uses [fhir_plus](https://pub.dev/packages/fhir_plus) and [fhir_path_plus](https://pub.dev/packages/fhir_path_plus) 
+
 ## 6.1.0
 ### Changed
 - `onSubmit` is no longer required on `QuestionnaireView` _(useful when loading readOnly questionnaires)_.
