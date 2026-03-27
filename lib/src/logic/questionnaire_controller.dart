@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
-import 'package:fhir/r4.dart';
-import 'package:fhir_path/fhir_path.dart';
+import 'package:fhir_plus/r4.dart';
+import 'package:fhir_path_plus/fhir_path.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/foundation.dart';
 

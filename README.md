@@ -5,6 +5,9 @@ A Flutter package for working with FHIR® Questionnaires. FHIR® is the register
 
 This package takes care building the UI of a **FHIR R4 Questionnaire**, handle behavior and validations and finally generates the **QuestionnaireResponse** from the user answers.
 
+# Important
+This package is now based on [fhir_plus](https://pub.dev/packages/fhir_plus) if you need a version based on [fhir_r4](https://pub.dev/packages/fhir_r4) from [fhirfli.dev](https://fhirfli.dev) use [fhir_questionnaire_r4](https://pub.dev/packages/fhir_questionnaire_r4)
+
 ## Supported Questionnaire Items
 So far this package only supports [FHIR R4 Item Types](https://hl7.org/fhir/R4/valueset-item-type.html)
 | Item | Supported |  

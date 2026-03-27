@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
-import 'package:fhir/r4.dart';
-import 'package:fhir/r4/general_types/general_types.dart';
+import 'package:fhir_plus/r4.dart';
+import 'package:fhir_plus/r4/general_types/general_types.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
 
