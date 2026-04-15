@@ -12,11 +12,12 @@ Types of changes
 ## 7.1.0
 ### Changed
 - Extracted FhirPath logic from `QuestionnaireController` into a new `FhirPathController`
-- Added `fhirPathController` as a dependency to `QuestionnaireController`
+- Added `fhirPathController` as a dependency to `QuestionnaireController`, now it is possible to use acustom `FhirPathController` to evaluate FHIRPath expressions.
 
 ### Fixed
 - Fixed `QuestionnaireSingleChoiceItemView` to correctly match initial values against available options.
 - Fixed `QuestionnaireMultiChoiceItemView` to correctly match initial values against available options.
+- Fixed disabled state in `CustomDropDownButtonFormField`
 
 ## 7.0.0
 ### Changed

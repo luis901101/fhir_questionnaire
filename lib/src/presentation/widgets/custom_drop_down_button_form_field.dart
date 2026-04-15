@@ -68,6 +68,7 @@ class CustomDropDownButtonFormField<T> extends StatefulWidget {
   State createState() => _CustomDropDownButtonFormFieldState<T>();
 
   static Widget buildDropDown<T>({
+    BuildContext? context,
     bool isLoading = false,
     required List<T> values,
     List<String> valuesNames = const [],
@@ -88,6 +89,10 @@ class CustomDropDownButtonFormField<T> extends StatefulWidget {
     List<DropdownMenuItem<T>> dropDownItems = [];
     T? currentValue = controller.value;
     if (!isLoading && values.isNotEmpty) controller.value = null;
+    final disabledColor = context != null
+        ? Theme.of(context).disabledColor
+        : null;
+
     for (int i = 0; i < values.length; ++i) {
       T value = values[i];
       String valueName = i < valuesNames.length
@@ -97,7 +102,13 @@ class CustomDropDownButtonFormField<T> extends StatefulWidget {
       dropDownItems.add(
         DropdownMenuItem<T>(
           value: value,
-          child: itemBuilder?.call(value, i) ?? Text(valueName),
+          enabled: !disabled,
+          child:
+              itemBuilder?.call(value, i) ??
+              Text(
+                valueName,
+                style: disabled ? TextStyle(color: disabledColor) : null,
+              ),
         ),
       );
     }
@@ -181,6 +192,7 @@ class _CustomDropDownButtonFormFieldState<T>
       dropdownColor: widget.dropdownColor,
       decoration: (widget.decoration ?? const InputDecoration()).copyWith(
         suffix: showSuffixButtons ? null : const SizedBox(width: 10),
+        enabled: !widget.disabled,
         errorText: widget.controller?.error,
         contentPadding: const EdgeInsets.only(left: 12, top: 12, bottom: 12),
       ),

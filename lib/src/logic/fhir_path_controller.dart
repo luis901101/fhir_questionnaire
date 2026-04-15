@@ -93,19 +93,19 @@ class FhirPathController {
     // if we have unresolved items, try to resolve the first and repeat
     // until we reach 0 or calculations stop resolving
     do {
-      currentNumberOfUnresolvedItems = _nrUnresolvedExpressionsInItemList(
+      currentNumberOfUnresolvedItems = nrUnresolvedExpressionsInItemList(
         itemList: itemList,
       );
 
       if (currentNumberOfUnresolvedItems > 0) {
-        itemList = _resolveFirstCalculatedExpression(
+        itemList = resolveFirstCalculatedExpression(
           environment: environment,
           itemList: itemList,
           questionnaireResponse: questionnaireResponse,
         );
       }
 
-      newNumberOfUnresolvedItems = _nrUnresolvedExpressionsInItemList(
+      newNumberOfUnresolvedItems = nrUnresolvedExpressionsInItemList(
         itemList: itemList,
       );
     } while (newNumberOfUnresolvedItems > 0 &&
@@ -118,7 +118,7 @@ class FhirPathController {
   /// list. Returns the number of all expression for which no answer value
   /// exists. The number will be the sum of all expressions in the entire
   /// sub tree of items.
-  int _nrUnresolvedExpressionsInItemList({
+  int nrUnresolvedExpressionsInItemList({
     required List<QuestionnaireResponseItem>? itemList,
   }) {
     if (itemList == null) {
@@ -131,7 +131,7 @@ class FhirPathController {
       final childItems = item.item;
 
       if (childItems != null && childItems.isNotEmpty) {
-        result += _nrUnresolvedExpressionsInItemList(itemList: childItems);
+        result += nrUnresolvedExpressionsInItemList(itemList: childItems);
       }
 
       final calculatedExpressions = (item.extension_ ?? [])
@@ -158,7 +158,7 @@ class FhirPathController {
   /// Attempts to resolve exactly one unresolved calculated expression.
   /// Traverses the tree of items depth-first and will abort after it tried
   /// to resolve the first matching element.
-  List<QuestionnaireResponseItem>? _resolveFirstCalculatedExpression({
+  List<QuestionnaireResponseItem>? resolveFirstCalculatedExpression({
     required Map<String, dynamic> environment,
     required List<QuestionnaireResponseItem>? itemList,
     required QuestionnaireResponse questionnaireResponse,
@@ -172,12 +172,12 @@ class FhirPathController {
     // go depth first
     for (int itemIndex = 0; itemIndex < updatedList.length; itemIndex++) {
       if (updatedList[itemIndex].item != null &&
-          _nrUnresolvedExpressionsInItemList(
+          nrUnresolvedExpressionsInItemList(
                 itemList: updatedList[itemIndex].item,
               ) >
               0) {
         updatedList[itemIndex] = updatedList[itemIndex].copyWith(
-          item: _resolveFirstCalculatedExpression(
+          item: resolveFirstCalculatedExpression(
             environment: environment,
             itemList: updatedList[itemIndex].item,
             questionnaireResponse: questionnaireResponse,
