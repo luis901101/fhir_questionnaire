@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:fhir_plus/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
@@ -35,10 +36,19 @@ abstract class QuestionnaireSingleChoiceItemViewState<
       QuestionnaireAnswerOption? initial;
       for (final value in item.initial ?? <QuestionnaireInitial>[]) {
         if (value.valueCoding != null) {
-          initial = QuestionnaireAnswerOption(valueCoding: value.valueCoding!);
+          final valueCode = value.valueCoding?.code?.value;
+          initial =
+              values.firstWhereOrNull(
+                (e) => e.valueCoding?.code?.value == valueCode,
+              ) ??
+              QuestionnaireAnswerOption(valueCoding: value.valueCoding!);
           break;
         } else if (value.valueString != null) {
-          initial = QuestionnaireAnswerOption(valueString: value.valueString);
+          initial =
+              values.firstWhereOrNull(
+                (e) => e.valueString == value.valueString,
+              ) ??
+              QuestionnaireAnswerOption(valueString: value.valueString);
           break;
         }
       }

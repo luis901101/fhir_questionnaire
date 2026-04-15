@@ -9,6 +9,15 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## 7.1.0
+### Changed
+- Extracted FhirPath logic from `QuestionnaireController` into a new `FhirPathController`
+- Added `fhirPathController` as a dependency to `QuestionnaireController`
+
+### Fixed
+- Fixed `QuestionnaireSingleChoiceItemView` to correctly match initial values against available options.
+- Fixed `QuestionnaireMultiChoiceItemView` to correctly match initial values against available options.
+
 ## 7.0.0
 ### Changed
 - Breaking Change on the `fhir` dependencies which now this package uses [fhir_plus](https://pub.dev/packages/fhir_plus) and [fhir_path_plus](https://pub.dev/packages/fhir_path_plus) 
