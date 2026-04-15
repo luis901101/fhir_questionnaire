@@ -111,7 +111,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "6.1.0"
+    version: "1.0.1"
   fhir_r4:
     dependency: "direct main"
     description:

@@ -99,6 +99,7 @@ class QuestionnaireQuantityItemViewState
                   CustomDropDownButtonFormField.buildDropDown<
                     QuestionnaireCustomQuantityComparator
                   >(
+                    context: context,
                     controller: comparatorController,
                     disabled: isReadOnly,
                     values: QuestionnaireCustomQuantityComparator.values,

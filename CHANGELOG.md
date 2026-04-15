@@ -9,5 +9,11 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## 1.0.1
+### Fixed
+- Fixed `QuestionnaireSingleChoiceItemView` to correctly match initial values against available options.
+- Fixed `QuestionnaireMultiChoiceItemView` to correctly match initial values against available options.
+- Fixed disabled state in `CustomDropDownButtonFormField`
+
 ## 1.0.0
 - First release

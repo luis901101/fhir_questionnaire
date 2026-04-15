@@ -29,6 +29,7 @@ class QuestionnaireDropDownChoiceItemViewState
     return CustomDropDownButtonFormField.buildDropDown<
       QuestionnaireAnswerOption
     >(
+      context: context,
       controller: controller,
       disabled: isReadOnly,
       values: values,
