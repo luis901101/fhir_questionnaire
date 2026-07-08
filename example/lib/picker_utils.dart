@@ -156,7 +156,7 @@ class PickerUtils {
     List<PlatformFile> pickedFiles = [];
     try {
       Future<void> pickFromGallery() async {
-        final result = await FilePicker.platform.pickFiles(
+        final result = await FilePicker.pickFiles(
           type: type,
           allowedExtensions: allowedExtensions,
           allowMultiple: multiple,

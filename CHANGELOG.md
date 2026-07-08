@@ -9,6 +9,12 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## 7.2.0
+### Added
+- Added `subject`, `author`, `source`, `whoSigned` and `signedOnBehalfOf` `Reference` parameters to `QuestionnaireView`.
+- Added `subjectProvider`, `authorProvider`, `sourceProvider`, `whoSignedProvider` and `signedOnBehalfOfProvider` callbacks to `QuestionnaireController`.
+- The generated `QuestionnaireResponse` now populates `subject`, `author` and `source` when the corresponding references are provided.
+
 ## 7.1.0
 ### Changed
 - Extracted FhirPath logic from `QuestionnaireController` into a new `FhirPathController`

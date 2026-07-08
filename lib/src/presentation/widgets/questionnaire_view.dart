@@ -33,6 +33,22 @@ class QuestionnaireView extends StatefulWidget {
 
   /// The QuestionnaireController to use for item view and response generation.
   final QuestionnaireController? controller;
+
+  /// The subject of the questionnaire response
+  final Reference? subject;
+
+  /// The author of the questionnaire response
+  final Reference? author;
+
+  /// The individual providing the information reflected in the questionnaire respose
+  final Reference? source;
+
+  /// Who signed the questionaire response or item
+  final Reference? whoSigned;
+
+  /// The party on behalf of which the questionnaire response or item was signed
+  final Reference? signedOnBehalfOf;
+
   const QuestionnaireView({
     super.key,
     required this.questionnaire,
@@ -43,6 +59,11 @@ class QuestionnaireView extends StatefulWidget {
     this.defaultLocalization,
     this.localizations,
     this.locale,
+    this.subject,
+    this.author,
+    this.source,
+    this.whoSigned,
+    this.signedOnBehalfOf,
   });
 
   @override
@@ -75,7 +96,15 @@ class QuestionnaireViewState extends State<QuestionnaireView>
   @override
   void initState() {
     super.initState();
-    controller = widget.controller ?? QuestionnaireController();
+    controller =
+        widget.controller ??
+        QuestionnaireController(
+          subjectProvider: () => widget.subject,
+          authorProvider: () => widget.author,
+          sourceProvider: () => widget.source,
+          whoSignedProvider: () => widget.whoSigned,
+          signedOnBehalfOfProvider: () => widget.signedOnBehalfOf,
+        );
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback(onCreated);
     bottomPadding = FlutterViewUtils.get().padding.bottom;

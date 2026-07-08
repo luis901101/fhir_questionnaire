@@ -55,6 +55,11 @@ QuestionnaireView(
     isLoading: loading, // Wether is some ongoing operation before loading the UI 
     onSubmit: onSubmit, // Callback to get the QuestionnaireResponse
     controller: controller, // The QuestionnaireController to use for item view and response generation.
+    subject: patient, // Reference to the subject of the QuestionnaireResponse
+    author: practitioner, // Reference to the author of the QuestionnaireResponse
+    source: practitioner, // Reference to who provided the answers
+    whoSigned: practitioner, // Reference to who signed the QuestionnaireResponse
+    signedOnBehalfOf: patient, // Reference to the party the response was signed on behalf of
 )
 ```
 
@@ -65,8 +70,15 @@ QuestionnaireView(
 4. **QuestionnaireBaseLocalization? defaultLocalization**: Indicates what should be the fallback localization if the specified language or the system language is not supported, by default English is the fallback.
 5. **bool isLoading**: use this to indicate there is an ongoing operation, for instance if you need to make an API request to load your **Questionnaire** you can set `isLoading = true` so the `QuestionnaireView` will show a Shimmer loading effect view.
 6. **Future<Attachment?> Function()? onAttachmentLoaded**: To make this package simpler and compatible with all Flutter supported platforms, the feature to load an attachment is delegated to the App, so you have to handle this logic by implementing this function and returning an [Attachment](https://hl7.org/fhir/R4/datatypes.html#attachment) instance according to FHIR.
-7. **ValueChanged<QuestionnaireResponse> onSubmit**: This is the callback that will be triggered once the user taps on the Submit button, and you will get a `QuestionnaireResponse` instance ready, you just have to set the subject or whatever extra data you consider necessary but the answers will covered.
+7. **ValueChanged<QuestionnaireResponse> onSubmit**: This is the callback that will be triggered once the user taps on the Submit button, and you will get a `QuestionnaireResponse` instance ready with the answers covered, and with the `subject`, `author` and `source` already set if you provided them (see below). You can still set any extra data you consider necessary.
 8. **QuestionnaireController? controller**: This is the controller to be used for items and response generation within the `QuestionnaireView`, the purpose of this controller here is to allow you to use an instance of an extension of `QuestionnaireController` so you can override the behavior and widgets.
+9. **Reference? subject**: Optional [Reference](https://hl7.org/fhir/R4/references.html) to the subject of the `QuestionnaireResponse` (e.g. the `Patient` the answers are about). When provided it is set on the generated `QuestionnaireResponse.subject`.
+10. **Reference? author**: Optional reference to the author of the `QuestionnaireResponse` (the person or device that received and recorded the answers). When provided it is set on `QuestionnaireResponse.author`.
+11. **Reference? source**: Optional reference to the individual who provided the information reflected in the answers. When provided it is set on `QuestionnaireResponse.source`.
+12. **Reference? whoSigned**: Optional reference to who signed the `QuestionnaireResponse`. Used when building the response signature.
+13. **Reference? signedOnBehalfOf**: Optional reference to the party on behalf of which the `QuestionnaireResponse` was signed. Used when building the response signature.
+
+> If you use your own `controller` instead of letting `QuestionnaireView` create one, the `subject`, `author`, `source`, `whoSigned` and `signedOnBehalfOf` properties are ignored; provide the corresponding `subjectProvider`, `authorProvider`, `sourceProvider`, `whoSignedProvider` and `signedOnBehalfOfProvider` callbacks to your `QuestionnaireController` instead.
 
 ## Some extra notes
 1. This widget will use the app Theme to build, so if you want to change colors, InputDecorations, etc, you just have to change it in your app Theme. Also all the package widgets are public and exposed so you could override it if necessary.

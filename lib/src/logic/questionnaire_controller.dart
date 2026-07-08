@@ -27,10 +27,30 @@ class QuestionnaireController {
 
   final FhirPathController fhirPathController;
 
+  /// The subject of the questionnaire response
+  final ValueGetter<Reference?>? subjectProvider;
+
+  /// The author of the questionnaire response
+  final ValueGetter<Reference?>? authorProvider;
+
+  /// The individual providing the information reflected in the questionnaire respose
+  final ValueGetter<Reference?>? sourceProvider;
+
+  /// Who signed the questionaire response or item
+  final ValueGetter<Reference?>? whoSignedProvider;
+
+  /// The party on behalf of which the questionnaire response or item was signed
+  final ValueGetter<Reference?>? signedOnBehalfOfProvider;
+
   QuestionnaireController({
     this.onGenerateItemResponse,
     this.onBuildItemView,
     FhirPathController? fhirPathController,
+    this.subjectProvider,
+    this.authorProvider,
+    this.sourceProvider,
+    this.whoSignedProvider,
+    this.signedOnBehalfOfProvider,
   }) : fhirPathController = fhirPathController ?? FhirPathController();
 
   QuestionnaireItemView? buildChoiceItemView({
@@ -352,6 +372,9 @@ class QuestionnaireController {
       questionnaire: questionnaire.asFhirCanonical,
       status: QuestionnaireResponseStatus.completed.asFhirCode,
       item: itemResponses,
+      subject: subjectProvider?.call(),
+      author: authorProvider?.call(),
+      source: sourceProvider?.call(),
     );
 
     final environment = fhirPathController

@@ -412,6 +412,11 @@ class QuestionnairePage extends StatefulWidget {
 class QuestionnairePageState extends State<QuestionnairePage> {
   bool loading = true;
   ThemeData theme = ThemeData();
+  final practitioner = Reference(
+    reference: "Practitioner/123",
+    display: "Dr House",
+  );
+  final patient = Reference(reference: "Patient/456", display: "John Doe");
 
   @override
   void initState() {
@@ -435,6 +440,11 @@ class QuestionnairePageState extends State<QuestionnairePage> {
         localizations: widget.localizations,
         isLoading: loading,
         onSubmit: onSubmit,
+        author: practitioner,
+        source: practitioner,
+        subject: patient,
+        whoSigned: practitioner,
+        signedOnBehalfOf: patient,
       ),
     );
   }
