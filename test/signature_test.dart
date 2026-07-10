@@ -174,6 +174,11 @@ void main() {
     testWidgets('signature field shows a tappable preview that opens a pad', (
       tester,
     ) async {
+      // Use a realistic portrait phone surface (the signature dialog sizes its
+      // pad from the viewport's shortest side).
+      await tester.binding.setSurfaceSize(const Size(400, 800));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
       final questionnaire = Questionnaire.fromJsonString(
         _signatureQuestionnaireJson,
       );

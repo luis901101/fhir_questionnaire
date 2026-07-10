@@ -180,13 +180,24 @@ class QuestionnaireController {
       alreadyBuiltItemBundles: alreadyBuiltItemBundles,
     );
 
-    // When the item requires a signature, the signature view wraps the item's
-    // normal content and owns the enableWhen gating, so the inner view is built
-    // without an enableWhenController to avoid double init.
+    // When the item requires a signature, the signature field placement depends
+    // on the item type:
+    //  - group: the signature is rendered INSIDE the group's container as its
+    //    last child, so the group view owns the enableWhen gating.
+    //  - non-group: the signature view WRAPS the item's normal content and owns
+    //    the enableWhen gating.
+    // The view that owns the gating gets the real enableWhenController; the other
+    // gets null to avoid double init.
     final bool requiresSignature = item.hasSignature;
-    final innerEnableWhenController = requiresSignature
+    final bool isGroupSignature =
+        requiresSignature && itemType == QuestionnaireItemType.group;
+    final innerEnableWhenController = (requiresSignature && !isGroupSignature)
         ? null
         : enableWhenController;
+
+    // When the signature is rendered inside a group (see the group case below),
+    // this holds that field so its controller can drive validation + response.
+    QuestionnaireSignatureView? groupSignatureView;
 
     itemView = onBuildItemView?.call(
       item,
@@ -273,34 +284,57 @@ class QuestionnaireController {
           );
           break;
         case QuestionnaireItemType.group:
+          if (isGroupSignature) {
+            groupSignatureView = QuestionnaireSignatureView(item: item);
+          }
           itemView = QuestionnaireGroupItemView(
             item: item,
             enableWhenController: innerEnableWhenController,
-            children: children.map((itemBundle) => itemBundle.view).toList(),
+            children: [
+              ...children.map((itemBundle) => itemBundle.view),
+              // The signature field is shown inside the group's container, after
+              // the group's own items.
+              ?groupSignatureView,
+            ],
           );
           break;
         default:
       }
     }
 
-    // Wrap the built inner view (which may be null for e.g. an unhandled type)
-    // with the signature pad. The wrapper's controller (a SignatureController)
-    // becomes the bundle controller, so the existing validation recursion picks
-    // it up automatically.
+    // The controller that drives validation + response for this bundle. For a
+    // signature it must be the SignatureController so the existing validation
+    // recursion and response generation pick it up automatically.
+    FieldController? bundleController = itemView?.controller;
+
     if (requiresSignature) {
-      itemView = QuestionnaireSignatureView(
-        item: item,
-        enableWhenController: enableWhenController,
-        child: itemView,
-      );
+      if (groupSignatureView != null) {
+        // The signature field was rendered inside the group's container above;
+        // its controller becomes the bundle controller.
+        bundleController = groupSignatureView.controller;
+      } else {
+        // Non-group item (or a custom group view): wrap the built inner view
+        // with the signature pad, rendered below the item's normal content. The
+        // wrapper owns the enableWhen gating only if the inner view did not
+        // already receive it (avoids double init).
+        final signatureView = QuestionnaireSignatureView(
+          item: item,
+          enableWhenController: innerEnableWhenController == null
+              ? enableWhenController
+              : null,
+          child: itemView,
+        );
+        itemView = signatureView;
+        bundleController = signatureView.controller;
+      }
     }
 
-    return itemView != null
+    return itemView != null && bundleController != null
         ? QuestionnaireItemBundle(
             item: item,
             view: itemView,
             children: children,
-            controller: itemView.controller,
+            controller: bundleController,
             groupId: groupId,
           )
         : null;

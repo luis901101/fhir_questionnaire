@@ -91,12 +91,20 @@ class QuestionnaireSignatureViewState
         ? theme.colorScheme.error
         : theme.dividerColor;
     final signatureBytes = controller.value;
+    final inputBorderRadius =
+        (theme.inputDecorationTheme.border is OutlineInputBorder)
+        ? (theme.inputDecorationTheme.border as OutlineInputBorder).borderRadius
+        : const BorderRadius.all(Radius.circular(4));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (widget.child != null) ...[widget.child!, const SizedBox(height: 8)],
         Padding(
-          padding: const EdgeInsets.only(left: 16, right: 16, bottom: 4),
+          padding: EdgeInsets.only(
+            left: inputBorderRadius.bottomLeft.x / 2,
+            right: inputBorderRadius.bottomLeft.x / 2,
+            bottom: 4.0,
+          ),
           child: Text.rich(
             TextSpan(
               style: theme.textTheme.titleSmall,
@@ -147,7 +155,7 @@ class QuestionnaireSignatureViewState
             alignment: Alignment.centerRight,
             child: TextButton.icon(
               onPressed: () => setState(() => controller.clear()),
-              icon: const Icon(Icons.clear),
+              icon: const Icon(Icons.gesture),
               label: Text(localization.btnClearSignature),
             ),
           ),
