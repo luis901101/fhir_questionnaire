@@ -9,6 +9,10 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## 8.0.2
+### Fixed
+- Fixed `buildSignatureExtension` to ensure `onBehalfOf` is null if it matches `whoSigns`.
+
 ## 8.0.1
 ### Changed
 - Updated signature components to respect theme colors.
