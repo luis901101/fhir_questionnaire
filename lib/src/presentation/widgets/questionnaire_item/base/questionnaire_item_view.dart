@@ -52,9 +52,7 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
   /// Docs: http://hl7.org/fhir/R4/extension-minlength.html
   int? get minLength => _minLengthCache ??= (item.extension_ ?? [])
       .firstWhereOrNull(
-        (ext) =>
-            ext.url.valueString ==
-            'http://hl7.org/fhir/StructureDefinition/minLength',
+        (ext) => ext.url.valueString == FhirConstants.minLengthExtensionUrl,
       )
       ?.valueInteger
       ?.valueInt;
@@ -64,9 +62,7 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
   dynamic get minValue {
     if (_minValueCache != null) return _minValueCache;
     final minValueItem = (item.extension_ ?? []).firstWhereOrNull(
-      (ext) =>
-          ext.url.valueString ==
-          'http://hl7.org/fhir/StructureDefinition/minValue',
+      (ext) => ext.url.valueString == FhirConstants.minValueExtensionUrl,
     );
     return _minValueCache =
         minValueItem?.valueInteger?.valueInt ??
@@ -82,9 +78,7 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
   dynamic get maxValue {
     if (_maxValueCache != null) return _maxValueCache;
     final maxValueItem = (item.extension_ ?? []).firstWhereOrNull(
-      (ext) =>
-          ext.url.valueString ==
-          'http://hl7.org/fhir/StructureDefinition/maxValue',
+      (ext) => ext.url.valueString == FhirConstants.maxValueExtensionUrl,
     );
     return _maxValueCache =
         maxValueItem?.valueInteger?.valueInt ??
@@ -100,15 +94,14 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
   bool get isHidden => _isHiddenCache ??=
       (item.extension_ ?? []).any(
         (ext) =>
-            ext.url.valueString ==
-                'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden' &&
+            ext.url.valueString == FhirConstants.hiddenExtensionUrl &&
             ext.valueBoolean?.valueBoolean == true,
       ) ||
       (item.type.valueString == QuestionnaireItemType.display.code &&
           (item.extension_?.any(
                 (subExt) =>
                     subExt.url.valueString ==
-                        'http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory' &&
+                        FhirConstants.displayCategoryExtensionUrl &&
                     subExt
                             .valueCodeableConcept
                             ?.coding
@@ -123,41 +116,38 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
   /// Docs: http://hl7.org/fhir/R4/extension-entryformat.html
   String? get hintText => _hintTextCache ??= (item.extension_ ?? [])
       .firstWhereOrNull(
-        (ext) =>
-            ext.url.valueString ==
-            'http://hl7.org/fhir/StructureDefinition/entryFormat',
+        (ext) => ext.url.valueString == FhirConstants.entryFormatExtensionUrl,
       )
       ?.valueString
       ?.valueString;
 
   /// Checks for questionnaire-displayCategory extension to provide helper text
   /// Docs: https://hl7.org/fhir/R4/extension-questionnaire-displaycategory.html
-  QuestionnaireItem?
-  get helperItem => _helperItemCache ??= item.item?.firstWhereOrNull(
-    (subItem) =>
-        subItem.type.valueString == QuestionnaireItemType.display.code &&
-        (subItem.extension_?.any(
-              (subExt) =>
-                  subExt.url.valueString ==
-                      'http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory' &&
-                  subExt
-                          .valueCodeableConcept
-                          ?.coding
-                          ?.firstOrNull
-                          ?.code
-                          ?.valueString ==
-                      QuestionnaireItemExtensionCode.help.code,
-            ) ??
-            false),
-  );
+  QuestionnaireItem? get helperItem =>
+      _helperItemCache ??= item.item?.firstWhereOrNull(
+        (subItem) =>
+            subItem.type.valueString == QuestionnaireItemType.display.code &&
+            (subItem.extension_?.any(
+                  (subExt) =>
+                      subExt.url.valueString ==
+                          FhirConstants.displayCategoryExtensionUrl &&
+                      subExt
+                              .valueCodeableConcept
+                              ?.coding
+                              ?.firstOrNull
+                              ?.code
+                              ?.valueString ==
+                          QuestionnaireItemExtensionCode.help.code,
+                ) ??
+                false),
+      );
 
   String? get helperText => _helperTextCache ??= helperItem?.title;
 
   bool get helperTextAsButton =>
       _helperTextAsButtonCache ??= (helperItem?.extension_ ?? []).any(
         (ext) =>
-            ext.url.valueString ==
-                'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl' &&
+            ext.url.valueString == FhirConstants.itemControlExtensionUrl &&
             [
               QuestionnaireItemExtensionCode.help.code,
               QuestionnaireItemExtensionCode.flyover.code,

@@ -1,8 +1,15 @@
+import 'package:collection/collection.dart';
 import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_questionnaire_r4/fhir_questionnaire_r4.dart';
 
 extension CodeableConceptUtils on CodeableConcept {
   String? get title => text?.valueString ?? coding?.firstOrNull?.title;
+}
+
+extension FhirExtensionSignatureUtils on FhirExtension {
+  /// Whether this is the `questionnaire-signatureRequired` marker extension.
+  bool get isSignatureRequired =>
+      url.valueString == FhirConstants.signatureRequiredExtensionUrl;
 }
 
 extension CodingUtils on Coding {
@@ -54,11 +61,34 @@ extension FhirDateTimeUtils on FhirDateTime {
 extension QuestionnaireItemUtils on QuestionnaireItem {
   String? get title =>
       extension_?.localize() ?? text?.valueString ?? code?.firstOrNull?.title;
+
+  /// Whether this item requires a hand written signature.
+  bool get hasSignature =>
+      extension_?.any((e) => e.isSignatureRequired) ?? false;
+
+  /// The signature type coding declared by the `questionnaire-signatureRequired`
+  /// extension of this item, used as [Signature.type] in the response.
+  List<Coding>? get signatureTypeCoding => extension_
+      ?.firstWhereOrNull((e) => e.isSignatureRequired)
+      ?.valueCodeableConcept
+      ?.coding;
 }
 
 extension QuestionnaireUtils on Questionnaire {
   FhirCanonical get asFhirCanonical =>
       FhirCanonical('${R4ResourceType.Questionnaire.name}/${id?.valueString}');
+
+  /// Whether this Questionnaire requires a hand written signature at root level.
+  bool get hasSignature =>
+      extension_?.any((e) => e.isSignatureRequired) ?? false;
+
+  /// The signature type coding declared by the root level
+  /// `questionnaire-signatureRequired` extension, used as [Signature.type] in
+  /// the response.
+  List<Coding>? get signatureTypeCoding => extension_
+      ?.firstWhereOrNull((e) => e.isSignatureRequired)
+      ?.valueCodeableConcept
+      ?.coding;
 }
 
 extension QuestionnaireAnswerOptiontils on QuestionnaireAnswerOption {

@@ -15,11 +15,25 @@ class QuestionnaireEsLocalization extends QuestionnaireBaseLocalization {
   @override
   String get btnRemove => 'Quitar';
   @override
+  String get btnClearSignature => 'Limpiar';
+  @override
+  String get btnCancel => 'Cancelar';
+  @override
+  String get btnDone => 'Hecho';
+  @override
   String get textOtherOption => 'Optra opción';
   @override
   String get textDate => 'Fecha';
   @override
   String get textTime => 'Hora';
+  @override
+  String get textSignature => 'Firma';
+  @override
+  String get textTapToSign => 'Toque para firmar';
+  @override
+  String get textSignedBy => 'Por';
+  @override
+  String get textSignedOnBehalfOf => 'En nombre de';
   @override
   String get exceptionNoEmptyField => 'Este campo es requerido.';
   @override

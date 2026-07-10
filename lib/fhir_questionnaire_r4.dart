@@ -1,4 +1,5 @@
 export 'package:fhir_questionnaire_r4/src/logic/utils/questionnaire_utils.dart';
+export 'package:fhir_questionnaire_r4/src/logic/utils/fhir_constants.dart';
 export 'package:fhir_questionnaire_r4/src/logic/utils/fhir_extension_utils.dart';
 export 'package:fhir_questionnaire_r4/src/logic/utils/num_utils.dart';
 export 'package:fhir_questionnaire_r4/src/logic/utils/text_utils.dart';
@@ -15,6 +16,7 @@ export 'package:fhir_questionnaire_r4/src/logic/fhir_path_controller.dart';
 export 'package:fhir_questionnaire_r4/src/model/questionnaire_item_bundle.dart';
 export 'package:fhir_questionnaire_r4/src/model/questionnaire_item_enable_when_controller.dart';
 export 'package:fhir_questionnaire_r4/src/model/questionnaire_item_enable_when_bundle.dart';
+export 'package:fhir_questionnaire_r4/src/model/questionnaire_person.dart';
 export 'package:fhir_questionnaire_r4/src/presentation/utils/view_utils.dart';
 export 'package:fhir_questionnaire_r4/src/presentation/utils/input_method_utils.dart';
 export 'package:fhir_questionnaire_r4/src/presentation/utils/validation_utils.dart';
@@ -46,6 +48,9 @@ export 'package:fhir_questionnaire_r4/src/presentation/widgets/questionnaire_ite
 export 'package:fhir_questionnaire_r4/src/presentation/widgets/questionnaire_item/base/questionnaire_choice_item_view.dart';
 export 'package:fhir_questionnaire_r4/src/presentation/widgets/questionnaire_item/base/questionnaire_text_field_item_view.dart';
 export 'package:fhir_questionnaire_r4/src/presentation/widgets/questionnaire_item/base/questionnaire_multi_choice_item_view.dart';
+export 'package:fhir_questionnaire_r4/src/presentation/widgets/questionnaire_item/signature/questionnaire_signature_view.dart';
+export 'package:fhir_questionnaire_r4/src/presentation/widgets/questionnaire_item/signature/signature_controller.dart';
+export 'package:fhir_questionnaire_r4/src/presentation/widgets/questionnaire_item/signature/signature_pad_dialog.dart';
 export 'package:fhir_questionnaire_r4/src/presentation/widgets/custom_text_field.dart';
 export 'package:fhir_questionnaire_r4/src/presentation/widgets/helper_button.dart';
 export 'package:fhir_questionnaire_r4/src/presentation/localization/questionnaire_localization.dart';

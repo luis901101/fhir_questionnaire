@@ -57,6 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
   final List<({String name, String value})> questionnaires = [
     (name: 'Generic', value: QuestionnaireSamples.sampleGeneric),
+    (name: 'Signature', value: QuestionnaireSamples.sampleSignature),
     (name: 'PRAPARE', value: QuestionnaireSamples.samplePrapare),
     (name: 'PHQ-9', value: QuestionnaireSamples.samplePHQ9),
     (name: 'GAD-7', value: QuestionnaireSamples.sampleGAD7),
@@ -412,6 +413,21 @@ class QuestionnairePage extends StatefulWidget {
 class QuestionnairePageState extends State<QuestionnairePage> {
   bool loading = true;
   ThemeData theme = ThemeData();
+  final practitioner = QuestionnairePerson(
+    reference: Reference(
+      reference: FhirString("Practitioner/123"),
+      display: FhirString("Greg House"),
+    ),
+    name: 'Greg House',
+    title: 'General Clinician',
+  );
+  final patient = QuestionnairePerson(
+    reference: Reference(
+      reference: FhirString("Patient/456"),
+      display: FhirString("John Doe"),
+    ),
+    name: 'John Doe',
+  );
 
   @override
   void initState() {
@@ -435,6 +451,11 @@ class QuestionnairePageState extends State<QuestionnairePage> {
         localizations: widget.localizations,
         isLoading: loading,
         onSubmit: onSubmit,
+        author: practitioner,
+        source: practitioner,
+        subject: patient,
+        whoSigns: practitioner,
+        signsOnBehalfOf: patient,
       ),
     );
   }
@@ -519,11 +540,25 @@ class QuestionnaireFrLocalization extends QuestionnaireBaseLocalization {
   @override
   String get btnRemove => 'Retirer';
   @override
+  String get btnClearSignature => 'Effacer';
+  @override
+  String get btnCancel => 'Annuler';
+  @override
+  String get btnDone => 'Terminé';
+  @override
   String get textOtherOption => 'Autre option';
   @override
   String get textDate => 'Date';
   @override
   String get textTime => 'Temps';
+  @override
+  String get textSignature => 'Signature';
+  @override
+  String get textTapToSign => 'Appuyez pour signer';
+  @override
+  String get textSignedBy => 'Par';
+  @override
+  String get textSignedOnBehalfOf => 'Au nom de';
   @override
   String get exceptionNoEmptyField => 'Ce champ est obligatoire.';
   @override

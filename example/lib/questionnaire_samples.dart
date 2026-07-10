@@ -1,6 +1,98 @@
 import 'package:fhir_r4/fhir_r4.dart';
 
 extension QuestionnaireSamples on Questionnaire {
+  static String get sampleSignature => '''
+{
+  "resourceType": "Questionnaire",
+  "id": "example-signature",
+  "version": "1",
+  "name": "SignatureExample",
+  "title": "Questionnaire with Hand Written Signatures",
+  "status": "draft",
+  "date": "2026-07-08",
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-signatureRequired",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "urn:iso-astm:E1762-95:2013",
+            "code": "1.2.840.10065.1.12.1.1",
+            "display": "Author's Signature"
+          }
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "intro",
+      "type": "display",
+      "text": "This form demonstrates hand written signatures at item (group) level and at the end of the form (root level). Every signature is required."
+    },
+    {
+      "linkId": "consent-group",
+      "type": "group",
+      "text": "Consent",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-signatureRequired",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "urn:iso-astm:E1762-95:2013",
+                "code": "1.2.840.10065.1.12.1.7",
+                "display": "Consent Signature"
+              }
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "consent-agree",
+          "type": "boolean",
+          "required": true,
+          "text": "I agree to the terms and conditions."
+        },
+        {
+          "linkId": "consent-name",
+          "type": "string",
+          "text": "Full name"
+        }
+      ]
+    },
+    {
+      "linkId": "witness-group",
+      "type": "group",
+      "text": "Witness",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-signatureRequired",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "urn:iso-astm:E1762-95:2013",
+                "code": "1.2.840.10065.1.12.1.5",
+                "display": "Verification Signature"
+              }
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "witness-name",
+          "type": "string",
+          "text": "Witness full name"
+        }
+      ]
+    }
+  ]
+}
+''';
+
   static String get sampleGeneric => '''
 {
   "resourceType": "Questionnaire",
@@ -11,6 +103,20 @@ extension QuestionnaireSamples on Questionnaire {
   "status": "draft",
   "date": "2024-03-05",
   "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-signatureRequired",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "urn:iso-astm:E1762-95:2013",
+            "code": "1.2.840.10065.1.12.1.1",
+            "display": "Author's Signature"
+          }
+        ]
+      }
+    }
+  ],
   "item": [
     {
       "linkId": "intro",

@@ -44,18 +44,22 @@ extension FhirExtensionUtils on Iterable<FhirExtension> {
     locale ??= QuestionnaireLocalization.locale;
     String langTag = locale.toLanguageTag();
     String langCode = locale.languageCode;
-    final translation = firstWhereOrNull(
-      (ext) =>
-          ext.url.valueString ==
-              'http://hl7.org/fhir/StructureDefinition/translation' &&
-          ext.extension_?.firstWhereOrNull(
-                (e) =>
-                    e.url.valueString == 'lang' &&
-                        e.valueCode?.valueString == langTag ||
-                    e.valueCode?.valueString == langCode,
-              ) !=
-              null,
-    )?.extension_?.firstWhereOrNull((e) => e.url.valueString == 'content');
+    final translation =
+        firstWhereOrNull(
+          (ext) =>
+              ext.url.valueString == FhirConstants.translationExtensionUrl &&
+              ext.extension_?.firstWhereOrNull(
+                    (e) =>
+                        e.url.valueString ==
+                                FhirConstants.translationLangExtensionUrl &&
+                            e.valueCode?.valueString == langTag ||
+                        e.valueCode?.valueString == langCode,
+                  ) !=
+                  null,
+        )?.extension_?.firstWhereOrNull(
+          (e) =>
+              e.url.valueString == FhirConstants.translationContentExtensionUrl,
+        );
 
     return translation?.valueString?.valueString ??
         translation?.valueMarkdown?.valueString;

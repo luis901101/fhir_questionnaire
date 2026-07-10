@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:fhir_r4/fhir_r4.dart' hide QuestionnaireItemType;
 import 'package:fhir_questionnaire_r4/fhir_questionnaire_r4.dart'
@@ -31,10 +33,30 @@ class QuestionnaireController {
   /// testing or custom behaviour.
   final FhirPathController fhirPathController;
 
+  /// The subject of the questionnaire response
+  final ValueGetter<QuestionnairePerson?>? subjectProvider;
+
+  /// The author of the questionnaire response
+  final ValueGetter<QuestionnairePerson?>? authorProvider;
+
+  /// The individual providing the information reflected in the questionnaire respose
+  final ValueGetter<QuestionnairePerson?>? sourceProvider;
+
+  /// Who signs the questionaire response or item
+  final ValueGetter<QuestionnairePerson?>? whoSignsProvider;
+
+  /// The party on behalf of which the questionnaire response or item is going to be signed
+  final ValueGetter<QuestionnairePerson?>? signsOnBehalfOfProvider;
+
   QuestionnaireController({
     this.onGenerateItemResponse,
     this.onBuildItemView,
     FhirPathController? fhirPathController,
+    this.subjectProvider,
+    this.authorProvider,
+    this.sourceProvider,
+    this.whoSignsProvider,
+    this.signsOnBehalfOfProvider,
   }) : fhirPathController = fhirPathController ?? FhirPathController();
 
   QuestionnaireItemView? buildChoiceItemView({
@@ -162,9 +184,28 @@ class QuestionnaireController {
       alreadyBuiltItemBundles: alreadyBuiltItemBundles,
     );
 
+    // When the item requires a signature, the signature field placement depends
+    // on the item type:
+    //  - group: the signature is rendered INSIDE the group's container as its
+    //    last child, so the group view owns the enableWhen gating.
+    //  - non-group: the signature view WRAPS the item's normal content and owns
+    //    the enableWhen gating.
+    // The view that owns the gating gets the real enableWhenController; the other
+    // gets null to avoid double init.
+    final bool requiresSignature = item.hasSignature;
+    final bool isGroupSignature =
+        requiresSignature && itemType == QuestionnaireItemType.group;
+    final innerEnableWhenController = (requiresSignature && !isGroupSignature)
+        ? null
+        : enableWhenController;
+
+    // When the signature is rendered inside a group (see the group case below),
+    // this holds that field so its controller can drive validation + response.
+    QuestionnaireSignatureView? groupSignatureView;
+
     itemView = onBuildItemView?.call(
       item,
-      enableWhenController,
+      innerEnableWhenController,
       onAttachmentLoaded,
     );
 
@@ -173,43 +214,43 @@ class QuestionnaireController {
         case QuestionnaireItemType.string:
           itemView = QuestionnaireStringItemView(
             item: item,
-            enableWhenController: enableWhenController,
+            enableWhenController: innerEnableWhenController,
           );
           break;
         case QuestionnaireItemType.text:
           itemView = QuestionnaireTextItemView(
             item: item,
-            enableWhenController: enableWhenController,
+            enableWhenController: innerEnableWhenController,
           );
           break;
         case QuestionnaireItemType.integer:
           itemView = QuestionnaireIntegerItemView(
             item: item,
-            enableWhenController: enableWhenController,
+            enableWhenController: innerEnableWhenController,
           );
           break;
         case QuestionnaireItemType.decimal:
           itemView = QuestionnaireDecimalItemView(
             item: item,
-            enableWhenController: enableWhenController,
+            enableWhenController: innerEnableWhenController,
           );
           break;
         case QuestionnaireItemType.boolean:
           itemView = QuestionnaireBooleanItemView(
             item: item,
-            enableWhenController: enableWhenController,
+            enableWhenController: innerEnableWhenController,
           );
           break;
         case QuestionnaireItemType.choice:
           itemView = buildChoiceItemView(
             item: item,
-            enableWhenController: enableWhenController,
+            enableWhenController: innerEnableWhenController,
           );
           break;
         case QuestionnaireItemType.openChoice:
           itemView = buildOpenChoiceItemView(
             item: item,
-            enableWhenController: enableWhenController,
+            enableWhenController: innerEnableWhenController,
           );
           break;
         case QuestionnaireItemType.date:
@@ -217,52 +258,93 @@ class QuestionnaireController {
         case QuestionnaireItemType.dateTime:
           itemView = QuestionnaireDateTimeItemView(
             item: item,
-            enableWhenController: enableWhenController,
+            enableWhenController: innerEnableWhenController,
             type: DateTimeType.fromQuestionnaireItemType(itemType),
           );
           break;
         case QuestionnaireItemType.quantity:
           itemView = QuestionnaireQuantityItemView(
             item: item,
-            enableWhenController: enableWhenController,
+            enableWhenController: innerEnableWhenController,
           );
           break;
         case QuestionnaireItemType.url:
           itemView = QuestionnaireUrlItemView(
             item: item,
-            enableWhenController: enableWhenController,
+            enableWhenController: innerEnableWhenController,
           );
           break;
         case QuestionnaireItemType.display:
           itemView = QuestionnaireDisplayItemView(
             item: item,
-            enableWhenController: enableWhenController,
+            enableWhenController: innerEnableWhenController,
           );
           break;
         case QuestionnaireItemType.attachment:
           itemView = QuestionnaireAttachmentItemView(
             item: item,
             onAttachmentLoaded: onAttachmentLoaded,
-            enableWhenController: enableWhenController,
+            enableWhenController: innerEnableWhenController,
           );
           break;
         case QuestionnaireItemType.group:
+          if (isGroupSignature) {
+            groupSignatureView = QuestionnaireSignatureView(
+              item: item,
+              whoSigns: whoSignsProvider?.call(),
+              signsOnBehalfOf: signsOnBehalfOfProvider?.call(),
+            );
+          }
           itemView = QuestionnaireGroupItemView(
             item: item,
-            enableWhenController: enableWhenController,
-            children: children.map((itemBundle) => itemBundle.view).toList(),
+            enableWhenController: innerEnableWhenController,
+            children: [
+              ...children.map((itemBundle) => itemBundle.view),
+              // The signature field is shown inside the group's container, after
+              // the group's own items.
+              ?groupSignatureView,
+            ],
           );
           break;
         default:
       }
     }
 
-    return itemView != null
+    // The controller that drives validation + response for this bundle. For a
+    // signature it must be the SignatureController so the existing validation
+    // recursion and response generation pick it up automatically.
+    FieldController? bundleController = itemView?.controller;
+
+    if (requiresSignature) {
+      if (groupSignatureView != null) {
+        // The signature field was rendered inside the group's container above;
+        // its controller becomes the bundle controller.
+        bundleController = groupSignatureView.controller;
+      } else {
+        // Non-group item (or a custom group view): wrap the built inner view
+        // with the signature pad, rendered below the item's normal content. The
+        // wrapper owns the enableWhen gating only if the inner view did not
+        // already receive it (avoids double init).
+        final signatureView = QuestionnaireSignatureView(
+          item: item,
+          whoSigns: whoSignsProvider?.call(),
+          signsOnBehalfOf: signsOnBehalfOfProvider?.call(),
+          enableWhenController: innerEnableWhenController == null
+              ? enableWhenController
+              : null,
+          child: itemView,
+        );
+        itemView = signatureView;
+        bundleController = signatureView.controller;
+      }
+    }
+
+    return itemView != null && bundleController != null
         ? QuestionnaireItemBundle(
             item: item,
             view: itemView,
             children: children,
-            controller: itemView.controller,
+            controller: bundleController,
             groupId: groupId,
           )
         : null;
@@ -344,6 +426,36 @@ class QuestionnaireController {
     return answers;
   }
 
+  /// Builds the `questionnaireresponse-signature` extension holding the captured
+  /// signature as a PNG image.
+  ///
+  /// [type] is the coding declared by the corresponding
+  /// `questionnaire-signatureRequired` extension (root or item level) and is
+  /// reused verbatim as [Signature.type]. Falls back to a default coding only
+  /// when the marker declares none.
+  FhirExtension buildSignatureExtension(
+    Uint8List pngBytes, {
+    List<Coding>? type,
+  }) => FhirExtension(
+    url: FhirString(FhirConstants.responseSignatureExtensionUrl),
+    valueSignature: Signature(
+      type: (type == null || type.isEmpty)
+          ? [
+              Coding(
+                system: FhirUri(FhirConstants.signatureCodingSystem),
+                code: FhirCode(FhirConstants.defaultSignatureCode),
+                display: FhirString(FhirConstants.defaultSignatureDisplay),
+              ),
+            ]
+          : type,
+      when: FhirInstant.fromDateTime(DateTime.now().toUtc()),
+      who: whoSignsProvider?.call()?.reference ?? Reference(),
+      onBehalfOf: signsOnBehalfOfProvider?.call()?.reference,
+      sigFormat: FhirCode('image/png'),
+      data: FhirBase64Binary(base64.encode(pngBytes)),
+    ),
+  );
+
   Future<QuestionnaireResponse> generateResponse({
     required Questionnaire questionnaire,
     required List<QuestionnaireItemBundle> itemBundles,
@@ -356,6 +468,9 @@ class QuestionnaireController {
       questionnaire: questionnaire.asFhirCanonical,
       status: QuestionnaireResponseStatus.completed,
       item: itemResponses,
+      subject: subjectProvider?.call()?.reference,
+      author: authorProvider?.call()?.reference,
+      source: sourceProvider?.call()?.reference,
     );
 
     final environment = await fhirPathController
@@ -388,6 +503,35 @@ class QuestionnaireController {
     );
     if (itemBundle.children.isNotEmpty) {
       childItems = generateItemResponses(itemBundles: itemBundle.children!);
+    }
+
+    // Signature items store the captured signature in the response item's
+    // `questionnaireresponse-signature` extension rather than as an `answer`.
+    // Handled before the type switch so it works regardless of the item type
+    // (typically `group` or `display`).
+    if (itemBundle.item.hasSignature) {
+      final bytes = itemBundle.controller is SignatureController
+          ? (itemBundle.controller as SignatureController).value
+          : null;
+      final extensions = <FhirExtension>[
+        ...?itemBundle.item.extension_,
+        if (bytes != null)
+          buildSignatureExtension(
+            bytes,
+            type: itemBundle.item.signatureTypeCoding,
+          ),
+      ];
+      var item = QuestionnaireResponseItem(
+        linkId: itemBundle.item.linkId,
+        definition: itemBundle.item.definition,
+        text: itemBundle.item.text,
+        item: childItems,
+        extension_: extensions.isEmpty ? null : extensions,
+      );
+      if (onGenerateItemResponse != null) {
+        item = onGenerateItemResponse!.call(itemBundle, item);
+      }
+      return item;
     }
 
     switch (itemType) {

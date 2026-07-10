@@ -41,6 +41,7 @@ So far this package only supports [FHIR R4 Item Types](https://hl7.org/fhir/R4/v
 8. Extesion for [maxValue](http://hl7.org/fhir/R4/extension-maxvalue.html) extension. 
 9. Extesion for hint texts using [entryFormat](http://hl7.org/fhir/R4/extension-entryformat.html) extension.
 10. Extension for helper text or helper button using [questionnaire-displayCategory](https://hl7.org/fhir/R4/extension-questionnaire-displaycategory.html) and [questionnaire-itemControl](https://hl7.org/fhir/R4/extension-questionnaire-itemcontrol.html) with the codes `help` and `flyover`.
+11. Hand written signature capture via the [questionnaire-signatureRequired](http://hl7.org/fhir/R4/extension-questionnaire-signaturerequired.html) extension (root or item level), emitted in the response as a [questionnaireresponse-signature](http://hl7.org/fhir/R4/extension-questionnaireresponse-signature.html). See the [Signatures](#signatures) section.
 
 
 ## How to use
@@ -55,6 +56,11 @@ QuestionnaireView(
     isLoading: loading, // Wether is some ongoing operation before loading the UI 
     onSubmit: onSubmit, // Callback to get the QuestionnaireResponse
     controller: controller, // The QuestionnaireController to use for item view and response generation.
+    subject: patient, // QuestionnairePerson subject of the QuestionnaireResponse
+    author: practitioner, // QuestionnairePerson author of the QuestionnaireResponse
+    source: practitioner, // QuestionnairePerson who provided the answers
+    whoSigns: practitioner, // QuestionnairePerson who signs the QuestionnaireResponse / signatures
+    signsOnBehalfOf: patient, // QuestionnairePerson the response is signed on behalf of
 )
 ```
 
@@ -67,6 +73,70 @@ QuestionnaireView(
 6. **Future<Attachment?> Function()? onAttachmentLoaded**: To make this package simpler and compatible with all Flutter supported platforms, the feature to load an attachment is delegated to the App, so you have to handle this logic by implementing this function and returning an [Attachment](https://hl7.org/fhir/R4/datatypes.html#attachment) instance according to FHIR.
 7. **ValueChanged<QuestionnaireResponse> onSubmit**: This is the callback that will be triggered once the user taps on the Submit button, and you will get a `QuestionnaireResponse` instance ready, you just have to set the subject or whatever extra data you consider necessary but the answers will covered.
 8. **QuestionnaireController? controller**: This is the controller to be used for items and response generation within the `QuestionnaireView`, the purpose of this controller here is to allow you to use an instance of an extension of `QuestionnaireController` so you can override the behavior and widgets.
+9. **QuestionnairePerson? subject**: Optional [`QuestionnairePerson`](#signer-information-questionnaireperson) for the subject of the `QuestionnaireResponse` (e.g. the `Patient` the answers are about). When provided its `reference` is set on the generated `QuestionnaireResponse.subject`.
+10. **QuestionnairePerson? author**: Optional person for the author of the `QuestionnaireResponse` (the person or device that received and recorded the answers). When provided its `reference` is set on `QuestionnaireResponse.author`.
+11. **QuestionnairePerson? source**: Optional person for the individual who provided the information reflected in the answers. When provided its `reference` is set on `QuestionnaireResponse.source`.
+12. **QuestionnairePerson? whoSigns**: Optional person who signs the `QuestionnaireResponse`. Its `reference` is used as `Signature.who`, and its `name`/`title` are shown beneath each signature pad.
+13. **QuestionnairePerson? signsOnBehalfOf**: Optional person on behalf of which the `QuestionnaireResponse` is signed. Its `reference` is used as `Signature.onBehalfOf`.
+
+> If you use your own `controller` instead of letting `QuestionnaireView` create one, the `subject`, `author`, `source`, `whoSigns` and `signsOnBehalfOf` properties are ignored; provide the corresponding `subjectProvider`, `authorProvider`, `sourceProvider`, `whoSignsProvider` and `signsOnBehalfOfProvider` callbacks to your `QuestionnaireController` instead.
+
+## Signatures
+This package can capture hand written signatures and embed them into the generated `QuestionnaireResponse`, powered by the [hand_signature](https://pub.dev/packages/hand_signature) package.
+
+### Declaring a required signature
+A signature is requested wherever a [`questionnaire-signatureRequired`](http://hl7.org/fhir/R4/extension-questionnaire-signaturerequired.html) extension is present, either at the **root** of the `Questionnaire` or on any **item** (typically a `group`). The extension's `valueCodeableConcept.coding` declares the kind of signature required and is reused verbatim as the `Signature.type` in the response.
+
+```json
+{
+  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-signatureRequired",
+  "valueCodeableConcept": {
+    "coding": [
+      {
+        "system": "urn:iso-astm:E1762-95:2013",
+        "code": "1.2.840.10065.1.12.1.7",
+        "display": "Consent Signature"
+      }
+    ]
+  }
+}
+```
+
+A questionnaire may declare several signatures at once (root level plus one or more item level markers); each one is captured and validated independently. A signature declared this way is **always required** before the form can be submitted, regardless of the item's own `required` flag.
+
+### Capturing the signature (UI)
+For each signature marker a `QuestionnaireSignatureView` renders a tappable preview:
+- Empty: a placeholder ("Tap to sign") inviting the user to sign.
+- Tapping it opens a `SignaturePadDialog` with the actual drawing pad; the user draws and taps **Done** to commit or **Cancel** to discard. Drawing happens in a dialog so the pad's gesture is not stolen by the surrounding scrolling form.
+- Once signed, the preview shows the drawn signature, with a button to clear it and sign again.
+
+Placement depends on where the marker is declared:
+- **Root level**: shown at the end of the form.
+- **Group item**: shown inside the group's container, after the group's own items.
+- **Non-group item**: shown together with the item's normal content.
+
+### The generated response
+On submit, each drawn signature is embedded as a PNG (base64) inside a [`questionnaireresponse-signature`](http://hl7.org/fhir/R4/extension-questionnaireresponse-signature.html) extension holding a FHIR `Signature`:
+- on `QuestionnaireResponse.extension` for a root level signature,
+- on the matching `QuestionnaireResponseItem.extension` for an item level signature.
+
+The `Signature.type` is taken from the marker's coding (falling back to a default `Author's Signature` coding only when the marker declares none), `sigFormat` is `image/png`, `when` is the submit time, and `who` / `onBehalfOf` come from the `whoSigns` / `signsOnBehalfOf` you provide.
+
+### Signer information (`QuestionnairePerson`)
+`subject`, `author`, `source`, `whoSigns` and `signsOnBehalfOf` are of type `QuestionnairePerson`:
+
+```dart
+QuestionnairePerson(
+  reference: practitionerReference, // FHIR Reference written into the response
+  name: 'Dr. Jane Doe',             // Display name
+  title: 'Attending Physician',     // Optional subtitle
+)
+```
+
+When `whoSigns` (and optionally `signsOnBehalfOf`) is provided, the signature field also shows the signer's name/title beneath the pad ("By: …" / "On behalf of: …"), and the `reference` is written into the response `Signature.who` / `Signature.onBehalfOf`.
+
+### Overriding the UI
+All signature widgets are public and can be extended/overridden: `QuestionnaireSignatureView`, `SignaturePadDialog` (with its public generic `SignaturePadDialogState`) and `SignatureController`. Detection helpers `hasSignature` and `signatureTypeCoding` are exposed as extensions on `Questionnaire` and `QuestionnaireItem`.
 
 ## Some extra notes
 1. This widget will use the app Theme to build, so if you want to change colors, InputDecorations, etc, you just have to change it in your app Theme. Also all the package widgets are public and exposed so you could override it if necessary.
