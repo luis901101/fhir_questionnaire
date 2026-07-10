@@ -9,6 +9,10 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## 2.0.1
+### Fixed
+- Fixed `buildSignatureExtension` to ensure `onBehalfOf` is null if it matches `whoSigns`.
+
 ## 2.0.0
 ### Added
 - Added `subject`, `author`, `source`, `whoSigns` and `signsOnBehalfOf` `QuestionnairePerson` parameters to `QuestionnaireView`, plus the corresponding `subjectProvider`, `authorProvider`, `sourceProvider`, `whoSignsProvider` and `signsOnBehalfOfProvider` callbacks on `QuestionnaireController`. The generated `QuestionnaireResponse` now populates `subject`, `author` and `source` when provided.

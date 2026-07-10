@@ -436,25 +436,29 @@ class QuestionnaireController {
   FhirExtension buildSignatureExtension(
     Uint8List pngBytes, {
     List<Coding>? type,
-  }) => FhirExtension(
-    url: FhirString(FhirConstants.responseSignatureExtensionUrl),
-    valueSignature: Signature(
-      type: (type == null || type.isEmpty)
-          ? [
-              Coding(
-                system: FhirUri(FhirConstants.signatureCodingSystem),
-                code: FhirCode(FhirConstants.defaultSignatureCode),
-                display: FhirString(FhirConstants.defaultSignatureDisplay),
-              ),
-            ]
-          : type,
-      when: FhirInstant.fromDateTime(DateTime.now().toUtc()),
-      who: whoSignsProvider?.call()?.reference ?? Reference(),
-      onBehalfOf: signsOnBehalfOfProvider?.call()?.reference,
-      sigFormat: FhirCode('image/png'),
-      data: FhirBase64Binary(base64.encode(pngBytes)),
-    ),
-  );
+  }) {
+    final whoSigns = whoSignsProvider?.call()?.reference ?? Reference();
+    final signsOnBehalfOf = signsOnBehalfOfProvider?.call()?.reference;
+    return FhirExtension(
+      url: FhirString(FhirConstants.responseSignatureExtensionUrl),
+      valueSignature: Signature(
+        type: (type == null || type.isEmpty)
+            ? [
+                Coding(
+                  system: FhirUri(FhirConstants.signatureCodingSystem),
+                  code: FhirCode(FhirConstants.defaultSignatureCode),
+                  display: FhirString(FhirConstants.defaultSignatureDisplay),
+                ),
+              ]
+            : type,
+        when: FhirInstant.fromDateTime(DateTime.now().toUtc()),
+        who: whoSigns,
+        onBehalfOf: whoSigns != signsOnBehalfOf ? signsOnBehalfOf : null,
+        sigFormat: FhirCode('image/png'),
+        data: FhirBase64Binary(base64.encode(pngBytes)),
+      ),
+    );
+  }
 
   Future<QuestionnaireResponse> generateResponse({
     required Questionnaire questionnaire,
