@@ -9,11 +9,15 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
-## 7.2.0
+## 8.0.0
 ### Added
 - Added `subject`, `author`, `source`, `whoSigned` and `signedOnBehalfOf` `Reference` parameters to `QuestionnaireView`.
 - Added `subjectProvider`, `authorProvider`, `sourceProvider`, `whoSignedProvider` and `signedOnBehalfOfProvider` callbacks to `QuestionnaireController`.
 - The generated `QuestionnaireResponse` now populates `subject`, `author` and `source` when the corresponding references are provided.
+- Added support for hand written signatures. When a `Questionnaire` declares the `questionnaire-signatureRequired` extension at root level or on an item (typically a `group`), a required `QuestionnaireSignatureView` is rendered: it shows a tappable signature preview that opens a drawing pad dialog (powered by [hand_signature](https://pub.dev/packages/hand_signature)) where the user signs and taps "Done". Root level signatures are shown at the end of the form; item level signatures are shown together with the item content.
+- The generated `QuestionnaireResponse` now embeds each drawn signature as a PNG in a `questionnaireresponse-signature` `valueSignature`, on the response for root level and on the matching item for item level, reusing the marker's `valueCodeableConcept.coding` as the `Signature.type`.
+- Added `QuestionnaireSignatureView`, `SignatureController` and the public, overridable `SignaturePadDialog`, plus `hasSignature` and `signatureTypeCoding` extensions on `Questionnaire` and `QuestionnaireItem`.
+- Added a `Constants` class centralizing the FHIR extension/coding URLs previously scattered as inline string literals.
 
 ## 7.1.0
 ### Changed

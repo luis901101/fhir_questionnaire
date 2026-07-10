@@ -85,6 +85,12 @@ class QuestionnaireViewState extends State<QuestionnaireView>
   late final double bottomPadding;
   List<QuestionnaireItemBundle> itemBundles = [];
 
+  /// Controller and view for a root level signature (declared by the
+  /// `questionnaire-signatureRequired` extension on the Questionnaire). Rendered
+  /// as the trailing item, so the user signs at the end.
+  SignatureController? rootSignatureController;
+  QuestionnaireSignatureView? rootSignatureView;
+
   bool _isLoading = true;
 
   void loading(bool value) {
@@ -180,11 +186,24 @@ class QuestionnaireViewState extends State<QuestionnaireView>
       questionnaire,
       onAttachmentLoaded: widget.onAttachmentLoaded,
     );
+    if (questionnaire.hasSignature) {
+      final sigController = SignatureController(focusNode: FocusNode());
+      rootSignatureController = sigController;
+      rootSignatureView = QuestionnaireSignatureView(
+        controller: sigController,
+        item: QuestionnaireItem(
+          linkId: 'signature',
+          type: QuestionnaireItemType.display.asFhirCode,
+        ),
+      );
+    }
     loading(false);
   }
 
   int get listViewCount =>
-      itemBundles.length + (questionnaire.title.isNotEmpty ? 1 : 0);
+      itemBundles.length +
+      (questionnaire.title.isNotEmpty ? 1 : 0) +
+      (rootSignatureView != null ? 1 : 0);
 
   bool get allowSubmit => !isLoading && widget.onSubmit != null;
 
@@ -250,9 +269,13 @@ class QuestionnaireViewState extends State<QuestionnaireView>
                         ),
                       );
                     }
-                    return itemBundles[index -
-                            (questionnaire.title.isNotEmpty ? 1 : 0)]
-                        .view;
+                    final itemIndex =
+                        index - (questionnaire.title.isNotEmpty ? 1 : 0);
+                    if (itemIndex < itemBundles.length) {
+                      return itemBundles[itemIndex].view;
+                    }
+                    // Trailing root level signature (last element).
+                    return rootSignatureView!;
                   },
                   // separatorBuilder: (context, index) =>
                   //     const SizedBox(height: 24.0),
@@ -266,15 +289,49 @@ class QuestionnaireViewState extends State<QuestionnaireView>
   bool validate() {
     setState(() {});
     final validation = validateRecursive(fieldBundles: itemBundles);
-    if (!validation.isValid) {
-      setState(() {});
-      scrollToField(
-        controller: validation.controller,
-        indexOffset: validation.offset,
-      );
+    bool isValid = validation.isValid;
+    FieldController? invalidController = validation.controller;
+    double offset = validation.offset;
+
+    // The root level signature lives outside itemBundles, validate it too.
+    final rootSignatureValid = rootSignatureController?.validate() ?? true;
+    if (!rootSignatureValid && isValid) {
+      isValid = false;
+      invalidController = rootSignatureController;
+      offset = (scrollController?.hasClients ?? false)
+          ? scrollController!.position.maxScrollExtent
+          : validation.offset;
     }
-    return validation.isValid;
+
+    if (!isValid) {
+      setState(() {});
+      scrollToField(controller: invalidController, indexOffset: offset);
+    }
+    return isValid;
   }
+
+  /// Flattens the (possibly nested) [itemBundles] tree into a single list.
+  List<QuestionnaireItemBundle> _flattenItemBundles(
+    List<QuestionnaireItemBundle> bundles,
+  ) {
+    final result = <QuestionnaireItemBundle>[];
+    for (final bundle in bundles) {
+      result.add(bundle);
+      if (bundle.children?.isNotEmpty == true) {
+        result.addAll(_flattenItemBundles(bundle.children!));
+      }
+    }
+    return result;
+  }
+
+  /// Every signature controller in the questionnaire: item level ones (anywhere
+  /// in the nested tree) plus the root level one.
+  List<SignatureController> get signatureControllers => [
+    ..._flattenItemBundles(
+      itemBundles,
+    ).map((bundle) => bundle.controller).whereType<SignatureController>(),
+    ?rootSignatureController,
+  ];
 
   ({bool isValid, double offset, FieldController? controller})
   validateRecursive({required List<QuestionnaireItemBundle> fieldBundles}) {
@@ -331,11 +388,25 @@ class QuestionnaireViewState extends State<QuestionnaireView>
   }
 
   void onSubmit() {
+    // Signature drawings are already committed to their controllers when the
+    // user taps "Done" in the signature dialog, so nothing needs flushing here.
     if (validate()) {
-      final questionnaireResponse = controller.generateResponse(
+      var questionnaireResponse = controller.generateResponse(
         questionnaire: questionnaire,
         itemBundles: itemBundles,
       );
+      final rootBytes = rootSignatureController?.value;
+      if (rootBytes != null) {
+        questionnaireResponse = questionnaireResponse.copyWith(
+          extension_: [
+            ...?questionnaireResponse.extension_,
+            controller.buildSignatureExtension(
+              rootBytes,
+              type: questionnaire.signatureTypeCoding,
+            ),
+          ],
+        );
+      }
       widget.onSubmit?.call(questionnaireResponse);
     }
   }
@@ -370,6 +441,11 @@ class QuestionnaireViewState extends State<QuestionnaireView>
     scrollController?.removeListener(onScrollListener);
     for (final item in itemBundles) {
       item.controller.focusNode?.dispose();
+    }
+    // Release the heavier HandSignatureControl owned by each signature
+    // controller (item level, across the whole tree, plus root level).
+    for (final controller in signatureControllers) {
+      controller.dispose();
     }
     super.dispose();
   }

@@ -15,11 +15,21 @@ class QuestionnaireEnLocalization extends QuestionnaireBaseLocalization {
   @override
   String get btnRemove => 'Remove';
   @override
+  String get btnClearSignature => 'Clear';
+  @override
+  String get btnCancel => 'Cancel';
+  @override
+  String get btnDone => 'Done';
+  @override
   String get textOtherOption => 'Other option';
   @override
   String get textDate => 'Date';
   @override
   String get textTime => 'Time';
+  @override
+  String get textSignature => 'Signature';
+  @override
+  String get textTapToSign => 'Tap to sign';
   @override
   String get exceptionNoEmptyField => 'This field is required.';
   @override

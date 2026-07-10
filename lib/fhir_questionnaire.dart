@@ -3,6 +3,7 @@ export 'package:fhir_questionnaire/src/logic/utils/fhir_extension_utils.dart';
 export 'package:fhir_questionnaire/src/logic/utils/num_utils.dart';
 export 'package:fhir_questionnaire/src/logic/utils/text_utils.dart';
 export 'package:fhir_questionnaire/src/logic/utils/iterable_utils.dart';
+export 'package:fhir_questionnaire/src/logic/utils/fhir_constants.dart';
 export 'package:fhir_questionnaire/src/logic/utils/date_utils.dart';
 export 'package:fhir_questionnaire/src/logic/questionnaire_controller.dart';
 export 'package:fhir_questionnaire/src/logic/enumerator/questionnaire_enable_when_operator.dart';
@@ -24,6 +25,9 @@ export 'package:fhir_questionnaire/src/presentation/widgets/custom_drop_down_but
 export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_view.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_loading_view.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/unfocus_view.dart';
+export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/signature/questionnaire_signature_view.dart';
+export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/signature/signature_controller.dart';
+export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/signature/signature_pad_dialog.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/group/questionnaire_group_item_view.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/attachment/questionnaire_attachment_item_view.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/date/questionnaire_date_time_item_view.dart';

@@ -1,5 +1,6 @@
 import 'package:fhir_plus/r4.dart';
 import 'package:fhir_path_plus/fhir_path.dart';
+import 'package:fhir_questionnaire/src/logic/utils/fhir_constants.dart';
 import 'package:flutter/foundation.dart';
 
 class FhirPathController {
@@ -17,8 +18,7 @@ class FhirPathController {
     final rootExpressions = (questionnaire.extension_ ?? [])
         .where(
           (ext) =>
-              ext.url ==
-                  FhirUri('http://hl7.org/fhir/StructureDefinition/variable') &&
+              ext.url == FhirUri(FhirConstants.variableExtensionUrl) &&
               ext.valueExpression?.language ==
                   FhirExpressionLanguage.text_fhirpath,
         )
@@ -138,9 +138,7 @@ class FhirPathController {
           .where(
             (ext) =>
                 ext.url ==
-                    FhirUri(
-                      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
-                    ) &&
+                    FhirUri(FhirConstants.calculatedExpressionExtensionUrl) &&
                 ext.valueExpression?.language ==
                     FhirExpressionLanguage.text_fhirpath,
           )
@@ -205,7 +203,7 @@ class FhirPathController {
                 (ext) =>
                     ext.url ==
                         FhirUri(
-                          'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+                          FhirConstants.calculatedExpressionExtensionUrl,
                         ) &&
                     ext.valueExpression?.language ==
                         FhirExpressionLanguage.text_fhirpath,

@@ -57,6 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
   final List<({String name, String value})> questionnaires = [
     (name: 'Generic', value: QuestionnaireSamples.sampleGeneric),
+    (name: 'Signature', value: QuestionnaireSamples.sampleSignature),
     (name: 'PRAPARE', value: QuestionnaireSamples.samplePrapare),
     (name: 'PHQ-9', value: QuestionnaireSamples.samplePHQ9),
     (name: 'GAD-7', value: QuestionnaireSamples.sampleGAD7),
@@ -529,11 +530,21 @@ class QuestionnaireFrLocalization extends QuestionnaireBaseLocalization {
   @override
   String get btnRemove => 'Retirer';
   @override
+  String get btnClearSignature => 'Effacer';
+  @override
+  String get btnCancel => 'Annuler';
+  @override
+  String get btnDone => 'Terminé';
+  @override
   String get textOtherOption => 'Autre option';
   @override
   String get textDate => 'Date';
   @override
   String get textTime => 'Temps';
+  @override
+  String get textSignature => 'Signature';
+  @override
+  String get textTapToSign => 'Appuyez pour signer';
   @override
   String get exceptionNoEmptyField => 'Ce champ est obligatoire.';
   @override

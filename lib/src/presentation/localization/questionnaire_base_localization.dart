@@ -9,9 +9,14 @@ abstract class QuestionnaireBaseLocalization {
   String get btnUpload;
   String get btnChange;
   String get btnRemove;
+  String get btnClearSignature;
+  String get btnCancel;
+  String get btnDone;
   String get textOtherOption;
   String get textDate;
   String get textTime;
+  String get textSignature;
+  String get textTapToSign;
   String get exceptionNoEmptyField;
   String get exceptionValueMustBeAPositiveIntegerNumber;
   String get exceptionValueMustBeAPositiveNumber;

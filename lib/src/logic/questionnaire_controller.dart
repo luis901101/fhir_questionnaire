@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:fhir_plus/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
@@ -178,9 +180,17 @@ class QuestionnaireController {
       alreadyBuiltItemBundles: alreadyBuiltItemBundles,
     );
 
+    // When the item requires a signature, the signature view wraps the item's
+    // normal content and owns the enableWhen gating, so the inner view is built
+    // without an enableWhenController to avoid double init.
+    final bool requiresSignature = item.hasSignature;
+    final innerEnableWhenController = requiresSignature
+        ? null
+        : enableWhenController;
+
     itemView = onBuildItemView?.call(
       item,
-      enableWhenController,
+      innerEnableWhenController,
       onAttachmentLoaded,
     );
 
@@ -189,43 +199,43 @@ class QuestionnaireController {
         case QuestionnaireItemType.string:
           itemView = QuestionnaireStringItemView(
             item: item,
-            enableWhenController: enableWhenController,
+            enableWhenController: innerEnableWhenController,
           );
           break;
         case QuestionnaireItemType.text:
           itemView = QuestionnaireTextItemView(
             item: item,
-            enableWhenController: enableWhenController,
+            enableWhenController: innerEnableWhenController,
           );
           break;
         case QuestionnaireItemType.integer:
           itemView = QuestionnaireIntegerItemView(
             item: item,
-            enableWhenController: enableWhenController,
+            enableWhenController: innerEnableWhenController,
           );
           break;
         case QuestionnaireItemType.decimal:
           itemView = QuestionnaireDecimalItemView(
             item: item,
-            enableWhenController: enableWhenController,
+            enableWhenController: innerEnableWhenController,
           );
           break;
         case QuestionnaireItemType.boolean:
           itemView = QuestionnaireBooleanItemView(
             item: item,
-            enableWhenController: enableWhenController,
+            enableWhenController: innerEnableWhenController,
           );
           break;
         case QuestionnaireItemType.choice:
           itemView = buildChoiceItemView(
             item: item,
-            enableWhenController: enableWhenController,
+            enableWhenController: innerEnableWhenController,
           );
           break;
         case QuestionnaireItemType.openChoice:
           itemView = buildOpenChoiceItemView(
             item: item,
-            enableWhenController: enableWhenController,
+            enableWhenController: innerEnableWhenController,
           );
           break;
         case QuestionnaireItemType.date:
@@ -233,44 +243,56 @@ class QuestionnaireController {
         case QuestionnaireItemType.dateTime:
           itemView = QuestionnaireDateTimeItemView(
             item: item,
-            enableWhenController: enableWhenController,
+            enableWhenController: innerEnableWhenController,
             type: DateTimeType.fromQuestionnaireItemType(itemType),
           );
           break;
         case QuestionnaireItemType.quantity:
           itemView = QuestionnaireQuantityItemView(
             item: item,
-            enableWhenController: enableWhenController,
+            enableWhenController: innerEnableWhenController,
           );
           break;
         case QuestionnaireItemType.url:
           itemView = QuestionnaireUrlItemView(
             item: item,
-            enableWhenController: enableWhenController,
+            enableWhenController: innerEnableWhenController,
           );
           break;
         case QuestionnaireItemType.display:
           itemView = QuestionnaireDisplayItemView(
             item: item,
-            enableWhenController: enableWhenController,
+            enableWhenController: innerEnableWhenController,
           );
           break;
         case QuestionnaireItemType.attachment:
           itemView = QuestionnaireAttachmentItemView(
             item: item,
             onAttachmentLoaded: onAttachmentLoaded,
-            enableWhenController: enableWhenController,
+            enableWhenController: innerEnableWhenController,
           );
           break;
         case QuestionnaireItemType.group:
           itemView = QuestionnaireGroupItemView(
             item: item,
-            enableWhenController: enableWhenController,
+            enableWhenController: innerEnableWhenController,
             children: children.map((itemBundle) => itemBundle.view).toList(),
           );
           break;
         default:
       }
+    }
+
+    // Wrap the built inner view (which may be null for e.g. an unhandled type)
+    // with the signature pad. The wrapper's controller (a SignatureController)
+    // becomes the bundle controller, so the existing validation recursion picks
+    // it up automatically.
+    if (requiresSignature) {
+      itemView = QuestionnaireSignatureView(
+        item: item,
+        enableWhenController: enableWhenController,
+        child: itemView,
+      );
     }
 
     return itemView != null
@@ -360,6 +382,40 @@ class QuestionnaireController {
     return answers;
   }
 
+  /// Builds the `questionnaireresponse-signature` extension holding the captured
+  /// signature as a PNG image.
+  ///
+  /// [type] is the coding declared by the corresponding
+  /// `questionnaire-signatureRequired` extension (root or item level) and is
+  /// reused verbatim as [Signature.type]. Falls back to a default coding only
+  /// when the marker declares none.
+  FhirExtension buildSignatureExtension(
+    Uint8List pngBytes, {
+    List<Coding>? type,
+  }) => FhirExtension(
+    url: FhirUri(FhirConstants.responseSignatureExtensionUrl),
+    valueSignature: Signature(
+      type: (type == null || type.isEmpty)
+          ? [
+              Coding(
+                system: FhirUri(FhirConstants.signatureCodingSystem),
+                code: FhirCode(FhirConstants.defaultSignatureCode),
+                display: FhirConstants.defaultSignatureDisplay,
+              ),
+            ]
+          : type,
+      when: FhirInstant(DateTime.now().toUtc()),
+      who:
+          whoSignedProvider?.call() ??
+          authorProvider?.call() ??
+          subjectProvider?.call() ??
+          Reference(),
+      onBehalfOf: signedOnBehalfOfProvider?.call(),
+      sigFormat: FhirCode('image/png'),
+      data: FhirBase64Binary(base64.encode(pngBytes)),
+    ),
+  );
+
   QuestionnaireResponse generateResponse({
     required Questionnaire questionnaire,
     required List<QuestionnaireItemBundle> itemBundles,
@@ -402,6 +458,35 @@ class QuestionnaireController {
     final itemType = QuestionnaireItemType.valueOf(itemBundle.item.type.value);
     if (itemBundle.children.isNotEmpty) {
       childItems = generateItemResponses(itemBundles: itemBundle.children!);
+    }
+
+    // Signature items store the captured signature in the response item's
+    // `questionnaireresponse-signature` extension rather than as an `answer`.
+    // Handled before the type switch so it works regardless of the item type
+    // (typically `group` or `display`).
+    if (itemBundle.item.hasSignature) {
+      final bytes = itemBundle.controller is SignatureController
+          ? (itemBundle.controller as SignatureController).value
+          : null;
+      final extensions = <FhirExtension>[
+        ...?itemBundle.item.extension_,
+        if (bytes != null)
+          buildSignatureExtension(
+            bytes,
+            type: itemBundle.item.signatureTypeCoding,
+          ),
+      ];
+      var item = QuestionnaireResponseItem(
+        linkId: itemBundle.item.linkId,
+        definition: itemBundle.item.definition,
+        text: itemBundle.item.text,
+        item: childItems,
+        extension_: extensions.isEmpty ? null : extensions,
+      );
+      if (onGenerateItemResponse != null) {
+        item = onGenerateItemResponse!.call(itemBundle, item);
+      }
+      return item;
     }
 
     switch (itemType) {
