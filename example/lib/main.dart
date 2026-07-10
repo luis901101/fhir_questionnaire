@@ -413,11 +413,15 @@ class QuestionnairePage extends StatefulWidget {
 class QuestionnairePageState extends State<QuestionnairePage> {
   bool loading = true;
   ThemeData theme = ThemeData();
-  final practitioner = Reference(
-    reference: "Practitioner/123",
-    display: "Dr House",
+  final practitioner = QuestionnairePerson(
+    reference: Reference(reference: "Practitioner/123", display: "Greg House"),
+    name: 'Greg House',
+    title: 'General Clinician',
   );
-  final patient = Reference(reference: "Patient/456", display: "John Doe");
+  final patient = QuestionnairePerson(
+    reference: Reference(reference: "Patient/456", display: "John Doe"),
+    name: 'John Doe',
+  );
 
   @override
   void initState() {
@@ -444,8 +448,8 @@ class QuestionnairePageState extends State<QuestionnairePage> {
         author: practitioner,
         source: practitioner,
         subject: patient,
-        whoSigned: practitioner,
-        signedOnBehalfOf: patient,
+        whoSigns: practitioner,
+        signsOnBehalfOf: patient,
       ),
     );
   }
@@ -545,6 +549,10 @@ class QuestionnaireFrLocalization extends QuestionnaireBaseLocalization {
   String get textSignature => 'Signature';
   @override
   String get textTapToSign => 'Appuyez pour signer';
+  @override
+  String get textSignedBy => 'Par';
+  @override
+  String get textSignedOnBehalfOf => 'Au nom de';
   @override
   String get exceptionNoEmptyField => 'Ce champ est obligatoire.';
   @override

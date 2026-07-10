@@ -17,6 +17,8 @@ abstract class QuestionnaireBaseLocalization {
   String get textTime;
   String get textSignature;
   String get textTapToSign;
+  String get textSignedBy;
+  String get textSignedOnBehalfOf;
   String get exceptionNoEmptyField;
   String get exceptionValueMustBeAPositiveIntegerNumber;
   String get exceptionValueMustBeAPositiveNumber;

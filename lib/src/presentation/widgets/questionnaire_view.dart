@@ -35,19 +35,19 @@ class QuestionnaireView extends StatefulWidget {
   final QuestionnaireController? controller;
 
   /// The subject of the questionnaire response
-  final Reference? subject;
+  final QuestionnairePerson? subject;
 
   /// The author of the questionnaire response
-  final Reference? author;
+  final QuestionnairePerson? author;
 
   /// The individual providing the information reflected in the questionnaire respose
-  final Reference? source;
+  final QuestionnairePerson? source;
 
   /// Who signed the questionaire response or item
-  final Reference? whoSigned;
+  final QuestionnairePerson? whoSigns;
 
   /// The party on behalf of which the questionnaire response or item was signed
-  final Reference? signedOnBehalfOf;
+  final QuestionnairePerson? signsOnBehalfOf;
 
   const QuestionnaireView({
     super.key,
@@ -62,8 +62,8 @@ class QuestionnaireView extends StatefulWidget {
     this.subject,
     this.author,
     this.source,
-    this.whoSigned,
-    this.signedOnBehalfOf,
+    this.whoSigns,
+    this.signsOnBehalfOf,
   });
 
   @override
@@ -108,8 +108,8 @@ class QuestionnaireViewState extends State<QuestionnaireView>
           subjectProvider: () => widget.subject,
           authorProvider: () => widget.author,
           sourceProvider: () => widget.source,
-          whoSignedProvider: () => widget.whoSigned,
-          signedOnBehalfOfProvider: () => widget.signedOnBehalfOf,
+          whoSignsProvider: () => widget.whoSigns,
+          signsOnBehalfOfProvider: () => widget.signsOnBehalfOf,
         );
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback(onCreated);
@@ -191,6 +191,8 @@ class QuestionnaireViewState extends State<QuestionnaireView>
       rootSignatureController = sigController;
       rootSignatureView = QuestionnaireSignatureView(
         controller: sigController,
+        whoSigns: controller.whoSignsProvider?.call(),
+        signsOnBehalfOf: controller.signsOnBehalfOfProvider?.call(),
         item: QuestionnaireItem(
           linkId: 'signature',
           type: QuestionnaireItemType.display.asFhirCode,

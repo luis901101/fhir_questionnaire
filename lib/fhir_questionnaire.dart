@@ -14,6 +14,7 @@ export 'package:fhir_questionnaire/src/logic/enumerator/questionnaire_custom_qua
 export 'package:fhir_questionnaire/src/logic/enumerator/questionnaire_enable_when_behavior.dart';
 export 'package:fhir_questionnaire/src/logic/fhir_path_controller.dart';
 export 'package:fhir_questionnaire/src/model/questionnaire_item_bundle.dart';
+export 'package:fhir_questionnaire/src/model/questionnaire_person.dart';
 export 'package:fhir_questionnaire/src/model/questionnaire_item_enable_when_controller.dart';
 export 'package:fhir_questionnaire/src/model/questionnaire_item_enable_when_bundle.dart';
 export 'package:fhir_questionnaire/src/presentation/utils/view_utils.dart';

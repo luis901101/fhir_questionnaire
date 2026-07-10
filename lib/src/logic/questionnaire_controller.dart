@@ -30,19 +30,19 @@ class QuestionnaireController {
   final FhirPathController fhirPathController;
 
   /// The subject of the questionnaire response
-  final ValueGetter<Reference?>? subjectProvider;
+  final ValueGetter<QuestionnairePerson?>? subjectProvider;
 
   /// The author of the questionnaire response
-  final ValueGetter<Reference?>? authorProvider;
+  final ValueGetter<QuestionnairePerson?>? authorProvider;
 
   /// The individual providing the information reflected in the questionnaire respose
-  final ValueGetter<Reference?>? sourceProvider;
+  final ValueGetter<QuestionnairePerson?>? sourceProvider;
 
-  /// Who signed the questionaire response or item
-  final ValueGetter<Reference?>? whoSignedProvider;
+  /// Who signs the questionaire response or item
+  final ValueGetter<QuestionnairePerson?>? whoSignsProvider;
 
-  /// The party on behalf of which the questionnaire response or item was signed
-  final ValueGetter<Reference?>? signedOnBehalfOfProvider;
+  /// The party on behalf of which the questionnaire response or item is going to be signed
+  final ValueGetter<QuestionnairePerson?>? signsOnBehalfOfProvider;
 
   QuestionnaireController({
     this.onGenerateItemResponse,
@@ -51,8 +51,8 @@ class QuestionnaireController {
     this.subjectProvider,
     this.authorProvider,
     this.sourceProvider,
-    this.whoSignedProvider,
-    this.signedOnBehalfOfProvider,
+    this.whoSignsProvider,
+    this.signsOnBehalfOfProvider,
   }) : fhirPathController = fhirPathController ?? FhirPathController();
 
   QuestionnaireItemView? buildChoiceItemView({
@@ -285,7 +285,11 @@ class QuestionnaireController {
           break;
         case QuestionnaireItemType.group:
           if (isGroupSignature) {
-            groupSignatureView = QuestionnaireSignatureView(item: item);
+            groupSignatureView = QuestionnaireSignatureView(
+              item: item,
+              whoSigns: whoSignsProvider?.call(),
+              signsOnBehalfOf: signsOnBehalfOfProvider?.call(),
+            );
           }
           itemView = QuestionnaireGroupItemView(
             item: item,
@@ -319,6 +323,8 @@ class QuestionnaireController {
         // already receive it (avoids double init).
         final signatureView = QuestionnaireSignatureView(
           item: item,
+          whoSigns: whoSignsProvider?.call(),
+          signsOnBehalfOf: signsOnBehalfOfProvider?.call(),
           enableWhenController: innerEnableWhenController == null
               ? enableWhenController
               : null,
@@ -439,12 +445,8 @@ class QuestionnaireController {
             ]
           : type,
       when: FhirInstant(DateTime.now().toUtc()),
-      who:
-          whoSignedProvider?.call() ??
-          authorProvider?.call() ??
-          subjectProvider?.call() ??
-          Reference(),
-      onBehalfOf: signedOnBehalfOfProvider?.call(),
+      who: whoSignsProvider?.call()?.reference ?? Reference(),
+      onBehalfOf: signsOnBehalfOfProvider?.call()?.reference,
       sigFormat: FhirCode('image/png'),
       data: FhirBase64Binary(base64.encode(pngBytes)),
     ),
@@ -462,9 +464,9 @@ class QuestionnaireController {
       questionnaire: questionnaire.asFhirCanonical,
       status: QuestionnaireResponseStatus.completed.asFhirCode,
       item: itemResponses,
-      subject: subjectProvider?.call(),
-      author: authorProvider?.call(),
-      source: sourceProvider?.call(),
+      subject: subjectProvider?.call()?.reference,
+      author: authorProvider?.call()?.reference,
+      source: sourceProvider?.call()?.reference,
     );
 
     final environment = fhirPathController

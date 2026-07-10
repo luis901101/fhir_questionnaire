@@ -25,6 +25,8 @@ class QuestionnaireSignatureView extends QuestionnaireItemView {
   /// The normal inner view rendered above the signature field (e.g. a group with
   /// its children). Null for a root level signature.
   final Widget? child;
+  final QuestionnairePerson? whoSigns;
+  final QuestionnairePerson? signsOnBehalfOf;
 
   QuestionnaireSignatureView({
     super.key,
@@ -32,6 +34,8 @@ class QuestionnaireSignatureView extends QuestionnaireItemView {
     required super.item,
     this.child,
     super.enableWhenController,
+    this.whoSigns,
+    this.signsOnBehalfOf,
   }) : super(
          controller: controller ?? SignatureController(focusNode: FocusNode()),
        );
@@ -95,16 +99,17 @@ class QuestionnaireSignatureViewState
         (theme.inputDecorationTheme.border is OutlineInputBorder)
         ? (theme.inputDecorationTheme.border as OutlineInputBorder).borderRadius
         : const BorderRadius.all(Radius.circular(4));
+    final textPadding = EdgeInsets.only(
+      left: inputBorderRadius.bottomLeft.x / 2,
+      right: inputBorderRadius.bottomLeft.x / 2,
+      bottom: 4.0,
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (widget.child != null) ...[widget.child!, const SizedBox(height: 8)],
         Padding(
-          padding: EdgeInsets.only(
-            left: inputBorderRadius.bottomLeft.x / 2,
-            right: inputBorderRadius.bottomLeft.x / 2,
-            bottom: 4.0,
-          ),
+          padding: textPadding,
           child: Text.rich(
             TextSpan(
               style: theme.textTheme.titleSmall,
@@ -131,9 +136,24 @@ class QuestionnaireSignatureViewState
             ),
             clipBehavior: Clip.hardEdge,
             child: signatureBytes != null
-                ? Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Image.memory(signatureBytes, fit: BoxFit.contain),
+                ? Stack(
+                    children: [
+                      Positioned.fill(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Image.memory(
+                            signatureBytes,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                      if (!isReadOnly)
+                        Positioned(
+                          bottom: 4,
+                          right: 4,
+                          child: buildClearButton(theme),
+                        ),
+                    ],
                   )
                 : Column(
                     mainAxisSize: MainAxisSize.min,
@@ -150,16 +170,60 @@ class QuestionnaireSignatureViewState
                   ),
           ),
         ),
-        if (signatureBytes != null && !isReadOnly)
-          Align(
-            alignment: Alignment.centerRight,
-            child: TextButton.icon(
-              onPressed: () => setState(() => controller.clear()),
-              icon: const Icon(Icons.gesture),
-              label: Text(localization.btnClearSignature),
-            ),
+        if (widget.whoSigns != null)
+          personInfo(
+            localization.textSignedBy,
+            widget.whoSigns!,
+            textPadding.copyWith(top: 8, bottom: 0),
+          ),
+        if (widget.signsOnBehalfOf != null &&
+            widget.whoSigns != widget.signsOnBehalfOf)
+          personInfo(
+            localization.textSignedOnBehalfOf,
+            widget.signsOnBehalfOf!,
+            textPadding.copyWith(top: 8, bottom: 0),
           ),
       ],
+    );
+  }
+
+  /// The Clear button that empties the drawing.
+  Widget buildClearButton(ThemeData theme) {
+    return TextButton.icon(
+      onPressed: isReadOnly ? null : () => setState(() => controller.clear()),
+      icon: const Icon(Icons.gesture),
+      label: Text(
+        QuestionnaireLocalization.instance.localization.btnClearSignature,
+      ),
+    );
+  }
+
+  Widget personInfo(
+    String identity,
+    QuestionnairePerson person,
+    EdgeInsets? padding,
+  ) {
+    return Padding(
+      padding: padding ?? EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text.rich(
+            style: theme.textTheme.bodyLarge,
+            TextSpan(
+              children: [
+                TextSpan(text: '$identity: '),
+                TextSpan(
+                  text: person.name,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
+          if (person.title != null)
+            Text(person.title!, style: theme.textTheme.bodyMedium),
+        ],
+      ),
     );
   }
 }

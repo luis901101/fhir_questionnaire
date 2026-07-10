@@ -31,6 +31,10 @@ class QuestionnaireEnLocalization extends QuestionnaireBaseLocalization {
   @override
   String get textTapToSign => 'Tap to sign';
   @override
+  String get textSignedBy => 'By';
+  @override
+  String get textSignedOnBehalfOf => 'On behalf of';
+  @override
   String get exceptionNoEmptyField => 'This field is required.';
   @override
   String get exceptionValueMustBeAPositiveIntegerNumber =>

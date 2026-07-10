@@ -77,9 +77,16 @@ class SignaturePadDialogState<T extends SignaturePadDialog> extends State<T> {
         borderRadius: borderRadius,
       ),
       clipBehavior: Clip.hardEdge,
-      child: HandSignature(
-        control: controller.control,
-        drawer: controller.drawer,
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: HandSignature(
+              control: controller.control,
+              drawer: controller.drawer,
+            ),
+          ),
+          Positioned(bottom: 4, right: 4, child: buildClearButton(theme)),
+        ],
       ),
     );
   }
@@ -88,13 +95,13 @@ class SignaturePadDialogState<T extends SignaturePadDialog> extends State<T> {
   Widget buildClearButton(ThemeData theme) {
     final localization = QuestionnaireLocalization.instance.localization;
     final enabled = controller.control.isFilled && !committing;
-    return Align(
-      alignment: Alignment.centerRight,
-      child: TextButton.icon(
-        onPressed: enabled ? () => controller.control.clear() : null,
-        icon: const Icon(Icons.gesture),
-        label: Text(localization.btnClearSignature),
+    return TextButton.icon(
+      onPressed: enabled ? () => controller.control.clear() : null,
+      icon: const Icon(Icons.gesture),
+      style: TextButton.styleFrom(
+        backgroundColor: theme.colorScheme.surfaceContainerHigh,
       ),
+      label: Text(localization.btnClearSignature),
     );
   }
 
@@ -143,24 +150,26 @@ class SignaturePadDialogState<T extends SignaturePadDialog> extends State<T> {
             return Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              spacing: 8,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    bottom: 8,
+                  ),
                   child: Text(
                     localization.textSignature,
                     style: theme.textTheme.titleLarge,
                   ),
                 ),
                 buildSignaturePad(constraints, theme, borderRadius),
-                buildClearButton(theme),
+                const SizedBox(height: 16),
                 Row(spacing: 16, children: buildActions(theme)),
               ],
             );
           },
         ),
       ),
-      // actions: buildActions(context),
     );
   }
 }
