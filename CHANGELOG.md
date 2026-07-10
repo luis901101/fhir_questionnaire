@@ -9,6 +9,10 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## 8.0.1
+### Changed
+- Updated signature components to respect theme colors.
+
 ## 8.0.0
 ### Added
 - Added `subject`, `author`, `source`, `whoSigned` and `signedOnBehalfOf` `Reference` parameters to `QuestionnaireView`.

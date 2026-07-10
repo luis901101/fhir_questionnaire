@@ -82,7 +82,7 @@ class SignaturePadDialogState<T extends SignaturePadDialog> extends State<T> {
           Positioned.fill(
             child: HandSignature(
               control: controller.control,
-              drawer: controller.drawer,
+              drawer: controller.drawer(theme),
             ),
           ),
           Positioned(bottom: 4, right: 4, child: buildClearButton(theme)),

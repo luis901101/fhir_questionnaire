@@ -103,6 +103,20 @@ extension QuestionnaireSamples on Questionnaire {
   "status": "draft",
   "date": "2024-03-05",
   "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-signatureRequired",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "urn:iso-astm:E1762-95:2013",
+            "code": "1.2.840.10065.1.12.1.1",
+            "display": "Author's Signature"
+          }
+        ]
+      }
+    }
+  ],
   "item": [
     {
       "linkId": "intro",

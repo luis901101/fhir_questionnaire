@@ -21,7 +21,12 @@ class SignatureController extends CustomValueController<Uint8List> {
   /// The underlying hand_signature drawing control.
   final HandSignatureControl control;
 
-  /// Pen color used both on-screen and when exporting the PNG.
+  /// Pen color baked into the exported PNG bytes (the persisted signature).
+  ///
+  /// It does NOT affect the on-screen ink: both the drawing pad and the form
+  /// preview always render in the theme's `onSurface` color, regardless of this
+  /// value. So in a dark theme the signer sees a light signature while the
+  /// stored PNG keeps this (theme-neutral) color.
   final Color penColor;
 
   /// Minimal stroke width for the drawer.
@@ -38,9 +43,12 @@ class SignatureController extends CustomValueController<Uint8List> {
     this.maxStrokeWidth = 10.0,
   }) : control = control ?? HandSignatureControl();
 
-  /// The drawer used to render the on-screen signature, matching the PNG export.
-  ShapeSignatureDrawer get drawer => ShapeSignatureDrawer(
-    color: penColor,
+  /// The drawer used to render the on-screen signature. It uses the theme's
+  /// `onSurface` color so the live strokes stay legible and match the themed
+  /// preview; this is independent of [penColor], which only colors the exported
+  /// PNG.
+  ShapeSignatureDrawer drawer(ThemeData theme) => ShapeSignatureDrawer(
+    color: theme.colorScheme.onSurface,
     width: strokeWidth,
     maxWidth: maxStrokeWidth,
   );

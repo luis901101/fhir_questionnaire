@@ -142,6 +142,7 @@ class QuestionnaireSignatureViewState
                         child: Padding(
                           padding: const EdgeInsets.all(8),
                           child: Image.memory(
+                            color: theme.colorScheme.onSurface,
                             signatureBytes,
                             fit: BoxFit.contain,
                           ),
