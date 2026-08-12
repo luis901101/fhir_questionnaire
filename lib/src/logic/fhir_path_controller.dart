@@ -66,9 +66,16 @@ class FhirPathController {
   }
 
   /// Calculates the number of unresolved calculated expressions in an item
-  /// list. Returns the number of all expression for which no answer value
-  /// exists. The number will be the sum of all expressions in the entire
-  /// sub tree of items.
+  /// list. Returns the number of all expressions that have not been computed
+  /// yet, i.e. items that still carry a calculatedExpression extension. The
+  /// number will be the sum of all expressions in the entire sub tree of items.
+  ///
+  /// Note that an already present answer does NOT mark an expression as
+  /// resolved: the answer of an item with a calculatedExpression is owned by
+  /// the expression, not by the user input, so whatever the item view produced
+  /// gets replaced by the calculated value. Otherwise item types whose view
+  /// always yields a value, such as `boolean` which defaults to `false`, would
+  /// never let their expression run.
   int nrUnresolvedExpressionsInItemList({
     required List<QuestionnaireResponseItem>? itemList,
   }) {
@@ -85,7 +92,18 @@ class FhirPathController {
         result += nrUnresolvedExpressionsInItemList(itemList: childItems);
       }
 
-      final calculatedExpressions = (item.extension_ ?? [])
+      if (calculatedExpressionsOf(item).isNotEmpty) {
+        result++;
+      }
+    }
+
+    return result;
+  }
+
+  /// Returns the calculatedExpression extensions of [item] that this controller
+  /// knows how to evaluate.
+  List<FhirExtension> calculatedExpressionsOf(QuestionnaireResponseItem item) =>
+      (item.extension_ ?? [])
           .where(
             (ext) =>
                 ext.url.valueString ==
@@ -93,15 +111,41 @@ class FhirPathController {
                 ext.valueExpression?.language.valueEnum ==
                     ExpressionLanguageEnum.textFhirpath,
           )
-          .toList()
-          .length;
+          .toList();
 
-      if (calculatedExpressions > 0 && item.answer == null) {
-        result++;
-      }
+  /// Maps the value a FHIRPath calculated expression evaluated to onto the
+  /// matching `answer.value[x]` of a [QuestionnaireResponseAnswer].
+  ///
+  /// Returns `null` when the value has no [QuestionnaireResponseAnswer]
+  /// counterpart, in which case the expression is left unresolved.
+  QuestionnaireResponseAnswer? buildAnswerFromCalculatedValue(FhirBase value) {
+    // Expressions evaluate to already typed FHIR values, so anything an answer
+    // can hold is used as it is. Types that merely extend a valid value[x]
+    // are narrowed down to it first, since the answer is serialized after the
+    // runtime type of its value and a `FhirCode` would otherwise end up as an
+    // invalid `valueCode`.
+    final ValueXQuestionnaireResponseAnswer? valueX = switch (value) {
+      FhirCode() || FhirMarkdown() => FhirString(value.primitiveValue),
+      FhirId() || FhirCanonical() || FhirUrl() => FhirUri(value.primitiveValue),
+      FhirPositiveInt() ||
+      FhirUnsignedInt() => FhirInteger(value.primitiveValue),
+      FhirInstant() => FhirDateTime.fromString(value.primitiveValue ?? ''),
+      ValueXQuestionnaireResponseAnswer() => value,
+      _ => null,
+    };
+
+    if (valueX != null) {
+      return QuestionnaireResponseAnswer(valueX: valueX);
     }
 
-    return result;
+    if (kDebugMode) {
+      print(
+        'Calculated expression resolved to an unsupported answer value of type '
+        '${value.runtimeType}, skipping.',
+      );
+    }
+
+    return null;
   }
 
   /// Attempts to resolve exactly one unresolved calculated expression.
@@ -139,71 +183,64 @@ class FhirPathController {
 
     // if we didn't resolve any child elements, find an element at current level
     for (int itemIndex = 0; itemIndex < updatedList.length; itemIndex++) {
-      // skip items that already have an answer
-      if (updatedList[itemIndex].answer != null) {
-        // remove any extensions that we copied over from the build process
-        updatedList[itemIndex] = updatedList[itemIndex].copyWith(
-          extension_: null,
-        );
+      final calculatedExpressionExtensions = calculatedExpressionsOf(
+        updatedList[itemIndex],
+      );
+
+      if (calculatedExpressionExtensions.isEmpty) {
+        // Nothing to calculate here, so just remove any extensions that we
+        // copied over from the build process. Items without an answer are left
+        // untouched as their extensions may have been added on purpose, like
+        // the signature of a signed item.
+        if (updatedList[itemIndex].answer != null) {
+          updatedList[itemIndex] = updatedList[itemIndex].copyWith(
+            extension_: null,
+          );
+        }
         continue;
       }
 
-      final calculatedExpressionExtensions =
-          (updatedList[itemIndex].extension_ ?? [])
-              .where(
-                (ext) =>
-                    ext.url.valueString ==
-                        FhirConstants.calculatedExpressionExtensionUrl &&
-                    ext.valueExpression?.language.valueEnum ==
-                        ExpressionLanguageEnum.textFhirpath,
-              )
-              .toList();
+      final expression = calculatedExpressionExtensions
+          .first
+          .valueExpression
+          ?.expression
+          ?.valueString;
 
-      if (calculatedExpressionExtensions.isNotEmpty) {
-        final expression = calculatedExpressionExtensions
-            .first
-            .valueExpression
-            ?.expression
-            ?.valueString;
-
-        if (expression == null) {
-          if (kDebugMode) {
-            print('Calculated expression has no expression, skipping.');
-          }
-          continue;
+      if (expression == null) {
+        if (kDebugMode) {
+          print('Calculated expression has no expression, skipping.');
         }
+        continue;
+      }
 
-        try {
-          final List<FhirBase> result = await walkFhirPath(
-            environment: environment,
-            pathExpression: expression,
-            context: questionnaireResponse,
-            resource: questionnaireResponse,
-          );
+      try {
+        final List<FhirBase> result = await walkFhirPath(
+          environment: environment,
+          pathExpression: expression,
+          context: questionnaireResponse,
+          resource: questionnaireResponse,
+        );
 
-          if (result.isNotEmpty) {
-            final resultValue = result.first;
+        if (result.isNotEmpty) {
+          final answer = buildAnswerFromCalculatedValue(result.first);
 
-            QuestionnaireResponseAnswer? answer =
-                resultValue is ValueXQuestionnaireResponseAnswer
-                ? QuestionnaireResponseAnswer(valueX: resultValue)
-                : null;
-
-            updatedList[itemIndex] = itemList[itemIndex].copyWith(
-              // insert calculation result as answer
-              answer: answer != null ? [answer] : null,
+          if (answer != null) {
+            updatedList[itemIndex] = updatedList[itemIndex].copyWith(
+              // insert calculation result as answer, replacing whatever the
+              // item view produced, as the expression owns this item's value
+              answer: [answer],
               // remove extensions again that were inserted in the builder
               extension_: null,
             );
 
             return updatedList;
           }
-        } catch (e) {
-          if (kDebugMode) {
-            print(
-              'Failed to compute fhirpath expression "$expression", subsequent evaluations may fail as well: $e',
-            );
-          }
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          print(
+            'Failed to compute fhirpath expression "$expression", subsequent evaluations may fail as well: $e',
+          );
         }
       }
     }
@@ -248,7 +285,9 @@ class FhirPathController {
         itemList = await resolveFirstCalculatedExpression(
           environment: environment,
           itemList: itemList,
-          questionnaireResponse: questionnaireResponse,
+          // Expressions may reference items that were calculated in a previous
+          // pass, so each pass evaluates against the response as resolved so far.
+          questionnaireResponse: questionnaireResponse.copyWith(item: itemList),
         );
       }
 

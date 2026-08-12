@@ -9,6 +9,15 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## 3.0.0
+### Changed
+- Updated `QuestionnaireDisplayItemView` to use `bodyMedium` text style instead of `titleMedium`.
+- BREAKING: Updated FHIR dependencies to `^0.7.0` for compatibility with the latest FHIR R4 library.
+
+### Fixed
+- Fixed items with a `sdc-questionnaire-calculatedExpression` never being calculated when the item view already produced an answer, such as `boolean` items defaulting to `false`.
+- Fixed calculated expressions resolving to a `FhirCode`, `FhirMarkdown`, `FhirId`, `FhirCanonical`, `FhirUrl`, `FhirPositiveInt`, `FhirUnsignedInt` or `FhirInstant` producing an invalid `answer.value[x]`.
+
 ## 2.0.1
 ### Fixed
 - Fixed `buildSignatureExtension` to ensure `onBehalfOf` is null if it matches `whoSigns`.

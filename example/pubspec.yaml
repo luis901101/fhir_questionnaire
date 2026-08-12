@@ -33,9 +33,9 @@ dependencies:
     sdk: flutter
   fhir_questionnaire_r4:
     path: ../
-  fhir_r4: ^0.5.1
+  fhir_r4: ^0.7.0
   image_picker: ^1.2.3
-  file_picker: ^11.0.2
+  file_picker: ^11.0.3
   crypto: ^3.0.7
   json_field_editor: ^1.2.1
 
