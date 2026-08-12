@@ -2,19 +2,15 @@ import 'package:fhir_r4/fhir_r4.dart';
 
 extension QuestionnaireSamples on Questionnaire {
   static String get sampleSignature => '''
-  {
+{
   "resourceType": "Questionnaire",
-  "status": "active",
-  "version": "1.0",
-  "name": "ConsentForBehavioralHealth",
-  "title": "Consent for Behavioral Health (BH) Program",
+  "id": "example-signature",
+  "version": "1",
+  "name": "SignatureExample",
+  "title": "Questionnaire with Hand Written Signatures",
+  "status": "draft",
+  "date": "2026-07-08",
   "subjectType": ["Patient"],
-  "identifier": [
-    {
-      "system": "https://itera.health/coding/questionnaire-identifier",
-      "value": "consent-questionnaire-bh"
-    }
-  ],
   "extension": [
     {
       "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-signatureRequired",
@@ -22,8 +18,8 @@ extension QuestionnaireSamples on Questionnaire {
         "coding": [
           {
             "system": "urn:iso-astm:E1762-95:2013",
-            "code": "1.2.840.10065.1.12.1.7",
-            "display": "Consent Signature"
+            "code": "1.2.840.10065.1.12.1.1",
+            "display": "Author's Signature"
           }
         ]
       }
@@ -31,170 +27,71 @@ extension QuestionnaireSamples on Questionnaire {
   ],
   "item": [
     {
-      "linkId": "1",
-      "type": "group",
-      "text": "What is this?",
-      "item": [
-        {
-          "linkId": "1.1",
-          "type": "display",
-          "text": "This consent is required to participate in the Behavioral Health (BH) Program, which provides coordinated screening, monitoring, and management of the behavioral health conditions."
-        }
-      ]
+      "linkId": "intro",
+      "type": "display",
+      "text": "This form demonstrates hand written signatures at item (group) level and at the end of the form (root level). Every signature is required."
     },
     {
-      "linkId": "2",
+      "linkId": "consent-group",
       "type": "group",
-      "text": "What to understand before agree?",
-      "item": [
-        {
-          "linkId": "2.1",
-          "type": "display",
-          "text": "• The BH program delivers coordinated behavioral health care, including screening and follow-up for conditions such as depression and anxiety."
-        },
-        {
-          "linkId": "2.2",
-          "type": "display",
-          "text": "• A care team member will contact you to review your conditions, medications, and health goals."
-        },
-        {
-          "linkId": "2.3",
-          "type": "display",
-          "text": "• You will receive a personalized care plan and regular monitoring using validated behavioral health assessments (such as PHQ-9 and GAD-7)."
-        },
-        {
-          "linkId": "2.4",
-          "type": "display",
-          "text": "• You authorize your care team to securely share the medical information needed to coordinate your behavioral health care."
-        },
-        {
-          "linkId": "2.5",
-          "type": "display",
-          "text": "• BH services may be covered by your insurance and may be subject to applicable cost-sharing."
-        },
-        {
-          "linkId": "2.6",
-          "type": "display",
-          "text": "• Your health information is protected and kept confidential in accordance with HIPAA."
-        },
-        {
-          "linkId": "2.7",
-          "type": "display",
-          "text": "• Participation is voluntary, and you may decline or withdraw at any time without affecting your other care."
-        }
-      ]
-    },
-    {
-      "linkId": "3",
-      "type": "group",
-      "text": "My Consent",
-      "item": [
-        {
-          "linkId": "consent-acceptance-id",
-          "type": "choice",
-          "answerOption": [
-            {
-              "valueCoding": {
-                "code": "agree",
-                "display": "I agree to participate in the Behavioral Health (BH) Program."
-              }
-            },
-            {
-              "valueCoding": {
-                "code": "disagree",
-                "display": "I do not agree to participate in the Behavioral Health (BH) Program."
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "linkId": "4",
-      "type": "group",
-      "text": "Contact Preferences (optional)",
-      "enableWhen": [
-        {
-          "question": "consent-acceptance-id",
-          "operator": "=",
-          "answerCoding": { "code": "agree" }
-        }
-      ],
-      "item": [
-        {
-          "linkId": "4.1",
-          "type": "display",
-          "text": "These would be the methods of communication you wish to receive information about this program."
-        },
-        {
-          "linkId": "4.2",
-          "type": "boolean",
-          "text": "Text message / SMS to mobile phone number"
-        },
-        {
-          "linkId": "4.3",
-          "type": "boolean",
-          "text": "Phone call to mobile phone number"
-        },
-        {
-          "linkId": "4.4",
-          "type": "boolean",
-          "text": "Email to email address"
-        }
-      ]
-    },
-    {
-      "code": [
-        {
-          "code": "consent",
-          "system": "https://backend.itera.health/CodeSystem/itera-measure",
-          "display": "Consent",
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract",
-              "valueBoolean": true
-            }
-          ]
-        }
-      ],
-      "text": "Consent response",
-      "type": "boolean",
-      "linkId": "consent-response",
-      "readOnly": true,
+      "text": "Consent",
       "extension": [
         {
-          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
-          "valueExpression": {
-            "language": "text/fhirpath",
-            "expression": "iif(%resource.repeat(item).where(linkId='consent-acceptance-id').answer.value.code = 'agree', true, false)",
-            "description": "Consent calculation"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden",
-          "valueBoolean": true
-        },
-        {
-          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract",
-          "valueBoolean": true
-        },
-        {
-          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observation-extract-category",
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-signatureRequired",
           "valueCodeableConcept": {
             "coding": [
               {
-                "code": "survey",
-                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                "display": "Survey"
+                "system": "urn:iso-astm:E1762-95:2013",
+                "code": "1.2.840.10065.1.12.1.7",
+                "display": "Consent Signature"
               }
             ]
           }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "consent-agree",
+          "type": "boolean",
+          "required": true,
+          "text": "I agree to the terms and conditions."
+        },
+        {
+          "linkId": "consent-name",
+          "type": "string",
+          "text": "Full name"
+        }
+      ]
+    },
+    {
+      "linkId": "witness-group",
+      "type": "group",
+      "text": "Witness",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-signatureRequired",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "urn:iso-astm:E1762-95:2013",
+                "code": "1.2.840.10065.1.12.1.5",
+                "display": "Verification Signature"
+              }
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "witness-name",
+          "type": "string",
+          "text": "Witness full name"
         }
       ]
     }
   ]
 }
-  ''';
+''';
 
   static String get sampleGeneric => '''
 {
