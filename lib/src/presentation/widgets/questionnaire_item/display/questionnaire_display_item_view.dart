@@ -29,7 +29,7 @@ class QuestionnaireDisplayItemViewState
       super.buildTitleView(
         context,
         noPadding: true,
-        style: theme.textTheme.titleMedium,
+        style: theme.textTheme.bodyMedium,
       ) ??
       SizedBox();
 }

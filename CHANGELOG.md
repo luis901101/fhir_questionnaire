@@ -9,6 +9,14 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## 8.1.0
+### Changed
+- Updated `QuestionnaireDisplayItemView` to use `bodyMedium` text style instead of `titleMedium`.
+
+### Fixed
+- Fixed items with a `sdc-questionnaire-calculatedExpression` never being calculated when the item view already produced an answer, such as `boolean` items defaulting to `false`.
+- Fixed calculated expressions resolving to a `boolean`, `String`, date, `Coding` or `Quantity` not being mapped to the response answer.
+
 ## 8.0.2
 ### Fixed
 - Fixed `buildSignatureExtension` to ensure `onBehalfOf` is null if it matches `whoSigns`.
