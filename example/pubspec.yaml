@@ -36,7 +36,7 @@ dependencies:
   fhir_plus: ^1.0.0
 #    path: ../../fhir
   image_picker: ^1.2.3
-  file_picker: ^11.0.2
+  file_picker: ^12.0.0
   crypto: ^3.0.7
   json_field_editor: ^1.2.1
 

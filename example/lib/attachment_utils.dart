@@ -12,24 +12,20 @@ import 'package:crypto/crypto.dart';
 
 class AttachmentUtils {
   static Future<Attachment?> _onPicked({
-    required List<PlatformFile> files,
+    required List<XFile> files,
     required String contentType,
   }) async {
     final file = files.firstOrNull;
     if (file == null) return null;
 
-    List<int>? bytes;
-    if (kIsWeb) {
-      // Use FilePicker for web
-      bytes = file.bytes;
-    } else {
-      // Use FileUtils for non-web platforms
-      bytes =
-          file.bytes ?? await FileUtils.readBytesFromFile(filePath: file.path);
+    // `readAsBytes` covers both platforms: on web it re-hydrates the blob
+    // behind the object url, elsewhere it reads the picked file off disk.
+    final bytes = await file.readAsBytes();
+    if (!kIsWeb) {
       FileUtils.deleteFilePath(file.path);
     }
 
-    if (bytes == null || bytes.isEmpty) return null;
+    if (bytes.isEmpty) return null;
     final size = bytes.length;
     final data = base64Encode(bytes);
     final dataBase64AsBytes = utf8.encode(data);

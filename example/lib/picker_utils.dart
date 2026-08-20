@@ -16,12 +16,12 @@ class PickerUtils {
   static const String cameraAccessDenied = 'camera_access_denied';
   static const String galleryAccessDenied = 'photo_access_denied';
 
-  static Future<List<PlatformFile>> handlePickerResponse(
-    Future<Resource<List<PlatformFile>>> getCall, {
+  static Future<List<XFile>> handlePickerResponse(
+    Future<Resource<List<XFile>>> getCall, {
     bool closeBottomSheetAutomatically = true,
     required BuildContext context,
   }) async {
-    Resource<List<PlatformFile>> resource = await getCall;
+    Resource<List<XFile>> resource = await getCall;
     switch (resource.status) {
       case ResourceStatus.success:
         if ((resource.data?.isNotEmpty ?? false) &&
@@ -46,16 +46,16 @@ class PickerUtils {
     return [];
   }
 
-  static Future<Resource<List<PlatformFile>>> _pickFrom({
+  static Future<Resource<List<XFile>>> _pickFrom({
     ImageSource source = ImageSource.camera,
     CameraDevice cameraDevice = CameraDevice.rear,
     bool multiple = true,
     bool pickImage = true,
     Duration? maxDuration,
   }) async {
-    Resource<List<PlatformFile>> resource = Resource.success([]);
+    Resource<List<XFile>> resource = Resource.success([]);
 
-    List<PlatformFile> pickedFiles = [];
+    List<XFile> pickedFiles = [];
     try {
       Future<void> pickMultiple() async {
         final pickedXFiles = pickImage
@@ -71,11 +71,7 @@ class PickerUtils {
                 maxHeight: 1920,
                 imageQuality: 100,
               );
-        for (final xFile in pickedXFiles) {
-          pickedFiles.add(
-            PlatformFile(path: xFile.path, name: xFile.name, size: 0),
-          );
-        }
+        pickedFiles.addAll(pickedXFiles);
       }
 
       Future<void> pickSingle() async {
@@ -93,15 +89,7 @@ class PickerUtils {
                 preferredCameraDevice: cameraDevice,
                 maxDuration: maxDuration,
               );
-        if (pickedXFile != null) {
-          pickedFiles = [
-            PlatformFile(
-              path: pickedXFile.path,
-              name: pickedXFile.name,
-              size: 0,
-            ),
-          ];
-        }
+        pickedFiles = [?pickedXFile];
       }
 
       if (pickImage && multiple) {
@@ -113,12 +101,12 @@ class PickerUtils {
       if (pickedFiles.isEmpty) {
         final path = await _retrieveLostData();
         if (path != null) {
-          pickedFiles.add(PlatformFile(path: path, name: '', size: 0));
+          pickedFiles.add(XFile(path));
         }
       }
-      resource = Resource<List<PlatformFile>>.success(pickedFiles);
+      resource = Resource<List<XFile>>.success(pickedFiles);
     } on PlatformException catch (e) {
-      resource = Resource<List<PlatformFile>>.error(
+      resource = Resource<List<XFile>>.error(
         [],
         e.message,
         exception: e,
@@ -134,16 +122,12 @@ class PickerUtils {
           break;
       }
     } catch (e) {
-      resource = Resource<List<PlatformFile>>.error(
-        [],
-        e.toString(),
-        exception: e,
-      );
+      resource = Resource<List<XFile>>.error([], e.toString(), exception: e);
     }
     return resource;
   }
 
-  static Future<Resource<List<PlatformFile>>> _pickFromEnhanced({
+  static Future<Resource<List<XFile>>> _pickFromEnhanced({
     ImageSource source = ImageSource.camera,
     CameraDevice cameraDevice = CameraDevice.rear,
     bool multiple = true,
@@ -151,19 +135,28 @@ class PickerUtils {
     List<String>? allowedExtensions,
     Duration? maxDuration,
   }) async {
-    Resource<List<PlatformFile>> resource = Resource.success([]);
+    Resource<List<XFile>> resource = Resource.success([]);
 
-    List<PlatformFile> pickedFiles = [];
+    List<XFile> pickedFiles = [];
     try {
       Future<void> pickFromGallery() async {
-        final result = await FilePicker.pickFiles(
-          type: type,
-          allowedExtensions: allowedExtensions,
-          allowMultiple: multiple,
-        );
-        if (result != null) {
-          pickedFiles = result.files;
+        // file_picker 12 deprecates `allowMultiple` in favour of a dedicated
+        // single file entry point, and both now return the picked files
+        // directly instead of a nullable result object.
+        final List<PlatformFile> picked;
+        if (multiple) {
+          picked = await FilePicker.pickFiles(
+            type: type,
+            allowedExtensions: allowedExtensions,
+          );
+        } else {
+          final file = await FilePicker.pickFile(
+            type: type,
+            allowedExtensions: allowedExtensions,
+          );
+          picked = [?file];
         }
+        pickedFiles = [for (final file in picked) file.xFile];
       }
 
       Future<void> pickFromCamera() async {
@@ -181,15 +174,7 @@ class PickerUtils {
                 preferredCameraDevice: cameraDevice,
                 maxDuration: maxDuration,
               );
-        if (pickedXFile != null) {
-          pickedFiles = [
-            PlatformFile(
-              path: pickedXFile.path,
-              name: pickedXFile.name,
-              size: 0,
-            ),
-          ];
-        }
+        pickedFiles = [?pickedXFile];
       }
 
       if (source == ImageSource.gallery) {
@@ -201,12 +186,12 @@ class PickerUtils {
       if (pickedFiles.isEmpty) {
         final path = await _retrieveLostData();
         if (path != null) {
-          pickedFiles.add(PlatformFile(path: path, name: '', size: 0));
+          pickedFiles.add(XFile(path));
         }
       }
-      resource = Resource<List<PlatformFile>>.success(pickedFiles);
+      resource = Resource<List<XFile>>.success(pickedFiles);
     } on PlatformException catch (e) {
-      resource = Resource<List<PlatformFile>>.error(
+      resource = Resource<List<XFile>>.error(
         [],
         e.message,
         exception: e,
@@ -222,16 +207,12 @@ class PickerUtils {
           break;
       }
     } catch (e) {
-      resource = Resource<List<PlatformFile>>.error(
-        [],
-        e.toString(),
-        exception: e,
-      );
+      resource = Resource<List<XFile>>.error([], e.toString(), exception: e);
     }
     return resource;
   }
 
-  static Future<Resource<List<PlatformFile>>> pickFromGallery({
+  static Future<Resource<List<XFile>>> pickFromGallery({
     bool multiple = true,
     bool pickImage = true,
     Duration? maxDuration,
@@ -242,7 +223,7 @@ class PickerUtils {
     maxDuration: maxDuration,
   );
 
-  static Future<Resource<List<PlatformFile>>> pickFromGalleryEnhanced({
+  static Future<Resource<List<XFile>>> pickFromGalleryEnhanced({
     bool multiple = true,
     required FileType type,
     List<String>? allowedExtensions,
@@ -255,7 +236,7 @@ class PickerUtils {
     maxDuration: maxDuration,
   );
 
-  static Future<Resource<List<PlatformFile>>> takeFromCamera({
+  static Future<Resource<List<XFile>>> takeFromCamera({
     CameraDevice cameraDevice = CameraDevice.rear,
     bool pickImage = true,
     Duration? maxDuration,
