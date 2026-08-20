@@ -9,7 +9,10 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
-## 3.0.1
+## 4.0.0
+### Changed
+- BREAKING: Updated FHIR dependencies to `^0.8.0` for compatibility with the latest FHIR R4 library.
+
 ### Fixed
 - Fixed `Questionnaire` item extensions being copied into the generated `QuestionnaireResponse` items.
 
