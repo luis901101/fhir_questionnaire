@@ -518,7 +518,11 @@ class QuestionnaireController {
           ? (itemBundle.controller as SignatureController).value
           : null;
       final extensions = <FhirExtension>[
-        ...?itemBundle.item.extension_,
+        // Only what the FHIRPath controller needs to evaluate this item; it
+        // strips these again once every expression has been resolved.
+        ...?fhirPathController.expressionExtensionsOf(
+          itemBundle.item.extension_,
+        ),
         if (bytes != null)
           buildSignatureExtension(
             bytes,
@@ -639,7 +643,11 @@ class QuestionnaireController {
       text: itemBundle.item.text,
       answer: answers.isEmpty ? null : answers,
       item: childItems,
-      extension_: itemBundle.item.extension_,
+      // Only what the FHIRPath controller needs to evaluate this item; it
+      // strips these again once every expression has been resolved.
+      extension_: fhirPathController.expressionExtensionsOf(
+        itemBundle.item.extension_,
+      ),
     );
 
     if (onGenerateItemResponse != null) {

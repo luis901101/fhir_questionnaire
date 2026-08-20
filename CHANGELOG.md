@@ -9,6 +9,10 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## 3.0.1
+### Fixed
+- Fixed `Questionnaire` item extensions being copied into the generated `QuestionnaireResponse` items.
+
 ## 3.0.0
 ### Changed
 - Updated `QuestionnaireDisplayItemView` to use `bodyMedium` text style instead of `titleMedium`.

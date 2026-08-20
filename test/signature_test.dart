@@ -156,6 +156,9 @@ void main() {
       final groupResponse = response.item!.firstWhere(
         (e) => e.linkId == FhirString('consent-group'),
       );
+      // Only the extension the response owns; nothing copied over from the
+      // questionnaire item, such as its `questionnaire-signatureRequired`.
+      expect(groupResponse.extension_, hasLength(1));
       final sigExt = groupResponse.extension_!.firstWhere(
         (e) =>
             e.url.valueString ==

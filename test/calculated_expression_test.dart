@@ -108,8 +108,13 @@ void main() {
           consentResponse.answer!.first.valueBoolean?.valueBoolean,
           isTrue,
         );
-        // The extensions copied over from the questionnaire item are not kept.
+        // No extension of the questionnaire is kept, on any item.
         expect(consentResponse.extension_, isNull);
+        expect(
+          _findItem(response.item!, 'consent-acceptance-id').extension_,
+          isNull,
+        );
+        expect(_findItem(response.item!, '3').extension_, isNull);
       },
     );
 
