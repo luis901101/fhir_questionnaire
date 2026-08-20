@@ -113,7 +113,10 @@ class FhirPathController {
     } while (newNumberOfUnresolvedItems > 0 &&
         newNumberOfUnresolvedItems < currentNumberOfUnresolvedItems);
 
-    return itemList;
+    // The expression extensions were only carried so the items above could be
+    // evaluated. Nothing that came from the Questionnaire belongs in the
+    // emitted response, including the expressions that failed to resolve.
+    return stripExpressionExtensions(itemList);
   }
 
   /// Calculates the number of unresolved calculated expressions in an item
@@ -163,6 +166,65 @@ class FhirPathController {
                     FhirExpressionLanguage.text_fhirpath,
           )
           .toList();
+
+  /// The Questionnaire extension URLs this controller needs to see on the
+  /// generated [QuestionnaireResponseItem]s while it resolves expressions.
+  ///
+  /// They are scratch data: the response builder copies them over from the
+  /// [QuestionnaireItem] and [stripExpressionExtensions] removes them again
+  /// once every expression has been resolved, so no extension coming from the
+  /// Questionnaire ever reaches the emitted [QuestionnaireResponse]. Override
+  /// to widen the set when adding support for further expression based
+  /// extensions.
+  Set<String> get expressionExtensionUrls => {
+    FhirConstants.calculatedExpressionExtensionUrl,
+  };
+
+  /// Whether [ext] is one of the [expressionExtensionUrls] a response item has
+  /// to carry while expressions are being resolved.
+  ///
+  /// Matches on the url alone, unlike [calculatedExpressionsOf], so that an
+  /// extension carried over can never be left behind for lack of a supported
+  /// expression language.
+  bool isExpressionExtension(FhirExtension ext) =>
+      expressionExtensionUrls.contains(ext.url?.value?.toString());
+
+  /// The subset of [extensions] a [QuestionnaireResponseItem] has to carry for
+  /// this controller to evaluate it.
+  ///
+  /// Returns `null` rather than an empty list when there is nothing to carry,
+  /// as an empty list would serialize as an empty `extension` array.
+  List<FhirExtension>? expressionExtensionsOf(
+    Iterable<FhirExtension>? extensions,
+  ) {
+    final result = extensions?.where(isExpressionExtension).toList();
+    return result == null || result.isEmpty ? null : result;
+  }
+
+  /// [extensions] without the ones this controller carried for its own use,
+  /// leaving the ones the response owns untouched, such as the signature of a
+  /// signed item. Returns `null` when nothing is left.
+  List<FhirExtension>? withoutExpressionExtensions(
+    Iterable<FhirExtension>? extensions,
+  ) {
+    final result = extensions
+        ?.where((ext) => !isExpressionExtension(ext))
+        .toList();
+    return result == null || result.isEmpty ? null : result;
+  }
+
+  /// Recursively removes every extension this controller carried for its own
+  /// use from [itemList] and its sub items.
+  List<QuestionnaireResponseItem>? stripExpressionExtensions(
+    List<QuestionnaireResponseItem>? itemList,
+  ) => itemList
+      ?.map(
+        (item) => item.copyWith(
+          extension_: withoutExpressionExtensions(item.extension_),
+          item: stripExpressionExtensions(item.item),
+        ),
+      )
+      .toList();
 
   /// Maps the value a FHIRPath calculated expression evaluated to onto the
   /// matching `answer.value[x]` of a [QuestionnaireResponseAnswer].
@@ -253,15 +315,6 @@ class FhirPathController {
       );
 
       if (calculatedExpressionExtensions.isEmpty) {
-        // Nothing to calculate here, so just remove any extensions that we
-        // copied over from the build process. Items without an answer are left
-        // untouched as their extensions may have been added on purpose, like
-        // the signature of a signed item.
-        if (updatedList[itemIndex].answer != null) {
-          updatedList[itemIndex] = updatedList[itemIndex].copyWith(
-            extension_: null,
-          );
-        }
         continue;
       }
 
@@ -291,8 +344,11 @@ class FhirPathController {
               // insert calculation result as answer, replacing whatever the
               // item view produced, as the expression owns this item's value
               answer: [answer],
-              // remove extensions again that were inserted in the builder
-              extension_: null,
+              // dropping the expression extension marks the item resolved for
+              // the loop above; extensions the response owns are kept
+              extension_: withoutExpressionExtensions(
+                updatedList[itemIndex].extension_,
+              ),
             );
 
             return updatedList;
