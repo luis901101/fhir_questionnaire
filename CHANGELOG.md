@@ -9,6 +9,12 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## 5.0.0
+### Changed
+- BREAKING: Updated FHIR dependencies to `^0.12.0` for compatibility with the latest FHIR R4 library.
+- BREAKING: Updated `shimmer` dependency to version `4.0.0`.
+- Updated `intl` dependency to version `0.20.3`.
+
 ## 4.0.0
 ### Changed
 - BREAKING: Updated FHIR dependencies to `^0.8.0` for compatibility with the latest FHIR R4 library.
