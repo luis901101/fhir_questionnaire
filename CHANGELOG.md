@@ -9,6 +9,11 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## 9.0.0
+### Changed
+- Updated `shimmer` dependency to breaking change version `4.0.0`.
+- Updated `intl` dependency to version `0.20.3`.
+
 ## 8.1.1
 ### Fixed
 - Fixed `Questionnaire` item extensions being copied into the generated `QuestionnaireResponse` items.

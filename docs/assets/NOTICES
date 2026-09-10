@@ -1952,6 +1952,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 --------------------------------------------------------------------------------
 cross_file
+cupertino_ui
 file_selector_linux
 file_selector_macos
 file_selector_platform_interface
@@ -1960,6 +1961,7 @@ flutter_plugin_android_lifecycle
 image_picker_for_web
 image_picker_macos
 image_picker_platform_interface
+material_ui
 vector_math
 
 Copyright 2013 The Flutter Authors
