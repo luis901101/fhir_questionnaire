@@ -14,6 +14,7 @@ Types of changes
 - BREAKING: Updated FHIR dependencies to `^0.12.0` for compatibility with the latest FHIR R4 library.
 - BREAKING: Updated `shimmer` dependency to version `4.0.0`.
 - Updated `intl` dependency to version `0.20.3`.
+- Updated `FhirPathController` to evaluate FHIRPath expressions with `FHIRPathEngine` instead of the deprecated `walkFhirPath`.
 
 ## 4.0.0
 ### Changed

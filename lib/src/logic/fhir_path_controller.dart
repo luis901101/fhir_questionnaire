@@ -4,6 +4,54 @@ import 'package:fhir_questionnaire_r4/src/logic/utils/fhir_constants.dart';
 import 'package:flutter/foundation.dart';
 
 class FhirPathController {
+  /// The engine every expression is evaluated with, created on first use and
+  /// then kept: creating one initializes an entire [WorkerContext], which is
+  /// far too expensive to redo per expression.
+  Future<FHIRPathEngine>? _engine;
+
+  /// The expressions parsed so far, keyed by their source, so that an
+  /// expression evaluated again on a later pass of
+  /// [resolveItemsWithCalculatedExpressions] is only parsed once.
+  final Map<String, ExpressionNode> _parsedExpressions = {};
+
+  Future<FHIRPathEngine> get engine =>
+      _engine ??= FHIRPathEngine.create(WorkerContext());
+
+  /// Evaluates the FHIRPath [expression] against [questionnaireResponse], with
+  /// [environment] as the map of variable name / value pairs the expression may
+  /// reference as `%name`.
+  ///
+  /// The response acts as both the context node and `%resource`, as expressions
+  /// in a Questionnaire are written against the response being filled in.
+  /// Throws whatever the engine throws for an expression that fails to parse or
+  /// to evaluate.
+  Future<List<FhirBase>> evaluateExpression({
+    required String expression,
+    required Map<String, dynamic> environment,
+    required QuestionnaireResponse questionnaireResponse,
+  }) async {
+    final engine = await this.engine;
+    final parsedExpression = _parsedExpressions[expression] ??= engine.parse(
+      expression,
+    );
+
+    // The engine works in FhirNode; every node it produces off an R4 resource
+    // is a FhirBase, so the result is narrowed back to it.
+    final result = await engine.evaluateWithContext(
+      null,
+      questionnaireResponse,
+      null,
+      questionnaireResponse,
+      parsedExpression,
+      environment: {
+        'focusResource': [questionnaireResponse],
+        ...environment,
+      },
+    );
+
+    return result.cast<FhirBase>();
+  }
+
   /// Retrieves all variable definitions defined at the Questionnaire's root
   /// level and calculates their value. Returns a map of variable name / value
   /// pairs that can be used as execution context to evaluate expressions at
@@ -43,11 +91,10 @@ class FhirPathController {
       }
 
       try {
-        final result = await walkFhirPath(
+        final result = await evaluateExpression(
+          expression: expression,
           environment: calculatedResults,
-          pathExpression: expression,
-          context: questionnaireResponse,
-          resource: questionnaireResponse,
+          questionnaireResponse: questionnaireResponse,
         );
 
         if (result.isNotEmpty) {
@@ -264,11 +311,10 @@ class FhirPathController {
       }
 
       try {
-        final List<FhirBase> result = await walkFhirPath(
+        final result = await evaluateExpression(
+          expression: expression,
           environment: environment,
-          pathExpression: expression,
-          context: questionnaireResponse,
-          resource: questionnaireResponse,
+          questionnaireResponse: questionnaireResponse,
         );
 
         if (result.isNotEmpty) {
