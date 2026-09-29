@@ -19,8 +19,8 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.8.0 <4.0.0'
-  flutter: '>=3.3.0'
+  sdk: ^3.13.0
+  flutter: '>=3.47.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -38,6 +38,7 @@ dependencies:
   file_picker: ^12.2.0
   crypto: ^3.0.7
   json_field_editor: ^1.2.1
+  material_ui: ^1.5.0
 
 dependency_overrides:
   extended_text_field: #^16.0.2 # Fixes issue with Flutter 3.44

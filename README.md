@@ -8,6 +8,8 @@ This package takes care building the UI of a **FHIR R4 Questionnaire**, handle b
 # Important
 This package is based on [fhir_r4](https://pub.dev/packages/fhir_r4) from [fhirfli.dev](https://fhirfli.dev)
 
+Since version `6.0.0` this package is built with the standalone [material_ui](https://pub.dev/packages/material_ui) package instead of `package:flutter/material.dart`, and requires Flutter `3.47.0` or later. Your app must use `MaterialApp`/`Theme` from `package:material_ui/material_ui.dart` too, otherwise the questionnaire widgets won't find your app theme and localizations. Check Flutter's [migration guide](https://docs.flutter.dev/release/breaking-changes/material-ui-and-cupertino-ui) to migrate your app.
+
 ## Supported Questionnaire Items
 So far this package only supports [FHIR R4 Item Types](https://hl7.org/fhir/R4/valueset-item-type.html)
 | Item | Supported |  
@@ -139,7 +141,7 @@ When `whoSigns` (and optionally `signsOnBehalfOf`) is provided, the signature fi
 All signature widgets are public and can be extended/overridden: `QuestionnaireSignatureView`, `SignaturePadDialog` (with its public generic `SignaturePadDialogState`) and `SignatureController`. Detection helpers `hasSignature` and `signatureTypeCoding` are exposed as extensions on `Questionnaire` and `QuestionnaireItem`.
 
 ## Some extra notes
-1. This widget will use the app Theme to build, so if you want to change colors, InputDecorations, etc, you just have to change it in your app Theme. Also all the package widgets are public and exposed so you could override it if necessary.
+1. This widget will use the app Theme (from `material_ui`) to build, so if you want to change colors, InputDecorations, etc, you just have to change it in your app Theme. Also all the package widgets are public and exposed so you could override it if necessary.
 2. The `QuestionnaireView` implementation takes care of validations depending on each `QuestionnaireItem` definition.
 3. Check the example project which shows all the features in action.
 

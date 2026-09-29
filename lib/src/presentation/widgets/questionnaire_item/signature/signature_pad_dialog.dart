@@ -1,5 +1,5 @@
 import 'package:fhir_questionnaire_r4/fhir_questionnaire_r4.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:hand_signature/signature.dart';
 
 /// Modal drawing pad used to capture a signature. Draws on the persistent

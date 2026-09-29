@@ -9,6 +9,12 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## 6.0.0
+### Changed
+- BREAKING: Migrated from `package:flutter/material.dart` to the standalone [material_ui](https://pub.dev/packages/material_ui) package, so apps using this package must be built with `material_ui` as well.
+- BREAKING: Raised the minimum supported versions to Flutter `3.47.0` and Dart `3.13.0`.
+- BREAKING: Public APIs typed with `ThemeData`, `InputDecoration`, `DropdownMenuItem` and `TimeOfDay` now use the `material_ui` types.
+
 ## 5.0.0
 ### Changed
 - BREAKING: Updated FHIR dependencies to `^0.12.0` for compatibility with the latest FHIR R4 library.

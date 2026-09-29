@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:fhir_r4/fhir_r4.dart' hide QuestionnaireItemType;
 import 'package:fhir_questionnaire_r4/fhir_questionnaire_r4.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Created by luis901101 on 3/5/24.
 abstract class QuestionnaireItemView extends StatefulWidget {

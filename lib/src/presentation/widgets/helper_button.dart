@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Created by luis901101 on 10/28/25.
 /// A button styled text widget typically used for displaying helper text that can be interacted with.
