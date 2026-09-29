@@ -7,7 +7,10 @@ import 'package:example/questionnaire_samples.dart';
 import 'package:fhir_plus/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+// json_field_editor still depends on the in-SDK Material library, so its
+// JsonField expects the legacy InputDecoration and a legacy Material ancestor.
+import 'package:flutter/material.dart' as legacy;
+import 'package:material_ui/material_ui.dart';
 import 'package:json_field_editor/json_field_editor.dart';
 
 void main() {
@@ -34,6 +37,11 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
             inputDecorationTheme: snapshot.data,
           ),
+          // Lets legacy Material widgets (json_field_editor) resolve Theme and
+          // MaterialLocalizations while that dependency is not migrated.
+          builder: (context, child) =>
+              // ignore: deprecated_member_use
+              MaterialUiCompatibilityBridge(child: child!),
           home: const MyHomePage(),
         );
       },
@@ -222,25 +230,28 @@ class _MyHomePageState extends State<MyHomePage> {
                                       padding: const EdgeInsets.symmetric(
                                         vertical: 16,
                                       ),
-                                      child: JsonField(
-                                        controller: jsonController,
-                                        isFormatting: true,
-                                        showErrorMessage: true,
-                                        maxLines: null,
-                                        decoration: InputDecoration(
-                                          labelText: 'Questionnaire JSON',
-                                          errorText: jsonError,
-                                          contentPadding: EdgeInsets.only(
-                                            left: 16,
-                                            top: 12,
-                                            bottom: 12,
-                                          ),
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(
-                                              Radius.circular(28),
+                                      child: legacy.Material(
+                                        type: legacy.MaterialType.transparency,
+                                        child: JsonField(
+                                          controller: jsonController,
+                                          isFormatting: true,
+                                          showErrorMessage: true,
+                                          maxLines: null,
+                                          decoration: legacy.InputDecoration(
+                                            labelText: 'Questionnaire JSON',
+                                            errorText: jsonError,
+                                            contentPadding: EdgeInsets.only(
+                                              left: 16,
+                                              top: 12,
+                                              bottom: 12,
                                             ),
+                                            border: legacy.OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(28),
+                                              ),
+                                            ),
+                                            filled: true,
                                           ),
-                                          filled: true,
                                         ),
                                       ),
                                     ),
@@ -489,25 +500,28 @@ class QuestionnairePageState extends State<QuestionnairePage> {
                 child: SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: JsonField(
-                      controller: JsonTextFieldController()..text = json,
-                      isFormatting: true,
-                      showErrorMessage: true,
-                      doInitFormatting: true,
-                      readOnly: true,
-                      showCursor: true,
-                      enableInteractiveSelection: true,
-                      maxLines: null,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.only(
-                          left: 16,
-                          top: 12,
-                          bottom: 12,
+                    child: legacy.Material(
+                      type: legacy.MaterialType.transparency,
+                      child: JsonField(
+                        controller: JsonTextFieldController()..text = json,
+                        isFormatting: true,
+                        showErrorMessage: true,
+                        doInitFormatting: true,
+                        readOnly: true,
+                        showCursor: true,
+                        enableInteractiveSelection: true,
+                        maxLines: null,
+                        decoration: legacy.InputDecoration(
+                          contentPadding: EdgeInsets.only(
+                            left: 16,
+                            top: 12,
+                            bottom: 12,
+                          ),
+                          border: legacy.OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(28)),
+                          ),
+                          filled: true,
                         ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(28)),
-                        ),
-                        filled: true,
                       ),
                     ),
                   ),

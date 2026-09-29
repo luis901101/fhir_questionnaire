@@ -9,6 +9,12 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## 10.0.0
+### Changed
+- **Breaking Change**: Migrated from `package:flutter/material.dart` to the standalone [material_ui](https://pub.dev/packages/material_ui) package, so apps using this package must be built with `material_ui` as well.
+- **Breaking Change**: Raised the minimum supported versions to Flutter `3.47.0` and Dart `3.13.0`.
+- **Breaking Change**: Public APIs typed with `ThemeData`, `InputDecoration`, `DropdownMenuItem` and `TimeOfDay` now use the `material_ui` types.
+
 ## 9.0.0
 ### Changed
 - Updated `shimmer` dependency to breaking change version `4.0.0`.

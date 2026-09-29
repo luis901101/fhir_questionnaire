@@ -1,5 +1,5 @@
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Created by luis901101 on 3/9/24.
 class QuestionnaireCheckBoxChoiceItemView

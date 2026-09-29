@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 enum DateTimeType {
   date,

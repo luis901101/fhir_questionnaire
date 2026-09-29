@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:fhir_plus/r4.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 
 class QuestionnaireItemEnableWhenController {
   late final List<QuestionnaireItemEnableWhenBundle> _enableWhenBundleList;

@@ -1,5 +1,5 @@
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Renders a hand written signature field for a Questionnaire that declares the
 /// `questionnaire-signatureRequired` extension, either at root level or on an
