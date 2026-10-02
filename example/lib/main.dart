@@ -281,8 +281,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                                     item.name ==
                                                     nameController.text,
                                               )) {
-                                            nameError =
-                                                'A Questionnaire with this name already exists';
+                                            nameError = 'A Questionnaire with this name already exists';
                                           }
                                           if (jsonController.text.isEmpty) {
                                             jsonError = 'JSON is required';
@@ -299,8 +298,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                                     item.value ==
                                                     jsonController.text,
                                               )) {
-                                            jsonError =
-                                                'A Questionnaire with this JSON already exists';
+                                            jsonError = 'A Questionnaire with this JSON already exists';
                                           }
                                           if (nameError != null ||
                                               jsonError != null) {
@@ -477,9 +475,8 @@ class QuestionnairePageState extends State<QuestionnairePage> {
 
   void onSubmit(QuestionnaireResponse questionnaireResponse) async {
     String json = jsonEncode(questionnaireResponse.toJson());
-    var prettyJson = const JsonEncoder.withIndent(
-      '  ',
-    ).convert(questionnaireResponse.toJson());
+    var prettyJson = const JsonEncoder.withIndent('  ')
+        .convert(questionnaireResponse.toJson());
     debugPrint('''
       ========================================================================
       $prettyJson

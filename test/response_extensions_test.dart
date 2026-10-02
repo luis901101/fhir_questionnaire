@@ -165,16 +165,16 @@ List<QuestionnaireResponseItem> _flattenResponse(
 QuestionnaireItemBundle _bundleOf(
   List<QuestionnaireItemBundle> bundles,
   String linkId,
-) => _flatten(
-  bundles,
-).firstWhere((bundle) => bundle.item.linkId.valueString == linkId);
+) =>
+    _flatten(bundles)
+        .firstWhere((bundle) => bundle.item.linkId.valueString == linkId);
 
 QuestionnaireResponseItem _responseItemOf(
   QuestionnaireResponse response,
   String linkId,
-) => _flattenResponse(
-  response.item,
-).firstWhere((item) => item.linkId.valueString == linkId);
+) =>
+    _flattenResponse(response.item)
+        .firstWhere((item) => item.linkId.valueString == linkId);
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

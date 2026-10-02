@@ -28,10 +28,8 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
   QuestionnaireItem? _helperItemCache;
   String? _helperTextCache;
   bool? _helperTextAsButtonCache;
-  dynamic
-  _minValueCache; // Can be any of instant, date, dateTime, time, decimal, integer, depending on the item type
-  dynamic
-  _maxValueCache; // Can be any of instant, date, dateTime, time, decimal, integer, depending on the item type
+  dynamic _minValueCache; // Can be any of instant, date, dateTime, time, decimal, integer, depending on the item type
+  dynamic _maxValueCache; // Can be any of instant, date, dateTime, time, decimal, integer, depending on the item type
   bool isEnabled = true;
   String? lastControllerError;
   FieldController get controller => widget.controller;

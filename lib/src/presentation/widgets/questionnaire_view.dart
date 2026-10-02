@@ -334,9 +334,9 @@ class QuestionnaireViewState extends State<QuestionnaireView>
   /// Every signature controller in the questionnaire: item level ones (anywhere
   /// in the nested tree) plus the root level one.
   List<SignatureController> get signatureControllers => [
-    ..._flattenItemBundles(
-      itemBundles,
-    ).map((bundle) => bundle.controller).whereType<SignatureController>(),
+    ..._flattenItemBundles(itemBundles)
+        .map((bundle) => bundle.controller)
+        .whereType<SignatureController>(),
     ?rootSignatureController,
   ];
 
