@@ -99,7 +99,9 @@ class SignaturePadDialogState<T extends SignaturePadDialog> extends State<T> {
       onPressed: enabled ? () => controller.control.clear() : null,
       icon: const Icon(Icons.gesture),
       style: TextButton.styleFrom(
-        backgroundColor: theme.colorScheme.surfaceContainerHigh,
+        backgroundColor: theme.colorScheme.surfaceContainerHigh.withValues(
+          alpha: 0.9,
+        ),
       ),
       label: Text(localization.btnClearSignature),
     );

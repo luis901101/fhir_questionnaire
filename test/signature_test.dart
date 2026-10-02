@@ -101,25 +101,28 @@ void main() {
   group('buildSignatureExtension', () {
     final controller = QuestionnaireController();
 
-    test('emits questionnaireresponse-signature with PNG data + given type', () {
-      final coding = [
-        Coding(
-          system: FhirUri('urn:iso-astm:E1762-95:2013'),
-          code: FhirCode('1.2.840.10065.1.12.1.7'),
-          display: 'Consent Signature',
-        ),
-      ];
-      final ext = controller.buildSignatureExtension(fakePng, type: coding);
+    test(
+      'emits questionnaireresponse-signature with PNG data + given type',
+      () {
+        final coding = [
+          Coding(
+            system: FhirUri('urn:iso-astm:E1762-95:2013'),
+            code: FhirCode('1.2.840.10065.1.12.1.7'),
+            display: 'Consent Signature',
+          ),
+        ];
+        final ext = controller.buildSignatureExtension(fakePng, type: coding);
 
-      expect(
-        ext.url?.value?.toString(),
-        'http://hl7.org/fhir/StructureDefinition/questionnaireresponse-signature',
-      );
-      final signature = ext.valueSignature!;
-      expect(signature.type.first.code?.value, '1.2.840.10065.1.12.1.7');
-      expect(signature.sigFormat?.value, 'image/png');
-      expect(signature.data?.value, base64.encode(fakePng));
-    });
+        expect(
+          ext.url?.value?.toString(),
+          'http://hl7.org/fhir/StructureDefinition/questionnaireresponse-signature',
+        );
+        final signature = ext.valueSignature!;
+        expect(signature.type.first.code?.value, '1.2.840.10065.1.12.1.7');
+        expect(signature.sigFormat?.value, 'image/png');
+        expect(signature.data?.value, base64.encode(fakePng));
+      },
+    );
 
     test('falls back to a default coding when none provided', () {
       final ext = controller.buildSignatureExtension(fakePng);
@@ -138,9 +141,9 @@ void main() {
 
       // The group with a signature marker gets a SignatureController as its
       // bundle controller. Simulate a drawn signature.
-      final signatureBundles = _flatten(
-        bundles,
-      ).where((b) => b.controller is SignatureController).toList();
+      final signatureBundles = _flatten(bundles)
+          .where((b) => b.controller is SignatureController)
+          .toList();
       expect(signatureBundles, hasLength(1));
       for (final bundle in signatureBundles) {
         (bundle.controller as SignatureController).value = fakePng;
@@ -158,9 +161,7 @@ void main() {
       // questionnaire item, such as its `questionnaire-signatureRequired`.
       expect(groupResponse.extension_, hasLength(1));
       final sigExt = groupResponse.extension_!.firstWhere(
-        (e) =>
-            e.url?.value?.toString() ==
-            'http://hl7.org/fhir/StructureDefinition/questionnaireresponse-signature',
+        (e) => e.url?.value?.toString() == 'http://hl7.org/fhir/StructureDefinition/questionnaireresponse-signature',
       );
       expect(
         sigExt.valueSignature?.type.first.code?.value,

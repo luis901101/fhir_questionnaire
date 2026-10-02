@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:fhir_questionnaire/src/logic/utils/text_utils.dart';
+
 import 'dart:ui' as ui show BoxHeightStyle, BoxWidthStyle;
 
 class CustomTextField extends StatefulWidget {
@@ -330,9 +331,7 @@ class CustomTextFieldState<S extends CustomTextField> extends State<S> {
       expands: widget.expands,
       maxLength: widget.maxLength,
       maxLengthEnforcement: widget.maxLengthEnforcement,
-      onChanged: widget.listenOnControllerChanged
-          ? null
-          : onChanged, //onChanged function is managed above in the onTextChanged function
+      onChanged: widget.listenOnControllerChanged ? null : onChanged, //onChanged function is managed above in the onTextChanged function
       onEditingComplete: widget.onEditingComplete,
       onSubmitted: widget.onSubmitted,
       onAppPrivateCommand: widget.onAppPrivateCommand,

@@ -14,6 +14,8 @@ Types of changes
 - **Breaking Change**: Migrated from `package:flutter/material.dart` to the standalone [material_ui](https://pub.dev/packages/material_ui) package, so apps using this package must be built with `material_ui` as well.
 - **Breaking Change**: Raised the minimum supported versions to Flutter `3.47.0` and Dart `3.13.0`.
 - **Breaking Change**: Public APIs typed with `ThemeData`, `InputDecoration`, `DropdownMenuItem` and `TimeOfDay` now use the `material_ui` types.
+- Added `dividerColor` to group item borders.
+- Adjusted signature pad clear button background opacity for consistency with the theme.
 
 ## 9.0.0
 ### Changed

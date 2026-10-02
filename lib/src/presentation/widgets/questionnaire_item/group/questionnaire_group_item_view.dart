@@ -48,7 +48,7 @@ class QuestionnaireGroupItemViewState
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
-            border: Border.all(width: 0.5),
+            border: Border.all(width: 0.5, color: theme.dividerColor),
             borderRadius: BorderRadius.circular(borderRadius),
           ),
           padding: EdgeInsets.only(
