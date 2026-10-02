@@ -97,7 +97,7 @@ class QuestionnaireViewState extends State<QuestionnaireView>
     if (_isLoading != value) setState(() => _isLoading = value);
   }
 
-  bool get isLoading => /*widget.isLoading || _isLoading*/ true;
+  bool get isLoading => widget.isLoading || _isLoading;
 
   @override
   void initState() {
