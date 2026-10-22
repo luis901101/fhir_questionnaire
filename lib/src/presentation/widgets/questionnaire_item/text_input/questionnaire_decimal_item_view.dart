@@ -8,6 +8,7 @@ class QuestionnaireDecimalItemView extends QuestionnaireTextFieldItemView {
     super.controller,
     required super.item,
     super.enableWhenController,
+    super.children,
   });
 
   @override

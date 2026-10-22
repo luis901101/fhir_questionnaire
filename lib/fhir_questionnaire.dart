@@ -1,3 +1,4 @@
+export 'package:fhir_questionnaire/src/logic/questionnaire_form_controller.dart';
 export 'package:fhir_questionnaire/src/logic/utils/questionnaire_utils.dart';
 export 'package:fhir_questionnaire/src/logic/utils/fhir_extension_utils.dart';
 export 'package:fhir_questionnaire/src/logic/utils/num_utils.dart';
@@ -6,6 +7,7 @@ export 'package:fhir_questionnaire/src/logic/utils/iterable_utils.dart';
 export 'package:fhir_questionnaire/src/logic/utils/fhir_constants.dart';
 export 'package:fhir_questionnaire/src/logic/utils/date_utils.dart';
 export 'package:fhir_questionnaire/src/logic/questionnaire_controller.dart';
+export 'package:fhir_questionnaire/src/logic/questionnaire_form_item.dart';
 export 'package:fhir_questionnaire/src/logic/enumerator/questionnaire_enable_when_operator.dart';
 export 'package:fhir_questionnaire/src/logic/enumerator/questionnaire_item_extension_code.dart';
 export 'package:fhir_questionnaire/src/logic/enumerator/questionnaire_response_status.dart';
@@ -48,9 +50,11 @@ export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/o
 export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/display/questionnaire_display_item_view.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_item_view.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_single_choice_item_view.dart';
+export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_choice_controller.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_choice_item_view.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_text_field_item_view.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_multi_choice_item_view.dart';
+export 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_highlight_scope.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/custom_text_field.dart';
 export 'package:fhir_questionnaire/src/presentation/widgets/helper_button.dart';
 export 'package:fhir_questionnaire/src/presentation/localization/questionnaire_localization.dart';

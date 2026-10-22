@@ -11,6 +11,7 @@ class QuestionnaireRadioButtonChoiceItemView
     required super.item,
     super.isOpen,
     super.enableWhenController,
+    super.children,
   });
 
   @override

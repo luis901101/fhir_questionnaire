@@ -32,6 +32,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: 'FHIR Questionnaire Demo',
           scrollBehavior: const CustomScrollBehavior(),
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
             useMaterial3: true,
@@ -432,6 +433,8 @@ class QuestionnairePageState extends State<QuestionnairePage> {
     name: 'John Doe',
   );
 
+  final formController = QuestionnaireFormController();
+
   @override
   void initState() {
     super.initState();
@@ -442,12 +445,59 @@ class QuestionnairePageState extends State<QuestionnairePage> {
   }
 
   @override
+  void dispose() {
+    formController.dispose();
+    super.dispose();
+  }
+
+  /// Walks the form from code: highlights each unanswered question, scrolls to
+  /// it and answers it with a sample value.
+  Future<void> fillFromCode() async {
+    if (!formController.isAttached) return;
+    for (final item in formController.items) {
+      if (!mounted) return;
+      if (item.hidden || !item.enabled || item.readOnly) continue;
+      if (formController.answerOf(item.uid).isNotEmpty) continue;
+      final Object? value = switch (item.type) {
+        QuestionnaireItemType.string ||
+        QuestionnaireItemType.text => 'Sample answer',
+        QuestionnaireItemType.integer => 5,
+        QuestionnaireItemType.decimal => 1.5,
+        QuestionnaireItemType.boolean => true,
+        QuestionnaireItemType.date ||
+        QuestionnaireItemType.dateTime ||
+        QuestionnaireItemType.time => DateTime.now(),
+        QuestionnaireItemType.choice || QuestionnaireItemType.openChoice
+            when item.options.isNotEmpty =>
+          item.repeats ? [item.options.first] : item.options.first,
+        _ => null,
+      };
+      if (value == null) continue;
+      formController.highlight(item.uid);
+      await formController.scrollTo(item.uid);
+      formController.setAnswer(item.uid, value);
+      await Future.delayed(const Duration(milliseconds: 600));
+    }
+    formController.clearHighlight();
+  }
+
+  @override
   Widget build(BuildContext context) {
     theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Questionnaire')),
+      appBar: AppBar(
+        title: const Text('Questionnaire'),
+        actions: [
+          IconButton(
+            tooltip: 'Fill from code',
+            icon: const Icon(Icons.auto_fix_high),
+            onPressed: fillFromCode,
+          ),
+        ],
+      ),
       body: QuestionnaireView(
         key: ValueKey(loading),
+        formController: formController,
         questionnaire: widget.questionnaire,
         onAttachmentLoaded: onAttachmentLoaded,
         locale: widget.locale,

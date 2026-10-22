@@ -3,7 +3,7 @@
 
 A Flutter package for working with FHIR® Questionnaires. FHIR® is the registered trademark of HL7 and is used with the permission of HL7. Use of the FHIR trademark does not constitute endorsement of this product by HL7.
 
-This package takes care building the UI of a **FHIR R4 Questionnaire**, handle behavior and validations and finally generates the **QuestionnaireResponse** from the user answers.
+This package takes care building the UI of a **FHIR R4 Questionnaire**, handle behavior and validations and finally generates the **QuestionnaireResponse** from the user answers. It also lets you drive the rendered form from code, so an AI agent can help a user answer it (see [Helping users with an AI agent](#helping-users-with-an-ai-agent)).
 
 # Important
 This package is now based on [fhir_plus](https://pub.dev/packages/fhir_plus) if you need a version based on [fhir_r4](https://pub.dev/packages/fhir_r4) from [fhirfli.dev](https://fhirfli.dev) use [fhir_questionnaire_r4](https://pub.dev/packages/fhir_questionnaire_r4)
@@ -44,6 +44,7 @@ So far this package only supports [FHIR R4 Item Types](https://hl7.org/fhir/R4/v
 9. Extesion for hint texts using [entryFormat](http://hl7.org/fhir/R4/extension-entryformat.html) extension.
 10. Extension for helper text or helper button using [questionnaire-displayCategory](https://hl7.org/fhir/R4/extension-questionnaire-displaycategory.html) and [questionnaire-itemControl](https://hl7.org/fhir/R4/extension-questionnaire-itemcontrol.html) with the codes `help` and `flyover`.
 11. Hand written signature capture via the [questionnaire-signatureRequired](http://hl7.org/fhir/R4/extension-questionnaire-signaturerequired.html) extension (root or item level), emitted in the response as a [questionnaireresponse-signature](http://hl7.org/fhir/R4/extension-questionnaireresponse-signature.html). See the [Signatures](#signatures) section.
+12. Driving the rendered form from code with `QuestionnaireFormController`: read, answer, highlight, scroll to, validate and submit items, for example from an AI agent's tools. See the [Driving a form from code](#driving-a-form-from-code) section.
 
 
 ## How to use
@@ -80,8 +81,49 @@ QuestionnaireView(
 11. **QuestionnairePerson? source**: Optional person for the individual who provided the information reflected in the answers. When provided its `reference` is set on `QuestionnaireResponse.source`.
 12. **QuestionnairePerson? whoSigns**: Optional person who signs the `QuestionnaireResponse`. Its `reference` is used as `Signature.who`, and its `name`/`title` are shown beneath each signature pad.
 13. **QuestionnairePerson? signsOnBehalfOf**: Optional person on behalf of which the `QuestionnaireResponse` is signed. Its `reference` is used as `Signature.onBehalfOf`.
+14. **QuestionnaireFormController? formController**: Reads and drives the rendered form from code, see [Driving a form from code](#driving-a-form-from-code).
 
 > If you use your own `controller` instead of letting `QuestionnaireView` create one, the `subject`, `author`, `source`, `whoSigns` and `signsOnBehalfOf` properties are ignored; provide the corresponding `subjectProvider`, `authorProvider`, `sourceProvider`, `whoSignsProvider` and `signsOnBehalfOfProvider` callbacks to your `QuestionnaireController` instead.
+
+## Driving a form from code
+Pass a `QuestionnaireFormController` to read and fill a rendered form from code, for example to walk a user through it item by item, or to let an AI agent help a user answer it (see [Helping users with an AI agent](#helping-users-with-an-ai-agent)). Everything it sets goes through the item's own controller, so the form shows it at once, the user can still change it by hand, and the response is exactly what the Submit button builds.
+
+```dart
+final form = QuestionnaireFormController();
+
+QuestionnaireView(
+  questionnaire: questionnaire,
+  onSubmit: onSubmit,
+  formController: form,
+);
+
+// Once the view is built (form.isAttached):
+for (final item in form.items) {
+  if (item.hidden || !item.enabled) continue;
+  form.highlight(item.uid); // Highlight first: it makes the item bigger.
+  await form.scrollTo(item.uid); // The whole item is now on screen.
+  if (item.type == QuestionnaireItemType.choice) {
+    form.setAnswer(item.uid, item.options.first);
+  }
+}
+final invalid = form.validate(); // The uids of the invalid items.
+if (invalid.isEmpty) form.submit(); // Or build it yourself: form.buildResponse().
+```
+
+- `items` lists every item depth first, with its `uid`, `text`, `type`, `required`, `options`, `depth` and `parentUid`; a root level signature is listed last as `QuestionnaireFormController.rootSignatureUid`.
+- `setAnswer` takes a `String`, `num`, `bool`, `DateTime`, `Quantity`, one of the item's `options` (or a `List` of them when it repeats), or free text for an `open-choice`. It throws an `ArgumentError` for attachments, signatures, display, group and read only items, and for values outside the options.
+- `answerOf` returns the answers the item would submit, and `isEnabled` evaluates `enableWhen` even for items not shown yet.
+- The controller notifies once per changed answer; `lastChangedUid` and `lastChangeByCode` tell which item changed and whether the user or `setAnswer` changed it.
+- Signatures and attachments are left to the user.
+
+### Helping users with an AI agent
+`QuestionnaireFormController` gives an AI agent, such as a chat or voice assistant, what it needs to help a user answer a Questionnaire on screen, with the user watching and in control. Expose its methods to the agent as tools (function calls):
+- **Read:** `items`, `itemOf`, `isEnabled` and `answerOf` give each item's text, type, options, whether it is required, whether it is shown now and its current answer, so the agent can read the questions to the user and skip the ones that don't apply.
+- **Show:** `highlight` and `scrollTo` point the user to the item the agent is talking about.
+- **Answer:** `setAnswer` and `clearAnswer` put the user's answer in the form, where they see it appear and can still change it by hand; `lastChangeByCode` tells the agent's answers from the user's own.
+- **Finish:** `validate` lists what is still missing, and `buildResponse` or `submit` produce exactly what the Submit button would.
+
+Only set answers the user actually gave, and ask them to confirm before submitting. Signatures and attachments stay with the user: `setAnswer` rejects them.
 
 ## Signatures
 This package can capture hand written signatures and embed them into the generated `QuestionnaireResponse`, powered by the [hand_signature](https://pub.dev/packages/hand_signature) package.

@@ -12,11 +12,22 @@ class QuestionnaireAttachmentItemView extends QuestionnaireItemView {
     required super.item,
     required this.onAttachmentLoaded,
     super.enableWhenController,
+    super.children,
   }) : super(
          controller:
              controller ??
              CustomValueController<Attachment>(focusNode: FocusNode()),
        );
+
+  @override
+  void applyInitialValue() {
+    final controller = this.controller as CustomValueController<Attachment>;
+    if (controller.value != null) return;
+    final initial = item.initial
+        ?.firstWhereOrNull((item) => item.valueAttachment != null)
+        ?.valueAttachment;
+    if (initial != null) controller.value = initial;
+  }
 
   @override
   State createState() => QuestionnaireAttachmentItemViewState();
@@ -30,17 +41,6 @@ class QuestionnaireAttachmentItemViewState
       super.controller as CustomValueController<Attachment>;
   Attachment? get value => controller.value;
   set value(Attachment? value) => controller.value = value;
-
-  @override
-  void initState() {
-    super.initState();
-    if (value == null) {
-      final initial = item.initial
-          ?.firstWhereOrNull((item) => item.valueAttachment != null)
-          ?.valueAttachment;
-      value = initial;
-    }
-  }
 
   @override
   Widget buildBody(BuildContext context) {

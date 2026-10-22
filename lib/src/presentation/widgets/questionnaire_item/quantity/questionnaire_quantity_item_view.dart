@@ -11,11 +11,38 @@ class QuestionnaireQuantityItemView extends QuestionnaireItemView {
     CustomValueController<Quantity>? controller,
     required super.item,
     super.enableWhenController,
+    super.children,
   }) : super(
          controller:
              controller ??
              CustomValueController<Quantity>(focusNode: FocusNode()),
        );
+
+  /// The unit the item fixes, if any: the code of its first extension's
+  /// coding (the `questionnaire-unit` extension).
+  String? get fixedUnit => item
+      .extension_
+      ?.firstOrNull
+      ?.valueCodeableConcept
+      ?.coding
+      ?.firstOrNull
+      ?.code
+      ?.value;
+
+  @override
+  void applyInitialValue() {
+    final controller = this.controller as CustomValueController<Quantity>;
+    if (controller.value != null) return;
+    final initial = item.initial
+        ?.firstWhereOrNull((item) => item.valueQuantity != null)
+        ?.valueQuantity;
+
+    if (initial != null) {
+      controller.value = initial.copyWith();
+    } else if (fixedUnit != null) {
+      controller.value = Quantity(unit: fixedUnit);
+    }
+  }
 
   @override
   State createState() => QuestionnaireQuantityItemViewState();
@@ -38,32 +65,40 @@ class QuestionnaireQuantityItemViewState
   @override
   void initState() {
     super.initState();
-    fixedUnit = item
-        .extension_
-        ?.firstOrNull
-        ?.valueCodeableConcept
-        ?.coding
-        ?.firstOrNull
-        ?.code
-        ?.value;
-    if (controller.value == null) {
-      final initial = item.initial
-          ?.firstWhereOrNull((item) => item.valueQuantity != null)
-          ?.valueQuantity;
+    fixedUnit = widget.fixedUnit;
+    _syncInputs();
+  }
 
-      if (initial != null) {
-        value = initial.copyWith();
-      } else if (fixedUnit != null) {
-        value = value.copyWith(unit: fixedUnit);
-      }
+  /// Copies [value] into the value, unit and comparator inputs, leaving alone
+  /// any input that already shows it, so typing keeps its caret.
+  void _syncInputs() {
+    final number = value.value?.value;
+    if (DoubleUtils.tryParse(valueEditingController.text) != number) {
+      valueEditingController.text = number?.toString() ?? '';
     }
-    valueEditingController.text = value.value?.value?.toString() ?? '';
-    unitEditingController.text = value.unit ?? value.code?.value ?? '';
-    comparatorController.value =
+    final unit = value.unit ?? value.code?.value ?? '';
+    if (unitEditingController.text != unit) {
+      unitEditingController.text = unit;
+    }
+    final comparator =
         QuestionnaireCustomQuantityComparator.valueOf(
           asQuantityComparator: value.comparator,
         ) ??
         QuestionnaireCustomQuantityComparator.defaultValue;
+    if (comparatorController.value != comparator) {
+      comparatorController.value = comparator;
+    }
+  }
+
+  @override
+  void onControllerValueChanged() => _syncInputs();
+
+  @override
+  void dispose() {
+    valueEditingController.dispose();
+    unitEditingController.dispose();
+    comparatorController.dispose();
+    super.dispose();
   }
 
   @override

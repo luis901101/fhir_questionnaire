@@ -1,7 +1,6 @@
 import 'package:fhir_plus/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:collection/collection.dart';
 
 /// Created by luis901101 on 3/9/24.
 abstract class QuestionnaireChoiceItemView extends QuestionnaireItemView {
@@ -11,11 +10,25 @@ abstract class QuestionnaireChoiceItemView extends QuestionnaireItemView {
     CustomValueController? controller,
     required super.item,
     super.enableWhenController,
+    super.children,
     this.isOpen = false,
   }) : super(
          controller:
-             controller ?? CustomValueController(focusNode: FocusNode()),
+             controller ??
+             QuestionnaireChoiceController(
+               focusNode: FocusNode(),
+               options: [...?item.answerOption],
+             ),
        );
+
+  /// The options the item offers: the ones its [QuestionnaireChoiceController]
+  /// holds, or the item's `answerOption`s for any other controller.
+  List<QuestionnaireAnswerOption> get choiceOptions {
+    final controller = this.controller;
+    return controller is QuestionnaireChoiceController
+        ? controller.options
+        : (item.answerOption ?? []);
+  }
 }
 
 abstract class QuestionnaireChoiceItemViewState<
@@ -25,11 +38,16 @@ abstract class QuestionnaireChoiceItemViewState<
   @override
   CustomValueController get controller =>
       super.controller as CustomValueController;
-  final List<QuestionnaireAnswerOption> values = [];
-  @override
-  void initState() {
-    super.initState();
-    values.addAll(item.answerOption ?? []);
+
+  List<QuestionnaireAnswerOption>? _localValues;
+
+  /// The options shown. With a [QuestionnaireChoiceController] they are the
+  /// controller's own list, so options added here or from code are shared.
+  List<QuestionnaireAnswerOption> get values {
+    final controller = this.controller;
+    return controller is QuestionnaireChoiceController
+        ? controller.options
+        : (_localValues ??= [...?item.answerOption]);
   }
 
   @override
@@ -44,15 +62,20 @@ abstract class QuestionnaireChoiceItemViewState<
     bool? hideKeyboard,
   }) {
     hideKeyboard ??= true;
+    final controller = this.controller;
     QuestionnaireAnswerOption newAnwser;
-    final existingAnswer = values.firstWhereOrNull(
-      (answer) => answer.valueString == value,
-    );
-    if (existingAnswer == null) {
-      newAnwser = QuestionnaireAnswerOption(valueString: value);
-      values.add(newAnwser);
+    if (controller is QuestionnaireChoiceController) {
+      newAnwser = controller.optionForText(value);
     } else {
-      newAnwser = existingAnswer;
+      final existingAnswer = values
+          .where((answer) => answer.valueString == value)
+          .firstOrNull;
+      if (existingAnswer == null) {
+        newAnwser = QuestionnaireAnswerOption(valueString: value);
+        values.add(newAnwser);
+      } else {
+        newAnwser = existingAnswer;
+      }
     }
 
     if (hideKeyboard) {

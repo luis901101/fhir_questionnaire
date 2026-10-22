@@ -9,5 +9,6 @@ class QuestionnaireDropDownOpenChoiceItemView
     required super.item,
     super.isOpen = true,
     super.enableWhenController,
+    super.children,
   });
 }
