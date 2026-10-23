@@ -33,12 +33,12 @@ dependencies:
     sdk: flutter
   fhir_questionnaire_r4:
     path: ../
-  fhir_r4: ^0.12.0
-  image_picker: ^1.2.3
-  file_picker: ^12.2.0
+  fhir_r4: ^0.14.0
+  image_picker: ^1.2.4
+  file_picker: ^13.1.0
   crypto: ^3.0.7
   json_field_editor: ^1.2.1
-  material_ui: ^1.5.0
+  material_ui: ^1.8.0
 
 dependency_overrides:
   extended_text_field: #^16.0.2 # Fixes issue with Flutter 3.44

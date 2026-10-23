@@ -21,6 +21,7 @@ This release lets an app or an AI agent read and fill a rendered form from code 
 - Added `QuestionnaireViewState.buildResponse`, `validateItems` and `scrollToItem`.
 
 ### Changed
+- BREAKING: Updated FHIR dependencies to `^0.14.0` for compatibility with the latest FHIR R4 library.
 - BREAKING: For a non-group item that requires a signature, `QuestionnaireItemBundle.controller` is now the item's answer controller and the signature controller is `QuestionnaireItemBundle.signatureController`.
 - BREAKING: Required, range, length and url validations are registered when an item's bundle is built instead of in the item views' `initState`.
 - BREAKING: Initial values are applied by the new `QuestionnaireItemView.applyInitialValue` when an item's bundle is built, so a `boolean` item answers `false` even before it is shown.

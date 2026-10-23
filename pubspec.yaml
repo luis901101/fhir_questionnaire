@@ -19,8 +19,8 @@ dependencies:
     sdk: flutter
   collection: ^1.19.1
   shimmer: ^4.0.0
-  fhir_r4: ^0.12.0
-  fhir_r4_path: ^0.12.0
+  fhir_r4: ^0.14.0
+  fhir_r4_path: ^0.14.0
   intl: ^0.20.3
   validators: ^3.0.0
   hand_signature: ^3.1.0
