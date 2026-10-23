@@ -1,3 +1,4 @@
+export 'package:fhir_questionnaire_r4/src/logic/questionnaire_form_controller.dart';
 export 'package:fhir_questionnaire_r4/src/logic/utils/questionnaire_utils.dart';
 export 'package:fhir_questionnaire_r4/src/logic/utils/fhir_constants.dart';
 export 'package:fhir_questionnaire_r4/src/logic/utils/fhir_extension_utils.dart';
@@ -6,6 +7,7 @@ export 'package:fhir_questionnaire_r4/src/logic/utils/text_utils.dart';
 export 'package:fhir_questionnaire_r4/src/logic/utils/iterable_utils.dart';
 export 'package:fhir_questionnaire_r4/src/logic/utils/date_utils.dart';
 export 'package:fhir_questionnaire_r4/src/logic/questionnaire_controller.dart';
+export 'package:fhir_questionnaire_r4/src/logic/questionnaire_form_item.dart';
 export 'package:fhir_questionnaire_r4/src/logic/enumerator/questionnaire_enable_when_operator.dart';
 export 'package:fhir_questionnaire_r4/src/logic/enumerator/questionnaire_item_extension_code.dart';
 export 'package:fhir_questionnaire_r4/src/logic/enumerator/questionnaire_response_status.dart';
@@ -45,9 +47,11 @@ export 'package:fhir_questionnaire_r4/src/presentation/widgets/questionnaire_ite
 export 'package:fhir_questionnaire_r4/src/presentation/widgets/questionnaire_item/display/questionnaire_display_item_view.dart';
 export 'package:fhir_questionnaire_r4/src/presentation/widgets/questionnaire_item/base/questionnaire_item_view.dart';
 export 'package:fhir_questionnaire_r4/src/presentation/widgets/questionnaire_item/base/questionnaire_single_choice_item_view.dart';
+export 'package:fhir_questionnaire_r4/src/presentation/widgets/questionnaire_item/base/questionnaire_choice_controller.dart';
 export 'package:fhir_questionnaire_r4/src/presentation/widgets/questionnaire_item/base/questionnaire_choice_item_view.dart';
 export 'package:fhir_questionnaire_r4/src/presentation/widgets/questionnaire_item/base/questionnaire_text_field_item_view.dart';
 export 'package:fhir_questionnaire_r4/src/presentation/widgets/questionnaire_item/base/questionnaire_multi_choice_item_view.dart';
+export 'package:fhir_questionnaire_r4/src/presentation/widgets/questionnaire_highlight_scope.dart';
 export 'package:fhir_questionnaire_r4/src/presentation/widgets/questionnaire_item/signature/questionnaire_signature_view.dart';
 export 'package:fhir_questionnaire_r4/src/presentation/widgets/questionnaire_item/signature/signature_controller.dart';
 export 'package:fhir_questionnaire_r4/src/presentation/widgets/questionnaire_item/signature/signature_pad_dialog.dart';

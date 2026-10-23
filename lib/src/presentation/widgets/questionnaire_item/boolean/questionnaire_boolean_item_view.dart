@@ -9,10 +9,25 @@ class QuestionnaireBooleanItemView extends QuestionnaireItemView {
     CustomValueController<bool>? controller,
     required super.item,
     super.enableWhenController,
+    super.children,
   }) : super(
          controller:
              controller ?? CustomValueController<bool>(focusNode: FocusNode()),
        );
+
+  /// Seeds the item's initial value, or `false`: the switch always shows a
+  /// value, so the item always answers one.
+  @override
+  void applyInitialValue() {
+    final controller = this.controller as CustomValueController<bool>;
+    if (controller.value != null) return;
+    controller.value =
+        item.initial
+            ?.firstWhereOrNull((item) => item.valueBoolean != null)
+            ?.valueBoolean
+            ?.valueBoolean ??
+        false;
+  }
 
   @override
   State createState() => QuestionnaireBooleanItemViewState();
@@ -25,21 +40,6 @@ class QuestionnaireBooleanItemViewState
       super.controller as CustomValueController<bool>;
   bool get value => controller.value ??= false;
   set value(bool value) => controller.value = value;
-
-  @override
-  void initState() {
-    super.initState();
-    if (controller.value == null) {
-      final initial =
-          item.initial
-              ?.firstWhereOrNull((item) => item.valueBoolean != null)
-              ?.valueBoolean
-              ?.valueBoolean ??
-          false;
-
-      value = initial;
-    }
-  }
 
   @override
   Widget? buildTitleView(

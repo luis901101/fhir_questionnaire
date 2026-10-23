@@ -62,11 +62,13 @@ class QuestionnaireController {
   QuestionnaireItemView? buildChoiceItemView({
     required QuestionnaireItem item,
     QuestionnaireItemEnableWhenController? enableWhenController,
+    List<QuestionnaireItemView>? children,
   }) {
     if (item.repeats?.valueBoolean == true) {
       return QuestionnaireCheckBoxChoiceItemView(
         item: item,
         enableWhenController: enableWhenController,
+        children: children,
       );
     } else {
       if (QuestionnaireItemExtensionCode.valueOf(
@@ -83,11 +85,13 @@ class QuestionnaireController {
         return QuestionnaireDropDownChoiceItemView(
           item: item,
           enableWhenController: enableWhenController,
+          children: children,
         );
       } else {
         return QuestionnaireRadioButtonChoiceItemView(
           item: item,
           enableWhenController: enableWhenController,
+          children: children,
         );
       }
     }
@@ -96,11 +100,13 @@ class QuestionnaireController {
   QuestionnaireItemView? buildOpenChoiceItemView({
     required QuestionnaireItem item,
     QuestionnaireItemEnableWhenController? enableWhenController,
+    List<QuestionnaireItemView>? children,
   }) {
     if (item.repeats?.valueBoolean == true) {
       return QuestionnaireCheckBoxOpenChoiceItemView(
         item: item,
         enableWhenController: enableWhenController,
+        children: children,
       );
     } else {
       if (QuestionnaireItemExtensionCode.valueOf(
@@ -117,11 +123,13 @@ class QuestionnaireController {
         return QuestionnaireDropDownOpenChoiceItemView(
           item: item,
           enableWhenController: enableWhenController,
+          children: children,
         );
       } else {
         return QuestionnaireRadioButtonOpenChoiceItemView(
           item: item,
           enableWhenController: enableWhenController,
+          children: children,
         );
       }
     }
@@ -163,6 +171,45 @@ class QuestionnaireController {
     return controller;
   }
 
+  /// The validations an item's answer controller gets when its bundle is built:
+  /// required, the `minValue`/`maxValue` range and, for text input items, the
+  /// `minLength`/`maxLength` lengths and the url format.
+  ///
+  /// They are registered once, when the bundle is built, so an item that was
+  /// never scrolled into view is validated too. A `group` or `display` item has
+  /// no answer of its own and gets none.
+  List<ValidationController> buildItemValidations(QuestionnaireItem item) {
+    final itemType = item.itemType;
+    if (itemType == null || itemType.isGroup || itemType.isDisplay) return [];
+    final minValue = item.minValue;
+    final maxValue = item.maxValue;
+    final minLength = item.minLength;
+    final maxLength = item.maxLength?.valueInt;
+    final isTextInput =
+        itemType.isString ||
+        itemType.isText ||
+        itemType.isUrl ||
+        itemType.isInteger ||
+        itemType.isDecimal;
+    return [
+      if (item.isRequired) ValidationUtils.requiredFieldValidation,
+      if (minValue != null && maxValue != null)
+        ValidationUtils.rangeValidationController(
+          minValue: minValue,
+          maxValue: maxValue,
+        )
+      else if (minValue != null)
+        ValidationUtils.minRangeValidationController(minValue)
+      else if (maxValue != null)
+        ValidationUtils.maxRangeValidationController(maxValue),
+      if (isTextInput && (minLength ?? 0) > 0)
+        ValidationUtils.minLengthValidation(minLength: minLength!),
+      if (isTextInput && (maxLength ?? 0) > 0)
+        ValidationUtils.maxLengthValidation(maxLength: maxLength!),
+      if (itemType.isUrl) ValidationUtils.urlValidation(),
+    ];
+  }
+
   QuestionnaireItemBundle? buildQuestionnaireItemBundle({
     required QuestionnaireItem item,
     QuestionnaireItemEnableWhenController? enableWhenController,
@@ -183,6 +230,13 @@ class QuestionnaireController {
       groupId: groupIdForChildren,
       alreadyBuiltItemBundles: alreadyBuiltItemBundles,
     );
+
+    // The items nested under a non-group item, rendered below it. A help
+    // display is left out: it is shown as the item's helper text.
+    final childViews = [
+      for (final child in children)
+        if (!child.item.isHelpDisplay) child.view,
+    ];
 
     // When the item requires a signature, the signature field placement depends
     // on the item type:
@@ -215,42 +269,49 @@ class QuestionnaireController {
           itemView = QuestionnaireStringItemView(
             item: item,
             enableWhenController: innerEnableWhenController,
+            children: childViews,
           );
           break;
         case QuestionnaireItemType.text:
           itemView = QuestionnaireTextItemView(
             item: item,
             enableWhenController: innerEnableWhenController,
+            children: childViews,
           );
           break;
         case QuestionnaireItemType.integer:
           itemView = QuestionnaireIntegerItemView(
             item: item,
             enableWhenController: innerEnableWhenController,
+            children: childViews,
           );
           break;
         case QuestionnaireItemType.decimal:
           itemView = QuestionnaireDecimalItemView(
             item: item,
             enableWhenController: innerEnableWhenController,
+            children: childViews,
           );
           break;
         case QuestionnaireItemType.boolean:
           itemView = QuestionnaireBooleanItemView(
             item: item,
             enableWhenController: innerEnableWhenController,
+            children: childViews,
           );
           break;
         case QuestionnaireItemType.choice:
           itemView = buildChoiceItemView(
             item: item,
             enableWhenController: innerEnableWhenController,
+            children: childViews,
           );
           break;
         case QuestionnaireItemType.openChoice:
           itemView = buildOpenChoiceItemView(
             item: item,
             enableWhenController: innerEnableWhenController,
+            children: childViews,
           );
           break;
         case QuestionnaireItemType.date:
@@ -260,18 +321,21 @@ class QuestionnaireController {
             item: item,
             enableWhenController: innerEnableWhenController,
             type: DateTimeType.fromQuestionnaireItemType(itemType),
+            children: childViews,
           );
           break;
         case QuestionnaireItemType.quantity:
           itemView = QuestionnaireQuantityItemView(
             item: item,
             enableWhenController: innerEnableWhenController,
+            children: childViews,
           );
           break;
         case QuestionnaireItemType.url:
           itemView = QuestionnaireUrlItemView(
             item: item,
             enableWhenController: innerEnableWhenController,
+            children: childViews,
           );
           break;
         case QuestionnaireItemType.display:
@@ -285,6 +349,7 @@ class QuestionnaireController {
             item: item,
             onAttachmentLoaded: onAttachmentLoaded,
             enableWhenController: innerEnableWhenController,
+            children: childViews,
           );
           break;
         case QuestionnaireItemType.group:
@@ -310,16 +375,22 @@ class QuestionnaireController {
       }
     }
 
-    // The controller that drives validation + response for this bundle. For a
-    // signature it must be the SignatureController so the existing validation
-    // recursion and response generation pick it up automatically.
+    // Seed the answer from the item's `initial` values now, so an item that
+    // was never scrolled into view still answers and validates with them.
+    itemView?.applyInitialValue();
+
+    // The controller holding this item's answer, and the one holding its
+    // signature. A group has no answer of its own, so for a group both are the
+    // signature controller.
     FieldController? bundleController = itemView?.controller;
+    SignatureController? signatureController;
 
     if (requiresSignature) {
       if (groupSignatureView != null) {
-        // The signature field was rendered inside the group's container above;
-        // its controller becomes the bundle controller.
-        bundleController = groupSignatureView.controller;
+        // The signature field was rendered inside the group's container above.
+        signatureController =
+            groupSignatureView.controller as SignatureController;
+        bundleController = signatureController;
       } else {
         // Non-group item (or a custom group view): wrap the built inner view
         // with the signature pad, rendered below the item's normal content. The
@@ -335,19 +406,141 @@ class QuestionnaireController {
           child: itemView,
         );
         itemView = signatureView;
-        bundleController = signatureView.controller;
+        signatureController = signatureView.controller as SignatureController;
+        bundleController ??= signatureController;
       }
     }
 
-    return itemView != null && bundleController != null
-        ? QuestionnaireItemBundle(
-            item: item,
-            view: itemView,
-            children: children,
-            controller: bundleController,
-            groupId: groupId,
-          )
-        : null;
+    if (itemView == null || bundleController == null) return null;
+
+    if (!identical(bundleController, signatureController)) {
+      bundleController.validations.addAll(buildItemValidations(item));
+    }
+    // A signature is always required whenever the marker is present.
+    signatureController?.validations.add(
+      ValidationUtils.requiredFieldValidation,
+    );
+
+    return QuestionnaireItemBundle(
+      item: item,
+      view: itemView,
+      children: children,
+      controller: bundleController,
+      signatureController: signatureController,
+      enableWhenController: enableWhenController,
+      groupId: groupId,
+    );
+  }
+
+  /// Resolves the `enableWhen` conditions of every item in [itemBundles] (a
+  /// whole questionnaire, nested items included) once all of them are built, so
+  /// a condition may name an item that comes later or the item it is nested
+  /// under.
+  ///
+  /// A condition whose source item is itself disabled counts as unanswered,
+  /// and an item nested under a disabled item is disabled too. Each item's
+  /// validations are skipped while it is disabled.
+  ///
+  /// [buildQuestionnaireItems] calls this; call it yourself only for bundles
+  /// built with [buildQuestionnaireItemBundles] and no `groupId`.
+  void bindEnableWhenControllers(List<QuestionnaireItemBundle> itemBundles) {
+    final parents =
+        Map<QuestionnaireItemBundle, QuestionnaireItemBundle?>.identity();
+    void walk(
+      List<QuestionnaireItemBundle> bundles,
+      QuestionnaireItemBundle? parent,
+    ) {
+      for (final bundle in bundles) {
+        parents[bundle] = parent;
+        walk(bundle.children ?? [], bundle);
+      }
+    }
+
+    walk(itemBundles, null);
+    final flattened = parents.keys.toList();
+
+    bool isEnabled(QuestionnaireItemBundle bundle) {
+      for (
+        QuestionnaireItemBundle? current = bundle;
+        current != null;
+        current = parents[current]
+      ) {
+        if (current.enableWhenController?.checkIfEnabled(notify: false) ==
+            false) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    final sources =
+        Map<
+          QuestionnaireItemEnableWhenController,
+          List<(QuestionnaireEnableWhen, QuestionnaireItemBundle)>
+        >.identity();
+    for (final bundle in flattened) {
+      final enableWhenController = bundle.enableWhenController;
+      if (enableWhenController == null) continue;
+      sources[enableWhenController] = [
+        for (final enableWhen in enableWhenController.enableWhen)
+          if (flattened.firstWhereOrNull(
+                (source) => source.item.linkId == enableWhen.question,
+              )
+              case final source?)
+            (enableWhen, source),
+      ];
+    }
+
+    // The controllers that decide whether [bundle] is enabled: the sources of
+    // its own and its ancestors' conditions, and recursively theirs.
+    Set<FieldController> enabledDependencies(
+      QuestionnaireItemBundle bundle,
+      Set<QuestionnaireItemBundle> visited,
+    ) {
+      final result = <FieldController>{};
+      for (
+        QuestionnaireItemBundle? current = bundle;
+        current != null;
+        current = parents[current]
+      ) {
+        if (!visited.add(current)) continue;
+        for (final (_, source)
+            in sources[current.enableWhenController] ??
+                <(QuestionnaireEnableWhen, QuestionnaireItemBundle)>[]) {
+          result.add(source.controller);
+          result.addAll(enabledDependencies(source, visited));
+        }
+      }
+      return result;
+    }
+
+    for (final bundle in flattened) {
+      final enableWhenController = bundle.enableWhenController;
+      if (enableWhenController != null) {
+        final resolved =
+            sources[enableWhenController] ??
+            <(QuestionnaireEnableWhen, QuestionnaireItemBundle)>[];
+        enableWhenController.bind(
+          [
+            for (final (enableWhen, source) in resolved)
+              QuestionnaireItemEnableWhenBundle(
+                controller: source.controller,
+                expectedAnswer: enableWhen,
+                isSourceEnabled: () => isEnabled(source),
+              ),
+          ],
+          dependencies: {
+            for (final (_, source) in resolved)
+              ...enabledDependencies(source, Set.identity()),
+          },
+        );
+      }
+      for (final controller in bundle.controllers) {
+        final previous = controller.validationsDependency;
+        controller.validationsDependency = () =>
+            (previous?.call() ?? true) && isEnabled(bundle);
+      }
+    }
   }
 
   List<QuestionnaireItemBundle> buildQuestionnaireItemBundles(
@@ -359,11 +552,14 @@ class QuestionnaireController {
     List<QuestionnaireItemBundle> itemBundles = [];
     try {
       for (final QuestionnaireItem item in questionnaireItems ?? []) {
-        QuestionnaireItemEnableWhenController? enableWhenController =
-            getEnableWhenController(
-              item: item,
-              itemBundles: [...(alreadyBuiltItemBundles ?? []), ...itemBundles],
-            );
+        // Bound by [bindEnableWhenControllers] once the whole questionnaire is
+        // built, so a condition can name an item built later.
+        final enableWhenController = item.enableWhen.isNotEmpty
+            ? QuestionnaireItemEnableWhenController.unbound(
+                enableWhen: item.enableWhen!,
+                behavior: item.enableBehavior,
+              )
+            : null;
 
         final itemBundle = buildQuestionnaireItemBundle(
           item: item,
@@ -378,6 +574,10 @@ class QuestionnaireController {
         if (itemBundle != null) {
           itemBundles.add(itemBundle);
         }
+      }
+      // The top level call has the whole questionnaire.
+      if (groupId == null && alreadyBuiltItemBundles == null) {
+        bindEnableWhenControllers(itemBundles);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -497,11 +697,17 @@ class QuestionnaireController {
     return updatedQuestionnaireResponse;
   }
 
+  /// Returns the response item for [itemBundle], or null when the item has none:
+  /// a `display` item, or an item its `enableWhen` conditions disable. A
+  /// disabled item leaves out its whole subtree, as the FHIR specification asks.
   QuestionnaireResponseItem? generateItemResponse(
     QuestionnaireItemBundle itemBundle,
   ) {
+    if (itemBundle.enableWhenController?.checkIfEnabled(notify: false) ==
+        false) {
+      return null;
+    }
     List<QuestionnaireResponseItem>? childItems;
-    List<QuestionnaireResponseAnswer>? answers;
     final itemType = QuestionnaireItemType.valueOf(
       itemBundle.item.type.valueString,
     );
@@ -510,13 +716,19 @@ class QuestionnaireController {
     }
 
     // Signature items store the captured signature in the response item's
-    // `questionnaireresponse-signature` extension rather than as an `answer`.
-    // Handled before the type switch so it works regardless of the item type
-    // (typically `group` or `display`).
+    // `questionnaireresponse-signature` extension, next to the item's own
+    // answer when it has one. Handled before the type check so it works
+    // regardless of the item type (typically `group` or `display`).
     if (itemBundle.item.hasSignature) {
-      final bytes = itemBundle.controller is SignatureController
-          ? (itemBundle.controller as SignatureController).value
-          : null;
+      final signatureController =
+          itemBundle.signatureController ??
+          (itemBundle.controller is SignatureController
+              ? itemBundle.controller as SignatureController
+              : null);
+      final bytes = signatureController?.value;
+      final answers = identical(signatureController, itemBundle.controller)
+          ? null
+          : generateItemAnswers(itemBundle);
       final extensions = <FhirExtension>[
         // Only what the FHIRPath controller needs to evaluate this item; it
         // strips these again once every expression has been resolved.
@@ -533,6 +745,7 @@ class QuestionnaireController {
         linkId: itemBundle.item.linkId,
         definition: itemBundle.item.definition,
         text: itemBundle.item.text,
+        answer: answers.isEmpty ? null : answers,
         item: childItems,
         extension_: extensions.isEmpty ? null : extensions,
       );
@@ -542,6 +755,41 @@ class QuestionnaireController {
       return item;
     }
 
+    /// Exclude this type as it doesn't require an answer from the user.
+    if (itemType == QuestionnaireItemType.display) return null;
+
+    final answers = generateItemAnswers(itemBundle);
+
+    var item = QuestionnaireResponseItem(
+      linkId: itemBundle.item.linkId,
+      definition: itemBundle.item.definition,
+      text: itemBundle.item.text,
+      answer: answers.isEmpty ? null : answers,
+      item: childItems,
+      // Only what the FHIRPath controller needs to evaluate this item; it
+      // strips these again once every expression has been resolved.
+      extension_: fhirPathController.expressionExtensionsOf(
+        itemBundle.item.extension_,
+      ),
+    );
+
+    if (onGenerateItemResponse != null) {
+      item = onGenerateItemResponse!.call(itemBundle, item);
+    }
+
+    return item;
+  }
+
+  /// The answers held by [itemBundle]'s answer controller, by item type. Null
+  /// when it holds none, or for a type with no answer of its own (`display`,
+  /// `group`).
+  List<QuestionnaireResponseAnswer>? generateItemAnswers(
+    QuestionnaireItemBundle itemBundle,
+  ) {
+    List<QuestionnaireResponseAnswer>? answers;
+    final itemType = QuestionnaireItemType.valueOf(
+      itemBundle.item.type.valueString,
+    );
     switch (itemType) {
       case QuestionnaireItemType.display:
 
@@ -636,27 +884,11 @@ class QuestionnaireController {
         break;
       default:
     }
-
-    var item = QuestionnaireResponseItem(
-      linkId: itemBundle.item.linkId,
-      definition: itemBundle.item.definition,
-      text: itemBundle.item.text,
-      answer: answers.isEmpty ? null : answers,
-      item: childItems,
-      // Only what the FHIRPath controller needs to evaluate this item; it
-      // strips these again once every expression has been resolved.
-      extension_: fhirPathController.expressionExtensionsOf(
-        itemBundle.item.extension_,
-      ),
-    );
-
-    if (onGenerateItemResponse != null) {
-      item = onGenerateItemResponse!.call(itemBundle, item);
-    }
-
-    return item;
+    return answers;
   }
 
+  /// Returns the response items for [itemBundles], leaving out the ones
+  /// [generateItemResponse] leaves out (display and disabled items).
   List<QuestionnaireResponseItem> generateItemResponses({
     required List<QuestionnaireItemBundle> itemBundles,
   }) {

@@ -12,13 +12,48 @@ abstract class QuestionnaireMultiChoiceItemView
     required super.item,
     super.isOpen = false,
     super.enableWhenController,
+    super.children,
   }) : super(
          controller:
              controller ??
-             CustomValueController<List<QuestionnaireAnswerOption>>(
+             QuestionnaireChoiceController<List<QuestionnaireAnswerOption>>(
                focusNode: FocusNode(),
+               options: [...?item.answerOption],
              ),
        );
+
+  @override
+  void applyInitialValue() {
+    final controller =
+        this.controller
+            as CustomValueController<List<QuestionnaireAnswerOption>>;
+    if (controller.value.isNotEmpty) return;
+    final values = choiceOptions;
+    List<QuestionnaireAnswerOption> initial = [];
+    for (final value in item.initial ?? <QuestionnaireInitial>[]) {
+      if (value.valueCoding != null) {
+        final valueCode = value.valueCoding?.code?.valueString;
+        initial.add(
+          values.firstWhereOrNull(
+                (e) => e.valueCoding?.code?.valueString == valueCode,
+              ) ??
+              QuestionnaireAnswerOption(valueX: value.valueCoding!),
+        );
+      } else if (value.valueString != null) {
+        final valueCode = value.valueString?.valueString;
+        initial.add(
+          values.firstWhereOrNull(
+                (e) => e.valueString?.valueString == valueCode,
+              ) ??
+              QuestionnaireAnswerOption(valueX: value.valueString!),
+        );
+      }
+    }
+
+    if (initial.isNotEmpty) {
+      controller.value = initial;
+    }
+  }
 }
 
 abstract class QuestionnaireMultiChoiceItemViewState<
@@ -29,36 +64,6 @@ abstract class QuestionnaireMultiChoiceItemViewState<
   CustomValueController<List<QuestionnaireAnswerOption>> get controller =>
       super.controller
           as CustomValueController<List<QuestionnaireAnswerOption>>;
-  @override
-  void initState() {
-    super.initState();
-    if (controller.value.isEmpty) {
-      List<QuestionnaireAnswerOption> initial = [];
-      for (final value in item.initial ?? <QuestionnaireInitial>[]) {
-        if (value.valueCoding != null) {
-          final valueCode = value.valueCoding?.code?.valueString;
-          initial.add(
-            values.firstWhereOrNull(
-                  (e) => e.valueCoding?.code?.valueString == valueCode,
-                ) ??
-                QuestionnaireAnswerOption(valueX: value.valueCoding!),
-          );
-        } else if (value.valueString != null) {
-          final valueCode = value.valueString?.valueString;
-          initial.add(
-            values.firstWhereOrNull(
-                  (e) => e.valueString?.valueString == valueCode,
-                ) ??
-                QuestionnaireAnswerOption(valueX: value.valueString!),
-          );
-        }
-      }
-
-      if (initial.isNotEmpty) {
-        selectedValues.addAll(initial);
-      }
-    }
-  }
 
   List<QuestionnaireAnswerOption> get selectedValues => controller.value ??= [];
   bool isSelected(QuestionnaireAnswerOption? value) =>

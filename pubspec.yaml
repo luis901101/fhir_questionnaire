@@ -1,6 +1,6 @@
 name: fhir_questionnaire_r4
-description: "A library to render FHIR Questionnaires and generate a QuestionnaireResponse"
-version: 6.0.0
+description: "Renders FHIR R4 Questionnaires, generates the QuestionnaireResponse, and lets code or an AI agent fill the form for the user."
+version: 7.0.0
 repository: https://github.com/luis901101/fhir_questionnaire/tree/migration_to_fhir_r4
 issue_tracker: https://github.com/luis901101/fhir_questionnaire/issues
 topics:
@@ -8,6 +8,7 @@ topics:
   - questionnaire
   - hl7
   - r4
+  - ai
 
 environment:
   sdk: ^3.13.0

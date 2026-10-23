@@ -19,6 +19,10 @@ class QuestionnaireGroupItemViewState
   @override
   bool get handleControllerErrorManually => false;
 
+  /// The group's body lays out its children inside its border.
+  @override
+  bool get rendersChildren => false;
+
   @override
   Widget? buildTitleView(
     BuildContext context, {

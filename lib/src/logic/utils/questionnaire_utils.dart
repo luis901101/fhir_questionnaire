@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_r4/fhir_r4.dart' hide QuestionnaireItemType;
 import 'package:fhir_questionnaire_r4/fhir_questionnaire_r4.dart';
 
 extension CodeableConceptUtils on CodeableConcept {
@@ -72,6 +72,110 @@ extension QuestionnaireItemUtils on QuestionnaireItem {
       ?.firstWhereOrNull((e) => e.isSignatureRequired)
       ?.valueCodeableConcept
       ?.coding;
+
+  /// The [QuestionnaireItemType] of this item, or null for an unknown type.
+  QuestionnaireItemType? get itemType =>
+      QuestionnaireItemType.valueOf(type.valueString);
+
+  /// Whether this item must be answered.
+  bool get isRequired => required_?.valueBoolean ?? false;
+
+  /// Whether this item's answer cannot be changed.
+  bool get isReadOnly => readOnly?.valueBoolean ?? false;
+
+  /// Whether this item may hold more than one answer.
+  bool get isRepeating => repeats?.valueBoolean ?? false;
+
+  /// Whether this is a `display` item categorized as help by the
+  /// `questionnaire-displayCategory` extension. Such an item is rendered as the
+  /// helper text of the item it is nested under, not as an item of its own.
+  /// Docs: https://hl7.org/fhir/R4/extension-questionnaire-displaycategory.html
+  bool get isHelpDisplay =>
+      type.valueString == QuestionnaireItemType.display.code &&
+      (extension_?.any(
+            (ext) =>
+                ext.url.valueString ==
+                    FhirConstants.displayCategoryExtensionUrl &&
+                ext
+                        .valueCodeableConcept
+                        ?.coding
+                        ?.firstOrNull
+                        ?.code
+                        ?.valueString ==
+                    QuestionnaireItemExtensionCode.help.code,
+          ) ??
+          false);
+
+  /// Whether this item is hidden: it declares the `questionnaire-hidden`
+  /// extension, or it is a help display (see [isHelpDisplay]).
+  /// Docs: http://hl7.org/fhir/R4/extension-questionnaire-hidden.html
+  bool get isHidden =>
+      (extension_ ?? []).any(
+        (ext) =>
+            ext.url.valueString == FhirConstants.hiddenExtensionUrl &&
+            ext.valueBoolean?.valueBoolean == true,
+      ) ||
+      isHelpDisplay;
+
+  /// The minimum length declared by the `minLength` extension.
+  /// Docs: http://hl7.org/fhir/R4/extension-minlength.html
+  int? get minLength => (extension_ ?? [])
+      .firstWhereOrNull(
+        (ext) => ext.url.valueString == FhirConstants.minLengthExtensionUrl,
+      )
+      ?.valueInteger
+      ?.valueInt;
+
+  /// The minimum value declared by the `minValue` extension. Depending on the
+  /// item type it is an `int`, a `double` or a `DateTime`.
+  /// Docs: http://hl7.org/fhir/R4/extension-minvalue.html
+  dynamic get minValue => _boundValue(FhirConstants.minValueExtensionUrl);
+
+  /// The maximum value declared by the `maxValue` extension. Depending on the
+  /// item type it is an `int`, a `double` or a `DateTime`.
+  /// Docs: http://hl7.org/fhir/R4/extension-maxvalue.html
+  dynamic get maxValue => _boundValue(FhirConstants.maxValueExtensionUrl);
+
+  dynamic _boundValue(String url) {
+    final ext = (extension_ ?? []).firstWhereOrNull(
+      (ext) => ext.url.valueString == url,
+    );
+    return ext?.valueInteger?.valueInt ??
+        ext?.valueDecimal?.valueDouble ??
+        ext?.valueInstant?.valueDateTime ??
+        ext?.valueDate?.valueDateTime ??
+        ext?.valueDateTime?.valueDateTime ??
+        ext?.valueTime?.asDateTime;
+  }
+
+  /// The hint text declared by the `entryFormat` extension.
+  /// Docs: http://hl7.org/fhir/R4/extension-entryformat.html
+  String? get hintText => (extension_ ?? [])
+      .firstWhereOrNull(
+        (ext) => ext.url.valueString == FhirConstants.entryFormatExtensionUrl,
+      )
+      ?.valueString
+      ?.valueString;
+
+  /// The first help display nested under this item (see [isHelpDisplay]).
+  QuestionnaireItem? get helperItem =>
+      item?.firstWhereOrNull((subItem) => subItem.isHelpDisplay);
+
+  /// The text of [helperItem].
+  String? get helperText => helperItem?.title;
+
+  /// Whether [helperText] is shown behind a help button rather than as text
+  /// below the item, as asked by the help item's `questionnaire-itemControl`.
+  bool get helperTextAsButton => (helperItem?.extension_ ?? []).any(
+    (ext) =>
+        ext.url.valueString == FhirConstants.itemControlExtensionUrl &&
+        [
+          QuestionnaireItemExtensionCode.help.code,
+          QuestionnaireItemExtensionCode.flyover.code,
+        ].contains(
+          ext.valueCodeableConcept?.coding?.firstOrNull?.code?.valueString,
+        ),
+  );
 }
 
 extension QuestionnaireUtils on Questionnaire {

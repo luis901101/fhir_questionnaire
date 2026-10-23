@@ -8,6 +8,7 @@ class QuestionnaireUrlItemView extends QuestionnaireTextFieldItemView {
     super.controller,
     required super.item,
     super.enableWhenController,
+    super.children,
   });
 
   @override
@@ -16,12 +17,6 @@ class QuestionnaireUrlItemView extends QuestionnaireTextFieldItemView {
 
 class QuestionnaireUrlItemViewState
     extends QuestionnaireTextFieldItemViewState<QuestionnaireUrlItemView> {
-  @override
-  void initState() {
-    super.initState();
-    controller.validations.add(ValidationUtils.urlValidation());
-  }
-
   @override
   TextInputType? get keyboardType => TextInputType.url;
   @override

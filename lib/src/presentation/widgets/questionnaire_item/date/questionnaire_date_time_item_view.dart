@@ -28,11 +28,38 @@ class QuestionnaireDateTimeItemView extends QuestionnaireItemView {
     required super.item,
     required this.type,
     super.enableWhenController,
+    super.children,
   }) : super(
          controller:
              controller ??
              CustomValueController<DateTime>(focusNode: FocusNode()),
        );
+
+  @override
+  void applyInitialValue() {
+    final controller = this.controller as CustomValueController<DateTime>;
+    if (controller.value != null) return;
+    final DateTime? initial = switch (type) {
+      DateTimeType.date =>
+        item.initial
+            ?.firstWhereOrNull((item) => item.valueDate != null)
+            ?.valueDate
+            ?.asDateTime,
+      DateTimeType.time =>
+        item.initial
+            ?.firstWhereOrNull((item) => item.valueTime != null)
+            ?.valueTime
+            ?.asDateTime,
+      DateTimeType.dateTime =>
+        item.initial
+            ?.firstWhereOrNull((item) => item.valueDateTime != null)
+            ?.valueDateTime
+            ?.asDateTime,
+    };
+    if (initial != null) {
+      controller.value = initial;
+    }
+  }
 
   @override
   State createState() => QuestionnaireDateTimeItemViewState();
@@ -46,33 +73,6 @@ class QuestionnaireDateTimeItemViewState
   DateTimeType get type => widget.type;
   DateTime? get dateTime => controller.value;
   set dateTime(DateTime? value) => controller.value = value;
-
-  @override
-  void initState() {
-    super.initState();
-    if (dateTime == null) {
-      final DateTime? initial = switch (type) {
-        DateTimeType.date =>
-          item.initial
-              ?.firstWhereOrNull((item) => item.valueDate != null)
-              ?.valueDate
-              ?.asDateTime,
-        DateTimeType.time =>
-          item.initial
-              ?.firstWhereOrNull((item) => item.valueTime != null)
-              ?.valueTime
-              ?.asDateTime,
-        DateTimeType.dateTime =>
-          item.initial
-              ?.firstWhereOrNull((item) => item.valueDateTime != null)
-              ?.valueDateTime
-              ?.asDateTime,
-      };
-      if (initial != null) {
-        dateTime = initial;
-      }
-    }
-  }
 
   @override
   Widget buildBody(BuildContext context) {

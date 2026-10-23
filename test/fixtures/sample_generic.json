@@ -1,0 +1,688 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "example-all-item-types",
+  "version": "1",
+  "name": "AllItemTypesExample",
+  "title": "Questionnaire with All Possible Item Types",
+  "status": "draft",
+  "date": "2024-03-05",
+  "subjectType": [
+    "Patient"
+  ],
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-signatureRequired",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "urn:iso-astm:E1762-95:2013",
+            "code": "1.2.840.10065.1.12.1.1",
+            "display": "Author's Signature"
+          }
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "intro",
+      "text": "Welcome to the Health and Wellness Survey! Please read the instructions carefully before proceeding.",
+      "type": "display",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/translation",
+          "extension": [
+            {
+              "url": "lang",
+              "valueCode": "es"
+            },
+            {
+              "url": "content",
+              "valueString": "¡Bienvenidos a la Encuesta de Salud y Bienestar! Por favor, lea detenidamente las instrucciones antes de continuar."
+            }
+          ]
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/translation",
+          "extension": [
+            {
+              "url": "lang",
+              "valueCode": "fr"
+            },
+            {
+              "url": "content",
+              "valueString": "Bienvenue à l’enquête sur la santé et le bien-être ! Veuillez lire attentivement les instructions avant de continuer."
+            }
+          ]
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/translation",
+          "extension": [
+            {
+              "url": "lang",
+              "valueCode": "en"
+            },
+            {
+              "url": "content",
+              "valueString": "Welcome to the Health and Wellness Survey! Please read the instructions carefully before proceeding."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "501",
+      "text": "Have you experienced any symptoms of a common cold in the last 14 days?",
+      "type": "boolean",
+      "item": [
+        {
+          "linkId": "501.help",
+          "type": "display",
+          "text": "Help here, the same as hint, enabled for Yes, disabled for No.",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-display-category",
+                    "code": "help",
+                    "display": "Help"
+                  }
+                ],
+                "text": "Help"
+              }
+            }
+          ]
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/entryFormat",
+          "valueString": "Simply enable the switch for Yes, disable for No."
+        }
+      ]
+    },
+    {
+      "linkId": "502",
+      "text": "Please upload your most recent blood test results.",
+      "type": "attachment"
+    },
+    {
+      "linkId": "401",
+      "text": "What is the URL of your personal website?",
+      "type": "url",
+      "item": [
+        {
+          "linkId": "401.help",
+          "type": "display",
+          "text": "Make sure you enter a valid url.",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-display-category",
+                    "code": "help",
+                    "display": "Help"
+                  }
+                ],
+                "text": "Help"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "402",
+      "text": "Please provide the URL of your LinkedIn profile.",
+      "type": "url",
+      "initial": [
+        {
+          "valueUri": "http://example.com/your-default-linkedin"
+        }
+      ]
+    },
+    {
+      "linkId": "1.1",
+      "text": "Self-limited problems",
+      "type": "integer",
+      "maxLength": 2,
+      "item": [
+        {
+          "linkId": "1.1.help",
+          "type": "display",
+          "text": "Value must be between 1 and 10, otherwise validation error occurs.",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "help",
+                    "display": "Help"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "flyover",
+                    "display": "Fly-over"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-display-category",
+                    "code": "help",
+                    "display": "Help"
+                  }
+                ],
+                "text": "Help"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/translation",
+              "extension": [
+                {
+                  "url": "lang",
+                  "valueCode": "es"
+                },
+                {
+                  "url": "content",
+                  "valueString": "Introduzca cuántos problemas menores/autolimitados se abordaron. Cada uno cuenta como 1 punto."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+          "valueInteger": 1
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+          "valueInteger": 10
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/minLength",
+          "valueInteger": 1
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/entryFormat",
+          "valueString": "e.g., 1 (minor issue such as a cold or rash)"
+        }
+      ]
+    },
+    {
+      "linkId": "300",
+      "text": "Body Info",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "300.help",
+          "type": "display",
+          "text": "Your body info for BMI calculation.",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "help",
+                    "display": "Help"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "flyover",
+                    "display": "Fly-over"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-display-category",
+                    "code": "help",
+                    "display": "Help"
+                  }
+                ],
+                "text": "Help"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "301",
+          "text": "What is your height?",
+          "type": "quantity",
+          "initial": [
+            {
+              "valueQuantity": {
+                "value": 170,
+                "unit": "cm",
+                "system": "http://unitsofmeasure.org",
+                "code": "cm"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "302",
+          "text": "What is your weight?",
+          "type": "quantity",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://unitsofmeasure.org",
+                    "code": "kg",
+                    "display": "kilograms"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "303",
+          "text": "What is your waist circumference?",
+          "type": "quantity",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://unitsofmeasure.org",
+                    "code": "in",
+                    "display": "inches"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "2",
+      "text": "What is your date of birth?",
+      "type": "date",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+          "valueDate": "1990-01-01"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+          "valueDate": "2025-10-28"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/entryFormat",
+          "valueString": "Use a real birth date"
+        }
+      ]
+    },
+    {
+      "linkId": "2.1",
+      "text": "What time did you take your medication this morning?",
+      "type": "time"
+    },
+    {
+      "linkId": "2.2",
+      "text": "When was your last doctor's appointment?",
+      "type": "dateTime"
+    },
+    {
+      "linkId": "1",
+      "text": "Your full name",
+      "type": "string",
+      "required": true
+    },
+    {
+      "linkId": "104",
+      "text": "Do you have any dietary restrictions?",
+      "type": "choice",
+      "answerOption": [
+        {
+          "valueCoding": {
+            "code": "yes",
+            "display": "Yes"
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "no",
+            "display": "No"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "105",
+      "text": "Please specify your dietary restrictions.",
+      "type": "text",
+      "enableWhen": [
+        {
+          "question": "104",
+          "operator": "=",
+          "answerCoding": {
+            "code": "yes"
+          }
+        },
+        {
+          "question": "1",
+          "operator": "=",
+          "answerCoding": {
+            "code": "Luis"
+          }
+        }
+      ],
+      "enableBehavior": "all"
+    },
+    {
+      "linkId": "200",
+      "text": "How many is 2 + 2?",
+      "type": "integer"
+    },
+    {
+      "linkId": "201",
+      "text": "Elaborate your answer on how many is 2 + 2?.",
+      "type": "text",
+      "enableWhen": [
+        {
+          "question": "200",
+          "operator": ">",
+          "answerInteger": 2
+        },
+        {
+          "question": "200",
+          "operator": "<",
+          "answerInteger": 9
+        },
+        {
+          "question": "200",
+          "operator": ">=",
+          "answerInteger": 3
+        },
+        {
+          "question": "200",
+          "operator": "<=",
+          "answerInteger": 10
+        }
+      ],
+      "enableBehavior": "all"
+    },
+    {
+      "linkId": "202",
+      "text": "How many colors has a rainbow?",
+      "type": "integer"
+    },
+    {
+      "linkId": "203",
+      "text": "Elaborate your answer on how many colors has a rainbow?",
+      "type": "text",
+      "enableWhen": [
+        {
+          "question": "202",
+          "operator": "exists",
+          "answerBoolean": true
+        },
+        {
+          "question": "200",
+          "operator": "exists",
+          "answerBoolean": false
+        }
+      ],
+      "enableBehavior": "any"
+    },
+    {
+      "linkId": "4",
+      "text": "Please specify your gender",
+      "required": true,
+      "type": "choice",
+      "answerOption": [
+        {
+          "valueCoding": {
+            "code": "male",
+            "display": "Male"
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "female",
+            "display": "Female"
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "other",
+            "display": "Other"
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "unknown",
+            "display": "Prefer not to say"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "5",
+      "text": "List your current medications",
+      "type": "open-choice",
+      "answerOption": [
+        {
+          "valueCoding": {
+            "code": "med1",
+            "display": "Medication A"
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "med2",
+            "display": "Medication B"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "100",
+      "text": "Which of the following dietary preferences apply to you? (Select all that apply)",
+      "type": "choice",
+      "repeats": true,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "system": "http://example.org/dietary-preferences",
+            "code": "vegetarian",
+            "display": "Vegetarian"
+          }
+        },
+        {
+          "valueCoding": {
+            "system": "http://example.org/dietary-preferences",
+            "code": "vegan",
+            "display": "Vegan"
+          }
+        },
+        {
+          "valueCoding": {
+            "system": "http://example.org/dietary-preferences",
+            "code": "glutenFree",
+            "display": "Gluten-Free"
+          }
+        },
+        {
+          "valueCoding": {
+            "system": "http://example.org/dietary-preferences",
+            "code": "ketogenic",
+            "display": "Ketogenic"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "101",
+      "text": "Which of the following type of exercises do you practice? (Select all that apply)",
+      "type": "open-choice",
+      "repeats": true,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "code": "yoga",
+            "display": "Yoga"
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "pilates",
+            "display": "Pilates"
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "zumba",
+            "display": "Zumba"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "102",
+      "text": "Select your age range:",
+      "required": true,
+      "type": "choice",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "drop-down",
+                "display": "Drop down"
+              }
+            ],
+            "text": "Drop down"
+          }
+        }
+      ],
+      "answerOption": [
+        {
+          "valueCoding": {
+            "system": "http://example.org/age-ranges",
+            "code": "18-25",
+            "display": "18-25"
+          }
+        },
+        {
+          "valueCoding": {
+            "system": "http://example.org/age-ranges",
+            "code": "26-35",
+            "display": "26-35"
+          }
+        },
+        {
+          "valueCoding": {
+            "system": "http://example.org/age-ranges",
+            "code": "36-45",
+            "display": "36-45"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "103",
+      "text": "How many hours do you sleep?",
+      "required": true,
+      "type": "open-choice",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "drop-down",
+                "display": "Drop down"
+              }
+            ],
+            "text": "Drop down"
+          }
+        }
+      ],
+      "answerOption": [
+        {
+          "valueCoding": {
+            "code": "6 hours",
+            "display": "6 hours"
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "8 hours",
+            "display": "8 hours"
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "10 hours",
+            "display": "10 hours"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "6",
+      "text": "Please rate your general health",
+      "type": "integer"
+    },
+    {
+      "linkId": "7",
+      "text": "Your body height in cm (Read-Only)",
+      "type": "decimal",
+      "readOnly": true,
+      "initial": [
+        {
+          "valueDecimal": 190.5
+        }
+      ]
+    },
+    {
+      "linkId": "8",
+      "text": "Describe your symptoms",
+      "type": "text",
+      "maxLength": 160
+    }
+  ]
+}

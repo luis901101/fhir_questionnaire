@@ -9,5 +9,6 @@ class QuestionnaireRadioButtonOpenChoiceItemView
     required super.item,
     super.isOpen = true,
     super.enableWhenController,
+    super.children,
   });
 }

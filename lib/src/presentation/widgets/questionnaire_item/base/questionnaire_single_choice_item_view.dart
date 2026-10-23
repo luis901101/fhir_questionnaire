@@ -12,13 +12,47 @@ abstract class QuestionnaireSingleChoiceItemView
     required super.item,
     super.isOpen = false,
     super.enableWhenController,
+    super.children,
   }) : super(
          controller:
              controller ??
-             CustomValueController<QuestionnaireAnswerOption>(
+             QuestionnaireChoiceController<QuestionnaireAnswerOption>(
                focusNode: FocusNode(),
+               options: [...?item.answerOption],
              ),
        );
+
+  @override
+  void applyInitialValue() {
+    final controller =
+        this.controller as CustomValueController<QuestionnaireAnswerOption>;
+    if (controller.value != null) return;
+    final values = choiceOptions;
+    QuestionnaireAnswerOption? initial;
+    for (final value in item.initial ?? <QuestionnaireInitial>[]) {
+      if (value.valueCoding != null) {
+        final valueCode = value.valueCoding?.code?.valueString;
+        initial =
+            values.firstWhereOrNull(
+              (e) => e.valueCoding?.code?.valueString == valueCode,
+            ) ??
+            QuestionnaireAnswerOption(valueX: value.valueCoding!);
+        break;
+      } else if (value.valueString != null) {
+        final valueCode = value.valueString?.valueString;
+        initial =
+            values.firstWhereOrNull(
+              (e) => e.valueString?.valueString == valueCode,
+            ) ??
+            QuestionnaireAnswerOption(valueX: value.valueString!);
+        break;
+      }
+    }
+
+    if (initial != null) {
+      controller.value = initial;
+    }
+  }
 }
 
 abstract class QuestionnaireSingleChoiceItemViewState<
@@ -28,37 +62,6 @@ abstract class QuestionnaireSingleChoiceItemViewState<
   @override
   CustomValueController<QuestionnaireAnswerOption> get controller =>
       super.controller as CustomValueController<QuestionnaireAnswerOption>;
-
-  @override
-  void initState() {
-    super.initState();
-    if (controller.value == null) {
-      QuestionnaireAnswerOption? initial;
-      for (final value in item.initial ?? <QuestionnaireInitial>[]) {
-        if (value.valueCoding != null) {
-          final valueCode = value.valueCoding?.code?.valueString;
-          initial =
-              values.firstWhereOrNull(
-                (e) => e.valueCoding?.code?.valueString == valueCode,
-              ) ??
-              QuestionnaireAnswerOption(valueX: value.valueCoding!);
-          break;
-        } else if (value.valueString != null) {
-          final valueCode = value.valueString?.valueString;
-          initial =
-              values.firstWhereOrNull(
-                (e) => e.valueString?.valueString == valueCode,
-              ) ??
-              QuestionnaireAnswerOption(valueX: value.valueString!);
-          break;
-        }
-      }
-
-      if (initial != null) {
-        controller.value = initial;
-      }
-    }
-  }
 
   String? get selectedValueCode =>
       selectedValue?.valueCoding?.code?.valueString;

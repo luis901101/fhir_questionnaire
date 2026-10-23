@@ -9,6 +9,42 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## 7.0.0
+This release lets an app or an AI agent read and fill a rendered form from code with `QuestionnaireFormController`, so the agent can guide a user through a Questionnaire while they watch each answer appear and can change it. If you subclass `QuestionnaireController` or the item views, check the breaking changes below.
+
+### Added
+- Added `QuestionnaireFormController`, passed as `QuestionnaireView.formController`, to list a rendered form's items and read, set, clear, scroll to, highlight, validate, build and submit their answers from code, for example so an AI agent can help a user answer a Questionnaire.
+- Added `QuestionnaireChoiceController`, which keeps a choice item's options, free text answers included, with its value.
+- Added `isRequired`, `isReadOnly`, `isRepeating`, `isHidden`, `isHelpDisplay`, `itemType`, `minLength`, `minValue`, `maxValue`, `hintText`, `helperItem`, `helperText` and `helperTextAsButton` extensions on `QuestionnaireItem`.
+- Added `QuestionnaireItemBundle.signatureController` and `QuestionnaireItemBundle.enableWhenController`.
+- Added `QuestionnaireController.buildItemValidations`, `bindEnableWhenControllers` and `generateItemAnswers`.
+- Added `QuestionnaireViewState.buildResponse`, `validateItems` and `scrollToItem`.
+
+### Changed
+- BREAKING: For a non-group item that requires a signature, `QuestionnaireItemBundle.controller` is now the item's answer controller and the signature controller is `QuestionnaireItemBundle.signatureController`.
+- BREAKING: Required, range, length and url validations are registered when an item's bundle is built instead of in the item views' `initState`.
+- BREAKING: Initial values are applied by the new `QuestionnaireItemView.applyInitialValue` when an item's bundle is built, so a `boolean` item answers `false` even before it is shown.
+- BREAKING: Every item view accepts and renders `children`, so the items nested under a non-group item are shown below it.
+- BREAKING: `enableWhen` controllers are created unbound and bound by `QuestionnaireController.bindEnableWhenControllers` once every item is built.
+- BREAKING: `QuestionnaireController.generateItemResponse` and `generateItemResponses` leave out items disabled by `enableWhen`, with everything nested under them.
+- BREAKING: Item views repaint whenever their controller's value changes.
+- BREAKING: The item metadata getters of `QuestionnaireItemViewState` delegate to the new `QuestionnaireItem` extensions, and `QuestionnaireChoiceItemViewState.values` is now a getter.
+- Submit's validation now scrolls to the first invalid item by its position in the list, including items not shown yet.
+- With a `formController`, each item is wrapped in a highlight container that pads it by 16 pixels while it is highlighted.
+
+### Fixed
+- Fixed answers of items hidden by `enableWhen` being included in the response.
+- Fixed `enableWhen` conditions on a later item, or on the item a question is nested under, being ignored.
+- Fixed `enableWhen` conditions on a disabled item not counting it as unanswered.
+- Fixed an `exists` condition counting a multiple choice item with nothing selected as answered.
+- Fixed a non-group question that requires a signature losing its own answer and its required validation.
+- Fixed items nested under a non-group question never being shown.
+- Fixed items never scrolled into view skipping validation and their initial values.
+- Fixed validations being added again each time an item view was rebuilt.
+- Fixed a required `group` or `display` item blocking Submit although it has no answer of its own.
+- Fixed values set on a controller from code not being shown by `boolean`, choice, date, quantity, attachment and signature items.
+- Fixed a quantity item's own text and comparator controllers never being disposed.
+
 ## 6.0.0
 ### Changed
 - BREAKING: Migrated from `package:flutter/material.dart` to the standalone [material_ui](https://pub.dev/packages/material_ui) package, so apps using this package must be built with `material_ui` as well.

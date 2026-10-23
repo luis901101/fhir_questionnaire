@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:fhir_r4/fhir_r4.dart' hide QuestionnaireItemType;
 import 'package:fhir_questionnaire_r4/fhir_questionnaire_r4.dart';
@@ -16,20 +18,22 @@ abstract class QuestionnaireItemView extends StatefulWidget {
     this.children,
     this.enableWhenController,
   });
+
+  /// Seeds [controller] from the item's `initial` values when it holds no value
+  /// yet.
+  ///
+  /// It is called when the item's bundle is built, so an item that was never
+  /// scrolled into view still answers and validates with its initial values,
+  /// and again when the view's state is created, where it does nothing once a
+  /// value is set. The default does nothing; override it in a custom view
+  /// whose answer has an initial value.
+  void applyInitialValue() {}
 }
 
 abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
     extends State<SF>
     with AutomaticKeepAliveClientMixin {
   ThemeData theme = ThemeData();
-  int? _minLengthCache;
-  bool? _isHiddenCache;
-  String? _hintTextCache;
-  QuestionnaireItem? _helperItemCache;
-  String? _helperTextCache;
-  bool? _helperTextAsButtonCache;
-  dynamic _minValueCache; // Can be any of instant, date, dateTime, time, decimal, integer, depending on the item type
-  dynamic _maxValueCache; // Can be any of instant, date, dateTime, time, decimal, integer, depending on the item type
   bool isEnabled = true;
   String? lastControllerError;
   FieldController get controller => widget.controller;
@@ -37,124 +41,56 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
       widget.enableWhenController;
   QuestionnaireItem get item => widget.item;
   List<QuestionnaireItemView>? get children => widget.children;
+
+  /// The required validation registered on [controller] when the item's bundle
+  /// was built, if any.
   EnhancedEmptyValidationController? requiredValidation;
+
+  /// The answer last rendered, compared with the controller's on each change
+  /// so a value set from code is shown.
+  Object? _renderedValue;
+  bool _valueCheckScheduled = false;
 
   @override
   bool get wantKeepAlive => false;
 
-  bool get isRequired => item.required_?.valueBoolean ?? false;
-  bool get isReadOnly => item.readOnly?.valueBoolean ?? false;
+  bool get isRequired => item.isRequired;
+  bool get isReadOnly => item.isReadOnly;
   int? get maxLength => item.maxLength?.valueInt;
 
   /// Checks for minLength extension to provide minimum length validation
   /// Docs: http://hl7.org/fhir/R4/extension-minlength.html
-  int? get minLength => _minLengthCache ??= (item.extension_ ?? [])
-      .firstWhereOrNull(
-        (ext) => ext.url.valueString == FhirConstants.minLengthExtensionUrl,
-      )
-      ?.valueInteger
-      ?.valueInt;
+  int? get minLength => item.minLength;
 
   /// Checks for minValue extension to provide minimum value validation
   /// Docs: http://hl7.org/fhir/R4/extension-minvalue.html
-  dynamic get minValue {
-    if (_minValueCache != null) return _minValueCache;
-    final minValueItem = (item.extension_ ?? []).firstWhereOrNull(
-      (ext) => ext.url.valueString == FhirConstants.minValueExtensionUrl,
-    );
-    return _minValueCache =
-        minValueItem?.valueInteger?.valueInt ??
-        minValueItem?.valueDecimal?.valueDouble ??
-        minValueItem?.valueInstant?.valueDateTime ??
-        minValueItem?.valueDate?.valueDateTime ??
-        minValueItem?.valueDateTime?.valueDateTime ??
-        minValueItem?.valueTime?.asDateTime;
-  }
+  dynamic get minValue => item.minValue;
 
   /// Checks for maxValue extension to provide maximum value validation
   /// Docs: http://hl7.org/fhir/R4/extension-maxvalue.html
-  dynamic get maxValue {
-    if (_maxValueCache != null) return _maxValueCache;
-    final maxValueItem = (item.extension_ ?? []).firstWhereOrNull(
-      (ext) => ext.url.valueString == FhirConstants.maxValueExtensionUrl,
-    );
-    return _maxValueCache =
-        maxValueItem?.valueInteger?.valueInt ??
-        maxValueItem?.valueDecimal?.valueDouble ??
-        maxValueItem?.valueInstant?.valueDateTime ??
-        maxValueItem?.valueDate?.valueDateTime ??
-        maxValueItem?.valueDateTime?.valueDateTime ??
-        maxValueItem?.valueTime?.asDateTime;
-  }
+  dynamic get maxValue => item.maxValue;
 
   /// Checks for questionnaire-hidden extension to hide the item
   /// Docs: http://hl7.org/fhir/R4/extension-questionnaire-hidden.html
-  bool get isHidden => _isHiddenCache ??=
-      (item.extension_ ?? []).any(
-        (ext) =>
-            ext.url.valueString == FhirConstants.hiddenExtensionUrl &&
-            ext.valueBoolean?.valueBoolean == true,
-      ) ||
-      (item.type.valueString == QuestionnaireItemType.display.code &&
-          (item.extension_?.any(
-                (subExt) =>
-                    subExt.url.valueString ==
-                        FhirConstants.displayCategoryExtensionUrl &&
-                    subExt
-                            .valueCodeableConcept
-                            ?.coding
-                            ?.firstOrNull
-                            ?.code
-                            ?.valueString ==
-                        QuestionnaireItemExtensionCode.help.code,
-              ) ??
-              false));
+  bool get isHidden => item.isHidden;
 
   /// Checks for entryFormat extension to provide hint text
   /// Docs: http://hl7.org/fhir/R4/extension-entryformat.html
-  String? get hintText => _hintTextCache ??= (item.extension_ ?? [])
-      .firstWhereOrNull(
-        (ext) => ext.url.valueString == FhirConstants.entryFormatExtensionUrl,
-      )
-      ?.valueString
-      ?.valueString;
+  String? get hintText => item.hintText;
 
   /// Checks for questionnaire-displayCategory extension to provide helper text
   /// Docs: https://hl7.org/fhir/R4/extension-questionnaire-displaycategory.html
-  QuestionnaireItem? get helperItem =>
-      _helperItemCache ??= item.item?.firstWhereOrNull(
-        (subItem) =>
-            subItem.type.valueString == QuestionnaireItemType.display.code &&
-            (subItem.extension_?.any(
-                  (subExt) =>
-                      subExt.url.valueString ==
-                          FhirConstants.displayCategoryExtensionUrl &&
-                      subExt
-                              .valueCodeableConcept
-                              ?.coding
-                              ?.firstOrNull
-                              ?.code
-                              ?.valueString ==
-                          QuestionnaireItemExtensionCode.help.code,
-                ) ??
-                false),
-      );
+  QuestionnaireItem? get helperItem => item.helperItem;
 
-  String? get helperText => _helperTextCache ??= helperItem?.title;
+  String? get helperText => item.helperText;
 
-  bool get helperTextAsButton =>
-      _helperTextAsButtonCache ??= (helperItem?.extension_ ?? []).any(
-        (ext) =>
-            ext.url.valueString == FhirConstants.itemControlExtensionUrl &&
-            [
-              QuestionnaireItemExtensionCode.help.code,
-              QuestionnaireItemExtensionCode.flyover.code,
-            ].contains(
-              ext.valueCodeableConcept?.coding?.firstOrNull?.code?.valueString,
-            ),
-      );
+  bool get helperTextAsButton => item.helperTextAsButton;
 
   bool get handleControllerErrorManually => true;
+
+  /// Whether the base [build] renders [children] below the item. A view that
+  /// lays out its children itself (a group) returns false.
+  bool get rendersChildren => true;
 
   Widget? get helperButton => !helperTextAsButton || helperText.isEmpty
       ? null
@@ -166,24 +102,18 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
     if (handleControllerErrorManually) {
       controller.addListener(onControllerErrorChanged);
     }
-    ValidationController? rangeValidation;
-    if (minValue != null && maxValue != null) {
-      rangeValidation = ValidationUtils.rangeValidationController(
-        minValue: minValue,
-        maxValue: maxValue,
-      );
-    } else if (minValue != null) {
-      rangeValidation = ValidationUtils.minRangeValidationController(minValue);
-    } else if (maxValue != null) {
-      rangeValidation = ValidationUtils.maxRangeValidationController(maxValue);
+    widget.applyInitialValue();
+    // Validations are registered when the item's bundle is built, not here,
+    // so items never scrolled into view are validated too.
+    requiredValidation = controller.validations
+        .whereType<EnhancedEmptyValidationController>()
+        .firstOrNull;
+    // A text field repaints itself; any other view repaints when its value
+    // changes, including when it is set from code.
+    if (controller is! TextEditingController) {
+      _renderedValue = _valueSnapshot();
+      controller.addListener(_onControllerValueChanged);
     }
-    if (isRequired) {
-      requiredValidation = ValidationUtils.requiredFieldValidation;
-    }
-    controller.validations.addAll([
-      if (isRequired) ?requiredValidation,
-      ?rangeValidation,
-    ]);
     isEnabled =
         enableWhenController?.init(onEnabledChangedListener: onEnabled) ?? true;
   }
@@ -198,15 +128,36 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
     }
   }
 
+  Object? _valueSnapshot() {
+    final value = controller.rawValue;
+    return value is List ? List.of(value) : value;
+  }
+
+  void _onControllerValueChanged() {
+    // Compared once the current work is done, not on each notification: a view
+    // may write its controller while building (the drop down resets and
+    // restores its value), which must not count as a change.
+    if (_valueCheckScheduled) return;
+    _valueCheckScheduled = true;
+    scheduleMicrotask(() {
+      _valueCheckScheduled = false;
+      if (!mounted) return;
+      final snapshot = _valueSnapshot();
+      if (const DeepCollectionEquality().equals(snapshot, _renderedValue)) {
+        return;
+      }
+      _renderedValue = snapshot;
+      onControllerValueChanged();
+      setState(() {});
+    });
+  }
+
+  /// Called when [controller]'s value changed, by the user or from code, right
+  /// before the view repaints. Override to update state derived from it.
+  void onControllerValueChanged() {}
+
   void onEnabled(bool enabled) {
     if (isEnabled != enabled) {
-      if (isRequired && requiredValidation != null) {
-        if (enabled) {
-          controller.validations.add(requiredValidation!);
-        } else {
-          controller.validations.remove(requiredValidation);
-        }
-      }
       setState(() => isEnabled = enabled);
     }
   }
@@ -223,34 +174,91 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
   Widget build(BuildContext context) {
     super.build(context);
     theme = Theme.of(context);
-    return isHidden
-        ? const SizedBox.shrink()
-        : AnimatedSize(
-            duration: const Duration(milliseconds: 300),
-            child: ClipRect(
-              clipBehavior: Clip.hardEdge,
-              child: SizedBox(
-                height: isEnabled ? null : 0,
-                child: SizeRenderer(
-                  onSizeRendered: onSizeRendered,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 24.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ?buildTitleView(context),
-                        buildBody(context),
-                        ?buildHintTextView(context),
-                        ?buildHelperTextView(context),
-                        ?buildErrorManuallyView(context),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+    if (isHidden) return const SizedBox.shrink();
+    final nestedViews = rendersChildren ? children : null;
+    Widget content = Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ?buildTitleView(context),
+        buildBody(context),
+        ?buildHintTextView(context),
+        ?buildHelperTextView(context),
+        ?buildErrorManuallyView(context),
+        if (nestedViews?.isNotEmpty ?? false)
+          Padding(
+            padding: const EdgeInsets.only(left: 16, top: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: nestedViews!,
             ),
-          );
+          ),
+      ],
+    );
+    final highlighted = QuestionnaireHighlightScope.maybeOf(context);
+    if (highlighted != null) {
+      content = buildHighlight(
+        context,
+        isHighlighted: identical(highlighted.value, widget),
+        child: content,
+      );
+    }
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 300),
+      child: ClipRect(
+        clipBehavior: Clip.hardEdge,
+        child: SizedBox(
+          height: isEnabled ? null : 0,
+          child: SizeRenderer(
+            onSizeRendered: onSizeRendered,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 24.0),
+              child: content,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Wraps the item's content when it is shown under a
+  /// [QuestionnaireHighlightScope], marking it when [isHighlighted]. The
+  /// highlight pads the item, so it grows; [QuestionnaireFormController.scrollTo]
+  /// measures it once it has resized (see
+  /// [QuestionnaireFormController.highlightAnimationDuration]).
+  Widget buildHighlight(
+    BuildContext context, {
+    required bool isHighlighted,
+    required Widget child,
+  }) {
+    double radius = 8;
+    if (theme.inputDecorationTheme.border is OutlineInputBorder) {
+      radius = (theme.inputDecorationTheme.border as OutlineInputBorder)
+          .borderRadius
+          .topLeft
+          .x;
+    }
+    final borderRadius = BorderRadius.circular(radius);
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      padding: isHighlighted ? const EdgeInsets.all(16) : EdgeInsets.zero,
+      decoration: BoxDecoration(
+        color: isHighlighted
+            ? theme.colorScheme.primaryContainer.withValues(alpha: 0.4)
+            : null,
+        borderRadius: borderRadius,
+      ),
+      foregroundDecoration: isHighlighted
+          ? BoxDecoration(
+              border: Border.all(color: theme.colorScheme.primary, width: 2),
+              borderRadius: borderRadius,
+            )
+          : null,
+      // List tiles (radio, check box, switch) paint their ink on the nearest
+      // Material: this one sits above the tint, so the tint never hides it.
+      child: Material(type: MaterialType.transparency, child: child),
+    );
   }
 
   Widget? buildTitleView(
@@ -380,6 +388,7 @@ abstract class QuestionnaireItemViewState<SF extends QuestionnaireItemView>
   @override
   void dispose() {
     controller.removeListener(onControllerErrorChanged);
+    controller.removeListener(_onControllerValueChanged);
     enableWhenController?.dispose();
     super.dispose();
   }
