@@ -9,6 +9,7 @@ import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/foundation.dart';
 // json_field_editor still depends on the in-SDK Material library, so its
 // JsonField expects the legacy InputDecoration and a legacy Material ancestor.
+// ignore: deprecated_member_use, migrate_design_widgets
 import 'package:flutter/material.dart' as legacy;
 import 'package:material_ui/material_ui.dart';
 import 'package:json_field_editor/json_field_editor.dart';
